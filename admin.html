@@ -8,81 +8,79 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .admin-container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
-        .bed-row { display: grid; grid-template-columns: 60px 1fr 1fr 1fr 80px 80px; gap: 0.5rem; padding: 0.75rem; background: white; border-radius: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
-        .bed-header { font-weight: bold; background: #065f46; color: white; }
-        .lock-btn { cursor: pointer; padding: 0.5rem; border-radius: 0.5rem; text-align: center; font-size: 1.5rem; transition: all 0.2s; }
+        .admin-container { max-width: 800px; margin: 0 auto; padding: 1rem; }
+        .crop-row { display: grid; grid-template-columns: 1fr 100px; gap: 0.5rem; padding: 1rem; background: white; border-radius: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
+        .crop-header { font-weight: bold; background: #065f46; color: white; padding: 1rem; border-radius: 0.5rem; }
+        .lock-btn { cursor: pointer; padding: 0.5rem 1rem; border-radius: 0.5rem; text-align: center; font-size: 1.2rem; transition: all 0.2s; text-align: center; }
         .lock-btn.locked { background: #fef2f2; border: 2px solid #fecaca; }
-        .lock-btn.unlocked { background: #f0fdf4; border: 2px solid #bbf7d0; }
-        .save-btn { background: #10b981; color: white; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-size: 1.1rem; cursor: pointer; }
-        .save-btn:hover { background: #059669; }
-        .upload-btn { background: #3b82f6; color: white; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-size: 1.1rem; cursor: pointer; }
+        .lock-btn.unlocked { background: #f0fdf4; border: 2px solid #22c55e; }
+        .action-btn { background: #10b981; color: white; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-size: 1.1rem; cursor: pointer; }
+        .action-btn:hover { background: #059669; }
+        .upload-btn { background: #3b82f6; color: white; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-size: 1.1rem; cursor: pointer; display: inline-block; }
         .upload-btn:hover { background: #2563eb; }
         .error { color: red; margin-top: 0.5rem; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div id="loginPage" class="login-container">
-        <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg text-center w-80">
             <h1 class="text-2xl font-bold mb-4 text-green-700">Markplan Admin</h1>
             <input type="password" id="passwordInput" placeholder="Kode" class="border p-2 rounded w-full mb-4 text-center">
             <button onclick="login()" class="bg-green-600 text-white px-6 py-2 rounded w-full">Login</button>
-            <p id="loginError" class="error hidden">Forkert kode</p>
+            <p id="loginError" class="error text-center mt-2">Forkert kode</p>
         </div>
     </div>
 
-    <div id="adminPage" class="admin-container" style="display:none;">
+    <div id="adminPage" class="admin-container">
         <h1 class="text-3xl font-bold text-center mb-4 text-green-700">Markplan Admin</h1>
         
-        <div class="flex justify-center gap-4 mb-6">
-            <button onclick="showData()" class="save-btn">Vis data</button>
-            <label class="upload-btn cursor-pointer">
+        <div class="flex justify-center gap-4 mb-6 flex-wrap">
+            <button onclick="loadData()" class="action-btn">Vis afgrøder</button>
+            <label class="action-btn upload-btn">
                 Upload ny fil
                 <input type="file" id="fileInput" accept=".csv" onchange="uploadFile()" style="display:none;">
             </label>
             <button onclick="logout()" class="bg-gray-500 text-white px-6 py-2 rounded">Logout</button>
         </div>
         
-        <div id="bedList" class="bg-white p-4 rounded-lg shadow-lg">
-            <div class="bed-row bed-header">
-                <span>Bed</span>
-                <span>Top</span>
-                <span>Midt</span>
-                <span>Bund</span>
-                <span>Gruppe</span>
-                <span>Status</span>
+        <div id="cropList" class="bg-white p-4 rounded-lg shadow-lg">
+            <div class="crop-row crop-header">
+                <span>Afgrøde</span>
+                <span>Frigivet</span>
             </div>
-            <div id="bedContent"></div>
+            <div id="cropContent"></div>
         </div>
         
         <div class="flex justify-center mt-6">
-            <button onclick="saveChanges()" class="save-btn">Gem ændringer</button>
+            <button onclick="saveChanges()" class="action-btn">Gem ændringer</button>
         </div>
         <p id="saveMessage" class="text-center mt-2 text-green-600 hidden">Ændringer gemt!</p>
     </div>
 
     <script>
         let fieldData = [];
+        let cropStatus = {};
         let modified = {};
 
         function login() {
             const password = document.getElementById('passwordInput').value;
             if (password === 'aihmark') {
-                document.getElementById('loginPage').style.display = 'none';
-                document.getElementById('adminPage').style.display = 'block';
-                showData();
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('adminPage').classList.remove('hidden');
+                loadData();
             } else {
                 document.getElementById('loginError').classList.remove('hidden');
             }
         }
 
         function logout() {
-            document.getElementById('loginPage').style.display = 'flex';
-            document.getElementById('adminPage').style.display = 'none';
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('adminPage').classList.add('hidden');
             document.getElementById('passwordInput').value = '';
         }
 
-        async function showData() {
+        async function loadData() {
             try {
                 const response = await fetch('markplan_aih.csv');
                 const text = await response.text();
@@ -94,47 +92,60 @@
                     return headers.reduce((obj, h, i) => ({ ...obj, [h]: values[i] || '' }), {});
                 });
                 
-                renderBedList();
+                cropStatus = {};
+                fieldData.forEach(row => {
+                    const crop = row.Top || row.Midt || row.Bund;
+                    if (crop && crop !== 'Brak' && crop !== '') {
+                        const frigivet = row.Frigivet || '0';
+                        if (!cropStatus[crop]) {
+                            cropStatus[crop] = frigivet;
+                        }
+                    }
+                });
+                
+                renderCropList();
             } catch (error) {
                 alert('Kunne ikke indlæse data: ' + error.message);
             }
         }
 
-        function renderBedList() {
-            const container = document.getElementById('bedContent');
+        function renderCropList() {
+            const container = document.getElementById('cropContent');
             container.innerHTML = '';
             
-            fieldData.forEach((row, index) => {
-                if (!row.Bed) return;
-                
-                const div = document.createElement('div');
-                div.className = 'bed-row';
-                
-                const frigivet = row.Frigivet || '0';
-                const lockIcon = frigivet === '1' ? '🔓' : '🔒';
+            const sortedCrops = Object.keys(cropStatus).sort();
+            
+            sortedCrops.forEach(crop => {
+                const frigivet = cropStatus[crop];
+                const icon = frigivet === '1' ? '✓' : '🔒';
                 const lockClass = frigivet === '1' ? 'unlocked' : 'locked';
                 
+                const div = document.createElement('div');
+                div.className = 'crop-row';
                 div.innerHTML = `
-                    <span class="font-bold">${row.Bed}</span>
-                    <span>${row.Top || '-'}</span>
-                    <span>${row.Midt || '-'}</span>
-                    <span>${row.Bund || '-'}</span>
-                    <span>${row.Lugegruppe || '-'}</span>
-                    <span class="lock-btn ${lockClass}" onclick="toggleLock(${index})">${lockIcon}</span>
+                    <span class="font-medium">${crop}</span>
+                    <span class="lock-btn ${lockClass}" onclick="toggleCrop('${crop}')">${icon}</span>
                 `;
                 container.appendChild(div);
             });
         }
 
-        function toggleLock(index) {
-            const current = fieldData[index].Frigivet || '0';
-            fieldData[index].Frigivet = current === '1' ? '0' : '1';
-            modified[index] = true;
-            renderBedList();
+        function toggleCrop(cropName) {
+            const current = cropStatus[cropName] || '0';
+            cropStatus[cropName] = current === '1' ? '0' : '1';
+            modified[cropName] = true;
+            renderCropList();
         }
 
         async function saveChanges() {
             try {
+                fieldData.forEach(row => {
+                    const crop = row.Top || row.Midt || row.Bund;
+                    if (crop && crop !== 'Brak' && crop !== '' && modified[crop]) {
+                        row.Frigivet = cropStatus[crop];
+                    }
+                });
+                
                 const lines = ['Bed,Top,Midt,Bund,Lugegruppe,Frigivet'];
                 fieldData.forEach(row => {
                     if (row.Bed) {
@@ -142,12 +153,15 @@
                     }
                 });
                 
-                const csv = lines.join('\n');
-                const blob = new Blob([csv], { type: 'text/csv' });
+                const csvContent = lines.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv' });
                 
-                const response = await fetch('markplan_aih.csv', {
-                    method: 'PUT',
-                    body: blob
+                const formData = new FormData();
+                formData.append('file', blob, 'markplan_aih.csv');
+                
+                await fetch('markplan_aih.csv', {
+                    method: 'POST',
+                    body: formData
                 });
                 
                 document.getElementById('saveMessage').classList.remove('hidden');
@@ -172,25 +186,20 @@
                 const response = await fetch('markplan_aih.csv');
                 const oldContent = await response.text();
                 
-                const timestamp = new Date().toISOString().slice(0,19).replace(/[:-]/g,'');
+                const timestamp = new Date().toISOString().replace(/[:-]/g,'').slice(0,14);
                 const backupName = `markplan_backup_${timestamp}.csv`;
                 
-                await fetch(backupName, {
-                    method: 'PUT',
-                    body: oldContent
-                });
+                const backupBlob = new Blob([oldContent], { type: 'text/csv' });
+                await fetch(backupName, { method: 'POST', body: backupBlob });
                 
                 const newContent = await file.text();
-                const blob = new Blob([newContent], { type: 'text/csv' });
+                const newBlob = new Blob([newContent], { type: 'text/csv' });
                 
-                await fetch('markplan_aih.csv', {
-                    method: 'PUT',
-                    body: blob
-                });
+                await fetch('markplan_aih.csv', { method: 'POST', body: newBlob });
                 
                 alert('Fil uploadet! Backup gemt som ' + backupName);
                 fileInput.value = '';
-                showData();
+                loadData();
             } catch (error) {
                 alert('Kunne ikke uploade: ' + error.message);
             }
