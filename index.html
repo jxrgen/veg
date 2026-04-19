@@ -58,7 +58,6 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
         h1 { color: var(--main-title-color); }
         h2, h3 { color: var(--section-title-color); }
-        #cropList h2 { font-size: 1.125rem; margin: 0; padding: 0; }
         
         .crop-item {
             cursor: pointer;
@@ -75,7 +74,7 @@
         .crop-item:hover { background-color: var(--crop-item-hover-bg); }
         .crop-item.locked { border-left: 3px solid var(--locked-color); }
         .crop-item.unlocked { border-left: 3px solid var(--unlocked-color); }
-        
+        .crop-item.selected { border: 2px solid var(--accent-color); }
         .crop-name { font-weight: 600; font-size: 1.1rem; }
         .crop-status { font-size: 0.9rem; }
 
@@ -126,7 +125,9 @@
             color: white;
             padding: 0 3px;
             border-radius: 0.25rem;
+            display: none;
         }
+        .bed-group.visible { display: block; }
         
         body.theme-sunlight .bed-group { color: black; }
         
@@ -141,19 +142,13 @@
             padding: 0 2px;
         }
         
-        .status-icon {
-            font-size: 0.65rem;
-            margin-left: 2px;
-        }
+        .status-icon { font-size: 0.65rem; margin-left: 2px; }
         
         .highlight {
-            background-color: var(--text-highlight-bg);
-            border-color: var(--text-highlight-border);
+            background-color: var(--text-highlight-bg) !important;
+            border-color: var(--text-highlight-border) !important;
             animation: pulse 1s infinite alternate;
         }
-
-        body.theme-sunlight .bed.highlight .bed-number,
-        body.theme-sunlight .bed.highlight .bed-crop { color: #000000; }
 
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.03); } }
         
@@ -171,8 +166,6 @@
         }
         .to-top-link:hover { color: var(--accent-hover-color); }
         .to-top-link svg { margin-right: 0.5rem; }
-
-        .section-container h3 { text-align: center; }
 
         .top-controls-container {
             display: flex;
@@ -197,25 +190,77 @@
             transition: all 0.2s ease-in-out;
             color: var(--crop-item-text);
         }
-        .sun-mode-button:hover {
-            background-color: var(--crop-item-hover-bg);
-            transform: translateY(-2px);
-        }
+        .sun-mode-button:hover { background-color: var(--crop-item-hover-bg); transform: translateY(-2px); }
         .sun-mode-button svg { width: 24px; height: 24px; fill: currentColor; }
-        
-        .sun-mode-button.active {
-            background-color: var(--text-highlight-bg);
-            border-color: var(--text-highlight-border);
-            color: var(--text-primary);
-        }
+        .sun-mode-button.active { background-color: var(--text-highlight-bg); border-color: var(--text-highlight-border); color: var(--text-primary); }
         .sun-mode-button.active svg { fill: #000000; }
         
-        .group-list {
-            background-color: var(--bg-card);
-            border-radius: 0.75rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
+        .settings-button {
+            width: 40px;
+            height: 40px;
+            background-color: var(--crop-item-bg);
+            border: 1px solid var(--bed-border);
+            border-radius: 0.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 0.5rem;
+            color: var(--crop-item-text);
         }
+        .settings-button:hover { background-color: var(--crop-item-hover-bg); }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            overflow-y: auto;
+        }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content {
+            background-color: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+        .modal h2 { margin-bottom: 1rem; }
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        .setting-group { margin-bottom: 1rem; }
+        .setting-label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .checkbox-item {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--bed-border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            background-color: var(--crop-item-bg);
+            color: var(--crop-item-text);
+        }
+        .checkbox-item.checked { background-color: var(--accent-color); color: white; }
+        
+        .save-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .save-btn:hover { background-color: var(--accent-hover-color); }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 theme-default" id="top">
@@ -227,20 +272,23 @@
         <section id="cropList" class="mb-12 p-6 bg-white rounded-lg shadow-lg">
             <div class="top-controls-container">
                 <h2 class="font-semibold text-lg">T = Top, M = Midt, B = Bund</h2>
-                <button id="sunModeButton" class="sun-mode-button" title="Skift til sollys-tilstand">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m0 1a4 4 0 1 1 0-8 4 4 0 0 1 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13M2.343 2.343a.5.5 0 0 1 .707 0l1.414 1.414a.5.5 0 0 1-.707.707L2.343 3.05a.5.5 0 0 1 0-.707m11.314 11.314a.5.5 0 0 1 0-.707l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M.5 8a.5.5 0 0 1 0-1h2a.5.5 0 0 1 0 1zm13 0a.5.5 0 0 1 0-1h2a.5.5 0 0 1 0 1M3.757 12.243a.5.5 0 0 1-.707 0L2.343 10.829a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707m11.314-11.314a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707"/>
-                    </svg>
-                </button>
+                <div class="flex">
+                    <button id="sunModeButton" class="sun-mode-button" title="Skift til sollys-tilstand">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m0 1a4 4 0 1 1 0-8 4 4 0 0 1 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13M2.343 2.343a.5.5 0 0 1 .707 0l1.414 1.414a.5.5 0 0 1-.707.707L2.343 3.05a.5.5 0 0 1 0-.707m11.314 11.314a.5.5 0 0 1 0-.707l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M.5 8a.5.5 0 0 1 0-1h2a.5.5 0 0 1 0 1zm13 0a.5.5 0 0 1 0-1h2a.5.5 0 0 1 0 1M3.757 12.243a.5.5 0 0 1-.707 0L2.343 10.829a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707m11.314-11.314a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707"/>
+                        </svg>
+                    </button>
+                    <button id="settingsButton" class="settings-button" title="Indstillinger">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.25 8a2.75 2.75 0 1 1 5.5 0 2.75 2.75 0 0 1-5.5 0"/>
+                            <path d="M9.879 8a.75.75 0 0 1 .122.573l-.016.021-.016.021a2.25 2.25 0 0 1-.676 2.011l-.11.106-.11.106a.75.75 0 0 1-.28.205l-.063.064-.063.064a2.25 2.25 0 0 1-2.012.927l-.09.088-.09.088a2.25 2.25 0 0 1-2.685-2.685l.09-.088.09-.088a.75.75 0 0 1 .205-.28l.064-.063.064-.063a.75.75 0 0 1 .573-.122l.021.016.021.016a.75.75 0 0 1-.011.144l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063a2.25 2.25 0 0 1-.927 2.012l-.088.09-.088.09a2.25 2.25 0 0 1 2.685 2.685l-.088.09-.088.09a.75.75 0 0 1-.28.28l-.063.064-.063.064a.75.75 0 0 1-.122.573l-.016.021-.016.021a.75.75 0 0 1 .122.573l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063a2.25 2.25 0 0 1-.927 2.012l-.088.09-.088.09a2.25 2.25 0 0 1-2.685-2.685l.09-.088.09-.088a.75.75 0 0 1 .205-.28l.064-.063.064-.063a.75.75 0 0 1 .573-.122l.021.016.021.016a.75.75 0 0 1-.011.144l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063a2.25 2.25 0 0 1-.927 2.012l-.088.09-.088.09a2.25 2.25 0 0 1-2.685-2.685l.09-.088.09-.088a.75.75 0 0 1 .205-.28l.064-.063.064-.063a.75.75 0 0 1 .573-.122l.021.016.021.016.021.016a.75.75 0 0 1-.011.144l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063a2.25 2.25 0 0 1-.927 2.012l-.088.09-.088.09a2.25 2.25 0 0 1-2.685-2.685l.09-.088.09-.088a.75.75 0 0 1 .205-.28l.064-.063.064-.063a.75.75 0 0 1 .573-.122l.021.016.021.016a.75.75 0 0 1-.011.144l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063a2.25 2.25 0 0 1-.927 2.012l-.088.09-.088.09a2.25 2.25 0 0 1-2.685-2.685l.09-.088.09-.088a.75.75 0 0 1 .205-.28l.064-.063.064-.063a.75.75 0 0 1 .573-.122l.021.016.021.016a.75.75 0 0 1-.011.144l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063Z"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
             <div id="cropListContent" class="space-y-2 mt-4">
                 <div class="text-center py-4 text-gray-500">Indlæser markplan...</div>
             </div>
-        </section>
-
-        <section id="groupSection" class="mb-12 p-6 bg-white rounded-lg shadow-lg">
-            <h2 class="text-xl font-semibold mb-4">Lugegrupper</h2>
-            <div id="groupListContent" class="grid grid-cols-2 md:grid-cols-4 gap-2"></div>
         </section>
 
         <section id="fieldOverview" class="mb-12 p-6 bg-white rounded-lg shadow-lg">
@@ -282,17 +330,41 @@
         </section>
     </div>
 
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2>Indstillinger</h2>
+            
+            <div class="setting-group">
+                <label class="setting-label">Vælg din lugegruppe:</label>
+                <div id="groupCheckboxes" class="checkbox-group"></div>
+            </div>
+            
+            <div class="setting-group">
+                <label class="setting-label">Favoritafgrøder:</label>
+                <div id="cropCheckboxes" class="checkbox-group"></div>
+            </div>
+            
+            <button id="saveSettings" class="save-btn">Gem indstillinger</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const body = document.body;
             const cropListContent = document.getElementById('cropListContent');
-            const groupListContent = document.getElementById('groupListContent');
             const sectionT = document.getElementById('section-T');
             const sectionM = document.getElementById('section-M');
             const sectionB = document.getElementById('section-B');
             const emojiLeft = document.getElementById('emoji-left');
             const emojiRight = document.getElementById('emoji-right');
             const sunModeButton = document.getElementById('sunModeButton');
+            const settingsButton = document.getElementById('settingsButton');
+            const settingsModal = document.getElementById('settingsModal');
+            const closeModal = document.getElementById('closeModal');
+            const saveSettings = document.getElementById('saveSettings');
+            const groupCheckboxes = document.getElementById('groupCheckboxes');
+            const cropCheckboxes = document.getElementById('cropCheckboxes');
             const topEmojiT = document.getElementById('top-emoji-T');
             const topEmojiM = document.getElementById('top-emoji-M');
             const topEmojiB = document.getElementById('top-emoji-B');
@@ -300,8 +372,21 @@
             let parsedFieldData = [];
             let cropLocations = {};
             let groupCrops = {};
+            let allGroups = [];
+            let userSettings = { selectedGroup: '', favoriteCrops: [] };
             
             const vegetableEmojis = ['🌸', '🫘', '🍄‍🟫', '🫛', '🥕', '🫚', '🧅', '🧄', '🥔', '🥒', '🥬', '🥦', '🍄', '🌶️', '🌽', '🍅', '🫑', '🍓', '🍑', '🍎', '🍐', '🥭', '🍊', '🍉', '🦋', '🐛', '🐝', '🪳', '🦗', '🪱', '🕷️', '🦠', '🐞', '🪲', '🌱', '🪻', '🌼', '🌷', '🌻', '🌺', '🌹', '🏵️', '🌿', '🌤️', '🌧️', '🌞', '🌈', '💧'];
+
+            function loadSettings() {
+                const saved = localStorage.getItem('markplanSettings');
+                if (saved) userSettings = JSON.parse(saved);
+            }
+
+            function saveSettingsFunc() {
+                localStorage.setItem('markplanSettings', JSON.stringify(userSettings));
+                settingsModal.classList.remove('show');
+                renderFieldOverview();
+            }
 
             function getRandomEmoji() { return vegetableEmojis[Math.floor(Math.random() * vegetableEmojis.length)]; }
             function setRandomEmojis() {
@@ -313,7 +398,6 @@
             }
 
             function getStatusIcon(frigivet) { return frigivet === '1' ? '✅' : '🔒'; }
-            function getStatusText(frigivet) { return frigivet === '1' ? 'Kan høstes' : 'Låst'; }
 
             async function fetchCsvData(url) {
                 try {
@@ -341,12 +425,15 @@
             function processFieldData(data) {
                 cropLocations = {};
                 groupCrops = {};
+                allGroups = [];
                 parsedFieldData = data;
 
                 data.forEach(row => {
                     const bedNum = parseInt(row.Bed);
                     const grupo = row.Lugegruppe || '';
                     const frigivet = row.Frigivet || '0';
+                    
+                    if (grupo && !allGroups.includes(grupo)) allGroups.push(grupo);
                     
                     const addCropLocation = (section, cropName, bedNumber, frigivet) => {
                         if (cropName && cropName !== 'Brak') {
@@ -365,6 +452,7 @@
                     addCropLocation('B', row.Bund, bedNum, frigivet);
                 });
 
+                allGroups.sort((a, b) => parseInt(a) - parseInt(b));
                 for (const cropName in cropLocations) {
                     ['T', 'M', 'B'].forEach(s => cropLocations[cropName][s].sort((a, b) => a.bed - b.bed));
                 }
@@ -382,12 +470,15 @@
                     const loc = cropLocations[cropName];
                     const frigivet = loc.frigivet;
                     const statusIcon = getStatusIcon(frigivet);
+                    const isFavorite = userSettings.favoriteCrops.includes(cropName);
                     
                     const locations = [...new Set([...loc.T, ...loc.M, ...loc.B])];
                     const beds = locations.map(l => l.bed || l);
                     
                     const div = document.createElement('div');
-                    div.className = 'crop-item ' + (frigivet === '1' ? 'unlocked' : 'locked');
+                    let classes = 'crop-item ' + (frigivet === '1' ? 'unlocked' : 'locked');
+                    if (isFavorite) classes += ' selected';
+                    div.className = classes;
                     div.innerHTML = `
                         <span class="crop-name">${cropName}</span>
                         <span class="crop-status">${statusIcon} (${beds.join(', ')})</span>
@@ -398,48 +489,29 @@
                 });
             }
 
-            function renderGroupList() {
-                groupListContent.innerHTML = '';
-                const sortedGroups = Object.keys(groupCrops).sort((a, b) => parseInt(a) - parseInt(b));
-                if (sortedGroups.length === 0) return;
-
-                sortedGroups.forEach(grupo => {
-                    const crops = groupCrops[grupo];
-                    const uniqueCrops = [...new Set(crops.map(c => c.crop))].sort();
-                    
-                    const div = document.createElement('div');
-                    div.className = 'crop-item';
-                    div.innerHTML = `
-                        <span class="crop-name">G${grupo}</span>
-                        <span class="crop-status">${uniqueCrops.join(', ')}</span>
-                    `;
-                    div.dataset.grupo = grupo;
-                    div.addEventListener('click', () => highlightGroup(grupo));
-                    groupListContent.appendChild(div);
-                });
-            }
-
             function renderFieldOverview() {
                 sectionT.innerHTML = '';
                 sectionM.innerHTML = '';
                 sectionB.innerHTML = '';
 
                 const maxBedNum = parsedFieldData.reduce((max, row) => Math.max(max, parseInt(row.Bed || 0)), 0);
+                const selectedGroup = userSettings.selectedGroup;
 
                 for (let i = 1; i <= maxBedNum; i++) {
                     const bedData = parsedFieldData.find(row => parseInt(row.Bed) === i);
                     if (bedData) {
-                        sectionT.appendChild(createBedElement('T', i, bedData.Top, bedData.Lugegruppe, bedData.Frigivet));
-                        sectionM.appendChild(createBedElement('M', i, bedData.Midt, bedData.Lugegruppe, bedData.Frigivet));
-                        sectionB.appendChild(createBedElement('B', i, bedData.Bund, bedData.Lugegruppe, bedData.Frigivet));
+                        sectionT.appendChild(createBedElement('T', i, bedData.Top, bedData.Lugegruppe, bedData.Frigivet, selectedGroup));
+                        sectionM.appendChild(createBedElement('M', i, bedData.Midt, bedData.Lugegruppe, bedData.Frigivet, selectedGroup));
+                        sectionB.appendChild(createBedElement('B', i, bedData.Bund, bedData.Lugegruppe, bedData.Frigivet, selectedGroup));
                     }
                 }
             }
 
-            function createBedElement(section, bedNum, cropName, grupo, frigivet) {
+            function createBedElement(section, bedNum, cropName, grupo, frigivet, selectedGroup) {
                 const div = document.createElement('div');
                 div.id = `bed-${section}-${bedNum}`;
-                div.className = 'bed ' + (frigivet === '1' ? 'unlocked' : 'locked');
+                const locked = frigivet !== '1';
+                div.className = 'bed ' + (locked ? 'locked' : 'unlocked');
                 div.dataset.section = section;
                 div.dataset.bedNum = bedNum;
                 div.dataset.cropName = cropName;
@@ -448,9 +520,11 @@
                 const statusIcon = getStatusIcon(frigivet);
                 const displayCrop = cropName && cropName !== 'Brak' ? `${cropName}<span class="status-icon">${statusIcon}</span>` : '';
                 
+                const showGroup = selectedGroup && grupo === selectedGroup;
+                
                 div.innerHTML = `
                     <span class="bed-number">${bedNum}</span>
-                    ${grupo ? `<span class="bed-group">G${grupo}</span>` : ''}
+                    ${grupo ? `<span class="bed-group ${showGroup ? 'visible' : ''}">G${grupo}</span>` : ''}
                     <span class="bed-crop">${displayCrop}</span>
                 `;
                 return div;
@@ -475,23 +549,6 @@
                 if (first) first.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
-            function highlightGroup(grupo) {
-                document.querySelectorAll('.bed.highlight').forEach(b => b.classList.remove('highlight'));
-                
-                const crops = groupCrops[grupo];
-                if (!crops) return;
-                
-                let first = null;
-                crops.forEach(c => {
-                    const el = document.getElementById(`bed-${c.section}-${c.bed}`);
-                    if (el) {
-                        el.classList.add('highlight');
-                        if (!first) first = el;
-                    }
-                });
-                if (first) first.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-
             function toggleSunlightMode() {
                 if (body.classList.contains('theme-sunlight')) {
                     body.classList.remove('theme-sunlight');
@@ -506,9 +563,55 @@
                 }
             }
 
+            function openSettings() {
+                groupCheckboxes.innerHTML = '';
+                allGroups.forEach(grupo => {
+                    const label = document.createElement('div');
+                    label.className = 'checkbox-item' + (userSettings.selectedGroup === grupo ? ' checked' : '');
+                    label.textContent = 'G' + grupo;
+                    label.dataset.grupo = grupo;
+                    label.addEventListener('click', () => {
+                        document.querySelectorAll('#groupCheckboxes .checkbox-item').forEach(c => c.classList.remove('checked'));
+                        if (userSettings.selectedGroup === grupo) {
+                            userSettings.selectedGroup = '';
+                        } else {
+                            label.classList.add('checked');
+                            userSettings.selectedGroup = grupo;
+                        }
+                    });
+                    groupCheckboxes.appendChild(label);
+                });
+                
+                cropCheckboxes.innerHTML = '';
+                const sortedCrops = Object.keys(cropLocations).sort();
+                sortedCrops.forEach(cropName => {
+                    const label = document.createElement('div');
+                    const isChecked = userSettings.favoriteCrops.includes(cropName);
+                    label.className = 'checkbox-item' + (isChecked ? ' checked' : '');
+                    label.textContent = cropName;
+                    label.dataset.crop = cropName;
+                    label.addEventListener('click', () => {
+                        if (userSettings.favoriteCrops.includes(cropName)) {
+                            userSettings.favoriteCrops = userSettings.favoriteCrops.filter(c => c !== cropName);
+                            label.classList.remove('checked');
+                        } else {
+                            userSettings.favoriteCrops.push(cropName);
+                            label.classList.add('checked');
+                        }
+                    });
+                    cropCheckboxes.appendChild(label);
+                });
+                
+                settingsModal.classList.add('show');
+            }
+
             sunModeButton.addEventListener('click', toggleSunlightMode);
+            settingsButton.addEventListener('click', openSettings);
+            closeModal.addEventListener('click', () => settingsModal.classList.remove('show'));
+            saveSettings.addEventListener('click', saveSettingsFunc);
 
             async function init() {
+                loadSettings();
                 setRandomEmojis();
                 
                 const savedSunlightMode = localStorage.getItem('sunlightMode') || 'inactive';
@@ -523,7 +626,6 @@
                 if (data.length > 0) {
                     processFieldData(data);
                     renderCropList();
-                    renderGroupList();
                     renderFieldOverview();
                 }
             }

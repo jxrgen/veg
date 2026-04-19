@@ -10,11 +10,14 @@ Web-app der giver medlemmer af Grøntsagsordningen i AiH overblik over afgrøder
 1. **Dynamisk Data** - Indlæser fra markplan_aih.csv med hardcodede fallback-data
 2. **Interaktiv Afgrødeliste** - Alfabetisk liste med klik -> puls-animation på matchende bede
 3. **Grafisk Markoversigt** - Viser Top/Midt/Bund sektioner med bed-numre og afgrødenavne
-4. **Lugegrupper** - Viser hvilke grupper der har ansvaret for hvilke bede
+4. **Lugegrupper** - Vises kun når bruger vælger en gruppe i indstillinger
 5. **Frigivet-status** - Låst (🔒 rød) / Kan høstes (✅ grøn)
 6. **Sollys-tilstand** - High-contrast tema gemt i localStorage
-7. **Responsivt Design** - Tailwind CSS, mobil-optimeret
-8. **Navigation** - "Til toppen" links med tilfældige grøntsags-emojis
+7. **Brugerindstillinger** - Gem i localStorage:
+   - Valgt lugegruppe (vises ved bede)
+   - Favoritafgrøder (markeres i listen)
+8. **Responsivt Design** - Tailwind CSS, mobil-optimeret
+9. **Navigation** - "Til toppen" links med tilfældige grøntsags-emojis
 
 ## Data Format (CSV)
 - Bed: Bed-nummer
@@ -30,4 +33,6 @@ Web-app der giver medlemmer af Grøntsagsordningen i AiH overblik over afgrøder
 
 ## Historie
 - 2026-04-19: Tilføjet lugegrupper og frigivet-status med ikoner
-- 2026-04-19: Tilføjet farvekodede baggrunde (rød=låst, grøn=frigivet)
+- 2026-04-19: Tilføjet farvekodede baggrunde for låst/frigivet
+- 2026-04-19: Tilføjet brugerindstillinger (valg af lugegruppe, favoritter)
+- 2026-04-19: Lugegrupper vises nu kun når bruger vælger dem
