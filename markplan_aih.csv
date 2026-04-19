@@ -1,42 +1,42 @@
-Bed,Top,Midt,Bund
-1,Squash,Brak ,Kartofler 
-2,Squash,Løg,Kartofler 
-3,Squash,Løg,Kartofler 
-4,Squash,Løg,Kartofler 
-5,Squash,Løg,Kartofler 
-6,Squash,Løg,Kartofler 
-7,Squash,Løg,Kartofler 
-8,Salat,Løg,Kartofler 
-9,Salat,Løg,Kartofler 
-10,Fennikel,Løg,Kartofler 
-11,Salat,Løg,Hestebønner 
-12,Salat,Løg,Blomster 
-13,,Løg,Blomster 
-14,Bladselleri,Bønner /Skalotteløg,Blomster 
-15,Bladselleri,Radis/dild,Blomster 
-16,Porrer,Blomkål,Glaskål
-17,Porrer,Blomkål,Salat
-18,Porrer,Gulerødder ,Salat
-19,Porrer,Gulerødder ,Salat
-20,Porrer,Gulerødder ,Rosenkål
-21,Porrer,Gulerødder ,Rosenkål
-22,Porrer,Bønner ,Rosenkål
-23,Savoykål,Bønner ,Persille
-24,Savoykål Selleri,Ærter,Persille
-25,Selleri ,Bønner ,Persille
-26,Selleri ,Bønner ,Salat
-27,Vinter kål,Persillerødder  ,Salat
-28,Vinter kål,Pastinak  ,Kål
-29,Vinter kål,Sølvbeder ,Majs
-30,Broccoli,Rødbeder Bolsjebeder  ,Majs
-31,Broccoli,Rødbeder ,Majs
-32,Broccoli,Rødbeder ,Majs
-33,Spidskål,Rødbeder ,Majs
-34,Spidskål,Gulerødder ,Majs
-35,Spidskål,Gulerødder ,Majs
-36,Grønkål,Radiser ,Majs
-37,Grønkål,Dild  ,Hokaido
-38,Grønkål,Hokaido,Hokaido
-39,Grønkål,Ærter ,Hokaido
-40,Grønkål,,
+Bed,Top,Midt,Bund,Lugegruppe,Frigivet
+1,Squash,Brak,Kartofler,3,1
+2,Squash,Løg,Kartofler,3,1
+3,Squash,Løg,Kartofler,7,0
+4,Squash,Løg,Kartofler,7,0
+5,Squash,Løg,Kartofler,1,0
+6,Squash,Løg,Kartofler,1,0
+7,Squash,Løg,Kartofler,4,0
+8,Salat,Løg,Kartofler,4,1
+9,Salat,Løg,Kartofler,12,0
+10,Fennikel,Løg,Kartofler,12,0
+11,Salat,Løg,Hestebønner,5,0
+12,Salat,Løg,Blomster,5,0
+13,,Løg,Blomster,8,0
+14,Bladselleri,Bønner/Skalotteløg,Blomster,8,0
+15,Bladselleri,Radis/dild,Blomster,2,0
+16,Porrer,Blomkål,Glaskål,2,0
+17,Porrer,Blomkål,Salat,9,0
+18,Porrer,Gulerødder,Salat,9,0
+19,Porrer,Gulerødder,Salat,11,0
+20,Porrer,Gulerødder,Rosenkål,11,0
+21,Porrer,Gulerødder,Rosenkål,6,0
+22,Porrer,Bønner,Rosenkål,6,0
+23,Savoykål,Bønner,Persille,10,0
+24,Savoykål Selleri,Ærter,Persille,10,0
+25,Selleri,Bønner,Persille,14,1
+26,Selleri,Bønner,Salat,14,1
+27,Vinter kål,Persillerødder,Salat,15,0
+28,Vinter kål,Pastinak,Kål,15,0
+29,Vinter kål,Sølvbeder,Majs,3,0
+30,Broccoli,Rødbeder/Bolsjebeder,Majs,3,0
+31,Broccoli,Rødbeder,Majs,7,0
+32,Broccoli,Rødbeder,Majs,7,0
+33,Spidskål,Rødbeder,Majs,1,0
+34,Spidskål,Gulerødder,Majs,1,0
+35,Spidskål,Gulerødder,Majs,4,0
+36,Grønkål,Radiser,Majs,4,0
+37,Grønkål,Dild,Hokaido,5,0
+38,Grønkål,Hokaido,Hokaido,5,1
+39,Grønkål,Ærter,Hokaido,8,0
+40,Grønkål,,8,0
 41,Rød spidskål,,

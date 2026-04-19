@@ -4,103 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markplan for Grøntsagsordningen i AiH</title>
-    <!-- Inkluderer Tailwind CSS for nem styling og mobilvenlighed -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* CSS variabler for farveskemaer */
         :root {
-            /* Default (Blue-Gray) */
             --bg-page: #f3f4f6;
             --bg-card: #ffffff;
             --text-primary: #1f2937;
             --text-secondary: #4b5563;
-            --text-highlight-bg: #facc15; /* Baggrundsfarve for fremhævet bed */
-            --text-highlight-border: #eab308; /* Kantfarve for fremhævet bed */
-            --bed-bg: #eff6ff; /* Baggrundsfarve for almindeligt bed */
-            --bed-border: #d1d5db; /* Kantfarve for almindeligt bed */
-            --crop-item-bg: #e6f0ff; /* Baggrund for afgrødeelement i liste */
-            --crop-item-text: #1a56cc; /* Tekstfarve for afgrødeelement */
-            --crop-item-hover-bg: #d1e4ff; /* Baggrund ved hover for afgrødeelement */
-            --accent-color: #10b981; /* Accentfarve (f.eks. "Til toppen" link) */
-            --accent-hover-color: #059669; /* Accentfarve ved hover */
-            --main-title-color: #047857; /* Grøn til hovedoverskrift */
-            --section-title-color: #065f46; /* Mørkere grøn til sektionstitler */
+            --text-highlight-bg: #facc15;
+            --text-highlight-border: #eab308;
+            --bed-bg: #eff6ff;
+            --bed-border: #d1d5db;
+            --crop-item-bg: #e6f0ff;
+            --crop-item-text: #1a56cc;
+            --crop-item-hover-bg: #d1e4ff;
+            --accent-color: #10b981;
+            --accent-hover-color: #059669;
+            --main-title-color: #047857;
+            --section-title-color: #065f46;
+            --locked-color: #ef4444;
+            --unlocked-color: #22c55e;
         }
 
-        /* Tema: Sollys / Sort/Hvid Inverteret */
         body.theme-sunlight {
-            --bg-page: #666666; /* Mørk grå baggrund for siden */
-            --bg-card: #555555; /* Lidt mørkere grå for kort/sektioner */
-            --text-primary: #ffffff; /* Hvid primær tekst - stadig brugt for generel tekst */
-            --text-secondary: #cccccc; /* Lys grå sekundær tekst */
-            --text-highlight-bg: #ffff00; /* Gul baggrund for fremhævet bed (som ønsket) */
-            --text-highlight-border: #eab308; /* Kantfarve for fremhævet bed (gul) */
-            --bed-bg: #444444; /* Endnu mørkere grå for almindelige bede */
-            --bed-border: #777777; /* Mørkere grå kant for almindelige bede */
-            --crop-item-bg: #333333; /* Mørk grå baggrund for afgrødeelement i liste */
-            --crop-item-text: #ffffff; /* Hvid tekstfarve for afgrødeelement */
-            --crop-item-hover-bg: #666666; /* Mørkere grå ved hover for afgrødeelement */
-            --accent-color: #000000; /* Sort for "Til toppen" link i sollys-tilstand */
-            --accent-hover-color: #333333; /* Mørk grå ved hover for "Til toppen" link */
-            --main-title-color: #000000; /* Sort til hovedoverskrift i sollys-tilstand */
-            --section-title-color: #000000; /* Sort til sektionstitler i sollys-tilstand */
+            --bg-page: #666666;
+            --bg-card: #555555;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-highlight-bg: #ffff00;
+            --text-highlight-border: #eab308;
+            --bed-bg: #444444;
+            --bed-border: #777777;
+            --crop-item-bg: #333333;
+            --crop-item-text: #ffffff;
+            --crop-item-hover-bg: #666666;
+            --accent-color: #000000;
+            --main-title-color: #000000;
+            --section-title-color: #000000;
         }
 
-
-        /* Anvender CSS variabler */
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
             background-color: var(--bg-page);
-            transition: background-color 0.3s ease, color 0.3s ease; /* Glidende overgang for temaskifte */
-            color: var(--text-primary); /* Sørg for at body tekstfarve følger tema */
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-        h1 {
-            color: var(--main-title-color);
-        }
-        h2, h3 {
-            color: var(--section-title-color);
-        }
-        /* Justerer skriftstørrelsen for h2 i cropList headeren */
-        #cropList h2 {
-            font-size: 1.125rem; /* Størrelse 'lg' for at matche crop-item font-size */
-            margin: 0; /* Fjern margin fra h2 */
-            padding: 0; /* Fjern padding fra h2 */
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
+        h1 { color: var(--main-title-color); }
+        h2, h3 { color: var(--section-title-color); }
+        #cropList h2 { font-size: 1.125rem; margin: 0; padding: 0; }
+        
         .crop-item {
             cursor: pointer;
             padding: 0.5rem;
             margin-bottom: 0.25rem;
             border-radius: 0.5rem;
             transition: background-color 0.2s ease-in-out;
-            background-color: var(--crop-item-bg); /* Bruger tema-specifik baggrund */
-            color: var(--crop-item-text); /* Bruger tema-specifik tekstfarve */
+            background-color: var(--crop-item-bg);
+            color: var(--crop-item-text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .crop-item:hover {
-            background-color: var(--crop-item-hover-bg); /* Bruger tema-specifik hover baggrund */
-        }
+        .crop-item:hover { background-color: var(--crop-item-hover-bg); }
+        
+        .crop-name { font-weight: 600; font-size: 1.1rem; }
+        .crop-status { font-size: 0.9rem; }
+
         .field-section {
             background-color: var(--bg-card);
             border-radius: 0.75rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            /* Resten af grid-stilen bevares */
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             gap: 0.5rem;
             padding: 1rem;
         }
+        
         .bed {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 48px; /* 60% af 80px */
+            height: 55px;
             border: 1px solid var(--bed-border);
             border-radius: 0.5rem;
             background-color: var(--bed-bg);
@@ -108,86 +96,92 @@
             text-align: center;
             overflow: hidden;
             position: relative;
-            line-height: 1.2; /* Juster linjehøjde for bedre tekstpasning */
-            transition: background-color 0.3s ease, border-color 0.3s ease; /* Glidende overgang for temaskifte */
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
+        
         .bed-number {
             font-weight: bold;
             color: var(--text-secondary);
             position: absolute;
-            top: 2px; /* Justeret position for at passe til ny højde */
+            top: 2px;
             left: 3px;
-            font-size: 0.7rem; /* Mindre skriftstørrelse for bed-nummer */
-            transition: color 0.3s ease;
+            font-size: 0.65rem;
         }
+        
+        .bed-group {
+            position: absolute;
+            top: 2px;
+            right: 3px;
+            font-size: 0.55rem;
+            font-weight: bold;
+            background-color: #f97316;
+            color: white;
+            padding: 0 3px;
+            border-radius: 0.25rem;
+        }
+        
+        body.theme-sunlight .bed-group { color: black; }
+        
         .bed-crop {
             color: var(--text-primary);
-            margin-top: 5px; /* Justeret margin for at passe til ny højde */
-            word-wrap: break-word;
-            padding: 0 3px; /* Mindre padding for tekst */
-            font-size: 0.75rem; /* Mindre skriftstørrelse for afgrødens navn i bedet */
-            flex-grow: 1; /* Tillader tekst at fylde ledig plads */
+            font-size: 0.7rem;
+            flex-grow: 1;
             display: flex;
-            align-items: center; /* Centrerer teksten vertikalt */
+            align-items: center;
             justify-content: center;
-            transition: color 0.3s ease;
+            word-wrap: break-word;
+            padding: 0 2px;
         }
+        
+        .status-icon {
+            font-size: 0.65rem;
+            margin-left: 2px;
+        }
+        
         .highlight {
             background-color: var(--text-highlight-bg);
             border-color: var(--text-highlight-border);
             animation: pulse 1s infinite alternate;
         }
-        /* Specifik regel for tekstfarve i fremhævet bed i sollys-tilstand */
-        body.theme-sunlight .bed.highlight .bed-number,
-        body.theme-sunlight .bed.highlight .bed-crop {
-            color: #000000; /* Sort tekst på gul baggrund i sollys highlight */
-        }
 
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.03); }
-        }
+        body.theme-sunlight .bed.highlight .bed-number,
+        body.theme-sunlight .bed.highlight .bed-crop { color: #000000; }
+
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.03); } }
+        
         .to-top-link {
             display: flex;
             align-items: center;
-            justify-content: center; /* Centrerer linkets indhold */
+            justify-content: center;
             margin-top: 1.5rem;
             margin-bottom: 2rem;
             color: var(--accent-color);
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
-            transition: color 0.2s ease-in-out;
-            width: 100%; /* Sørg for at linket fylder hele bredden af sin container for at kunne centreres via tekst-align/flex */
+            width: 100%;
         }
-        .to-top-link:hover {
-            color: var(--accent-hover-color);
-        }
-        .to-top-link svg {
-            margin-right: 0.5rem;
-        }
+        .to-top-link:hover { color: var(--accent-hover-color); }
+        .to-top-link svg { margin-right: 0.5rem; }
 
-        /* Centrering af h3 overskrifter i markafsnittene */
-        .section-container h3 {
-            text-align: center;
-        }
+        .section-container h3 { text-align: center; }
 
-        /* Styling for Sollys-knap og controls container */
         .top-controls-container {
             display: flex;
-            justify-content: space-between; /* Skubber indhold til siderne */
+            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap; /* Tillad wrap på små skærme */
+            flex-wrap: wrap;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--bed-border);
         }
+        
         .sun-mode-button {
-            width: 40px; /* Kvadratisk knap */
+            width: 40px;
             height: 40px;
             background-color: var(--crop-item-bg);
             border: 1px solid var(--bed-border);
-            border-radius: 0.3rem; /* Mindre afrunding */
+            border-radius: 0.3rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -198,27 +192,24 @@
         .sun-mode-button:hover {
             background-color: var(--crop-item-hover-bg);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .sun-mode-button svg {
-            width: 24px; /* Ikonstørrelse */
-            height: 24px;
-            fill: currentColor;
-            transition: fill 0.3s ease;
-        }
-        /* Visuel feedback når sollys-tilstand er aktiv */
+        .sun-mode-button svg { width: 24px; height: 24px; fill: currentColor; }
+        
         .sun-mode-button.active {
-            background-color: var(--text-highlight-bg); /* Gul baggrund for knap når aktiv */
-            border-color: var(--text-highlight-border); /* Gul kant for knap når aktiv */
+            background-color: var(--text-highlight-bg);
+            border-color: var(--text-highlight-border);
             color: var(--text-primary);
-            box-shadow: 0 0 8px var(--text-highlight-bg);
         }
-        .sun-mode-button.active svg {
-            fill: #000000; /* Sort ikon når sollys-tilstand er aktiv */
+        .sun-mode-button.active svg { fill: #000000; }
+        
+        .group-list {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
-<!-- Default tema anvendes ved indlæsning. Javascript vil tjekke for gemt tema. -->
 <body class="bg-gray-100 text-gray-800 theme-default" id="top">
     <div class="container py-6">
         <h1 class="text-3xl font-bold text-center mb-8">
@@ -227,32 +218,29 @@
 
         <section id="cropList" class="mb-12 p-6 bg-white rounded-lg shadow-lg">
             <div class="top-controls-container">
-                <h2 class="font-semibold text-lg">T = Top, M = Midt, B = Bund.</h2>
-                <!-- Sollys-knap er nu i samme container som h2 og flugter til højre -->
+                <h2 class="font-semibold text-lg">T = Top, M = Midt, B = Bund</h2>
                 <button id="sunModeButton" class="sun-mode-button" title="Skift til sollys-tilstand">
-                    <!-- SVG Solikon fra Bootstrap Icons -->
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m0 1a4 4 0 1 1 0-8 4 4 0 0 1 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13M2.343 2.343a.5.5 0 0 1 .707 0l1.414 1.414a.5.5 0 0 1-.707.707L2.343 3.05a.5.5 0 0 1 0-.707m11.314 11.314a.5.5 0 0 1 0-.707l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M.5 8a.5.5 0 0 1 0-1h2a.5.5 0 0 1 0 1zm13 0a.5.5 0 0 1 0-1h2a.5.5 0 0 1 0 1M3.757 12.243a.5.5 0 0 1-.707 0L2.343 10.829a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707m11.314-11.314a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707"/>
                     </svg>
                 </button>
             </div>
             <div id="cropListContent" class="space-y-2 mt-4">
-                <!-- Afgrødelisten udfyldes her af JavaScript -->
                 <div class="text-center py-4 text-gray-500">Indlæser markplan...</div>
             </div>
+        </section>
+
+        <section id="groupSection" class="mb-12 p-6 bg-white rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold mb-4">Lugegrupper</h2>
+            <div id="groupListContent" class="grid grid-cols-2 md:grid-cols-4 gap-2"></div>
         </section>
 
         <section id="fieldOverview" class="mb-12 p-6 bg-white rounded-lg shadow-lg">
             <h2 class="text-2xl font-semibold mb-6">Grafisk Markoversigt</h2>
             <div id="fieldContent" class="space-y-8">
-                <!-- Feltsektionerne udfyldes her af JavaScript -->
-                <div class="text-center py-4 text-gray-500">Vælg en afgrøde ovenfor for at se den på marken.</div>
-
-                <!-- Sektion for "Top" af marken -->
                 <div class="section-container">
                     <h3 class="text-xl font-medium mb-2 text-center">Top-afsnit</h3>
                     <div id="section-T" class="field-section"></div>
-                    <!-- Til toppen link for Top-afsnit -->
                     <a href="#top" class="to-top-link">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
@@ -261,11 +249,9 @@
                     </a>
                 </div>
 
-                <!-- Sektion for "Midt" af marken -->
                 <div class="section-container mt-8">
                     <h3 class="text-xl font-medium mb-2 text-center">Midt-afsnit</h3>
                     <div id="section-M" class="field-section"></div>
-                    <!-- Til toppen link for Midt-afsnit -->
                     <a href="#top" class="to-top-link">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
@@ -274,11 +260,9 @@
                     </a>
                 </div>
 
-                <!-- Sektion for "Bund" af marken -->
                 <div class="section-container mt-8">
                     <h3 class="text-xl font-medium mb-2 text-center">Bund-afsnit</h3>
                     <div id="section-B" class="field-section"></div>
-                    <!-- Til toppen link for Bund-afsnit -->
                     <a href="#top" class="to-top-link">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
@@ -292,41 +276,26 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Henter referencer til DOM-elementer
             const body = document.body;
             const cropListContent = document.getElementById('cropListContent');
+            const groupListContent = document.getElementById('groupListContent');
             const sectionT = document.getElementById('section-T');
             const sectionM = document.getElementById('section-M');
             const sectionB = document.getElementById('section-B');
-            const fieldOverview = document.getElementById('fieldOverview');
             const emojiLeft = document.getElementById('emoji-left');
             const emojiRight = document.getElementById('emoji-right');
-            const sunModeButton = document.getElementById('sunModeButton'); // Solknap
-
+            const sunModeButton = document.getElementById('sunModeButton');
             const topEmojiT = document.getElementById('top-emoji-T');
             const topEmojiM = document.getElementById('top-emoji-M');
             const topEmojiB = document.getElementById('top-emoji-B');
 
-
-            let parsedFieldData = []; // Gemmer de rå parset data fra CSV-filen
-            // Gemmer afgrødens placeringer: f.eks. { "Squash": { T: [1,2], M: [], B: [] } }
+            let parsedFieldData = [];
             let cropLocations = {};
-
-            // Array af grøntsags-emojis
+            let groupCrops = {};
+            
             const vegetableEmojis = ['🌸', '🫘', '🍄‍🟫', '🫛', '🥕', '🫚', '🧅', '🧄', '🥔', '🥒', '🥬', '🥦', '🍄', '🌶️', '🌽', '🍅', '🫑', '🍓', '🍑', '🍎', '🍐', '🥭', '🍊', '🍉', '🦋', '🐛', '🐝', '🪳', '🦗', '🪱', '🕷️', '🦠', '🐞', '🪲', '🌱', '🪻', '🌼', '🌷', '🌻', '🌺', '🌹', '🏵️', '🌿', '🌤️', '🌧️', '🌞', '🌈', '💧'];
 
-            /**
-             * Vælger en tilfældig emoji fra listen.
-             * @returns {string} En tilfældig grøntsags-emoji.
-             */
-            function getRandomEmoji() {
-                const randomIndex = Math.floor(Math.random() * vegetableEmojis.length);
-                return vegetableEmojis[randomIndex];
-            }
-
-            /**
-             * Indsætter tilfældige emojis i overskriften og ved "Til toppen" links.
-             */
+            function getRandomEmoji() { return vegetableEmojis[Math.floor(Math.random() * vegetableEmojis.length)]; }
             function setRandomEmojis() {
                 emojiLeft.textContent = getRandomEmoji();
                 emojiRight.textContent = getRandomEmoji();
@@ -335,278 +304,223 @@
                 topEmojiB.textContent = getRandomEmoji();
             }
 
-            /**
-             * Henter og parser CSV-data fra den angivne URL.
-             * @param {string} url - URL'en til CSV-filen.
-             * @returns {Promise<Array<Object>>} Et Promise, der resolves med de parset CSV-data.
-             */
+            function getStatusIcon(frigivet) { return frigivet === '1' ? '✅' : '🔒'; }
+            function getStatusText(frigivet) { return frigivet === '1' ? 'Kan høstes' : 'Låst'; }
+
             async function fetchCsvData(url) {
                 try {
                     const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`HTTP fejl! status: ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`HTTP fejl! status: ${response.status}`);
                     const text = await response.text();
                     return parseCsv(text);
                 } catch (error) {
-                    console.error("Fejl ved indlæsning af CSV-data:", error);
-                    // Viser en fejlmeddelelse til brugeren, hvis indlæsningen fejler
-                    cropListContent.innerHTML = `<div class="text-red-600 text-center py-4">Kunne ikke indlæse markplanen. Tjek om 'markplan_aih.csv' findes i samme mappe som appen.</div>`;
-                    return []; // Returnerer et tomt array ved fejl
+                    console.error("Fejl ved indlæsning:", error);
+                    cropListContent.innerHTML = '<div class="text-red-600 text-center py-4">Kunne ikke indlæse markplanen.</div>';
+                    return [];
                 }
             }
 
-            /**
-             * Parser CSV-tekst til et array af objekter.
-             * Antager, at den første række er en header.
-             * @param {string} csvText - CSV-indholdet som en streng.
-             * @returns {Array<Object>} Et array af objekter, hvor hvert objekt repræsenterer en række.
-             */
             function parseCsv(csvText) {
                 const lines = csvText.trim().split('\n');
                 if (lines.length === 0) return [];
-
-                // Splitter den første linje for at få headerne og fjerner mellemrum
                 const headers = lines[0].split(',').map(h => h.trim());
-                const data = [];
-
-                // Itererer gennem resten af linjerne (data-rækkerne)
-                for (let i = 1; i < lines.length; i++) {
-                    const values = lines[i].split(',').map(v => v.trim());
-                    const rowObject = {};
-                    // Mapper værdierne til deres tilsvarende headers
-                    headers.forEach((header, index) => {
-                        rowObject[header] = values[index] || ''; // Håndterer tomme celler
-                    });
-                    data.push(rowObject);
-                }
-                return data;
+                return lines.slice(1).map(line => {
+                    const values = line.split(',').map(v => v.trim());
+                    return headers.reduce((obj, h, i) => ({ ...obj, [h]: values[i] || '' }), {});
+                });
             }
 
-            /**
-             * Behandler de rå parset CSV-data for at udfylde cropLocations og fieldLayout.
-             * @param {Array<Object>} data - De rå data fra parseCsv.
-             */
             function processFieldData(data) {
-                cropLocations = {}; // Nulstiller for at sikre korrekte data ved genindlæsning
-                parsedFieldData = data; // Gemmer de rå data til senere brug ved rendering af feltet
+                cropLocations = {};
+                groupCrops = {};
+                parsedFieldData = data;
 
                 data.forEach(row => {
-                    const bedNum = parseInt(row.Bed); // Konverterer bed-nummer til et heltal
-
-                    // Funktion til at tilføje afgrødeplacering
-                    const addCropLocation = (section, cropName, bedNumber) => {
-                        if (cropName && cropName !== 'Brak') { // Ignorerer tomme celler og "Brak"
-                            if (!cropLocations[cropName]) {
-                                cropLocations[cropName] = { T: [], M: [], B: [] };
+                    const bedNum = parseInt(row.Bed);
+                    const grupo = row.Lugegruppe || '';
+                    const frigivet = row.Frigivet || '0';
+                    
+                    const addCropLocation = (section, cropName, bedNumber, frigivet) => {
+                        if (cropName && cropName !== 'Brak') {
+                            if (!cropLocations[cropName]) cropLocations[cropName] = { T: [], M: [], B: [], frigivet: frigivet };
+                            cropLocations[cropName][section].push({ bed: bedNumber, frigivet });
+                            
+                            if (grupo) {
+                                if (!groupCrops[grupo]) groupCrops[grupo] = [];
+                                groupCrops[grupo].push({ bed: bedNumber, section, crop: cropName });
                             }
-                            cropLocations[cropName][section].push(bedNumber);
                         }
                     };
 
-                    addCropLocation('T', row.Top, bedNum);
-                    addCropLocation('M', row.Midt, bedNum);
-                    addCropLocation('B', row.Bund, bedNum);
+                    addCropLocation('T', row.Top, bedNum, frigivet);
+                    addCropLocation('M', row.Midt, bedNum, frigivet);
+                    addCropLocation('B', row.Bund, bedNum, frigivet);
                 });
 
-                // Sorterer bednumre for hver afgrøde for at sikre konsistent visning
                 for (const cropName in cropLocations) {
-                    cropLocations[cropName].T.sort((a, b) => a - b);
-                    cropLocations[cropName].M.sort((a, b) => a - b);
-                    cropLocations[cropName].B.sort((a, b) => a - b);
+                    ['T', 'M', 'B'].forEach(s => cropLocations[cropName][s].sort((a, b) => a.bed - b.bed));
                 }
             }
 
-            /**
-             * Renderer den alfabetiske liste over afgrøder.
-             */
             function renderCropList() {
-                cropListContent.innerHTML = ''; // Rydder tidligere indhold
-
-                // Henter alle afgrødenavne og sorterer dem alfabetisk
+                cropListContent.innerHTML = '';
                 const sortedCropNames = Object.keys(cropLocations).sort();
-
                 if (sortedCropNames.length === 0) {
-                    cropListContent.innerHTML = `<div class="text-center py-4 text-gray-500">Ingen afgrøder fundet i markplanen.</div>`;
+                    cropListContent.innerHTML = '<div class="text-center py-4 text-gray-500">Ingen afgrøder fundet.</div>';
                     return;
                 }
 
                 sortedCropNames.forEach(cropName => {
-                    const locations = cropLocations[cropName];
-                    let locationTextParts = []; // Dele af tekst for placering (f.eks. "T: 2, 3")
-
-                    // Bygger placeringsstrengen for hver sektion
-                    if (locations.T.length > 0) locationTextParts.push(`T: ${locations.T.join(', ')}`);
-                    if (locations.M.length > 0) locationTextParts.push(`M: ${locations.M.join(', ')}`);
-                    if (locations.B.length > 0) locationTextParts.push(`B: ${locations.B.join(', ')}`);
-
-                    // Opretter div-element for hver afgrøde
+                    const loc = cropLocations[cropName];
+                    const frigivet = loc.frigivet;
+                    const statusIcon = getStatusIcon(frigivet);
+                    
+                    const locations = [...new Set([...loc.T, ...loc.M, ...loc.B])];
+                    const beds = locations.map(l => l.bed || l);
+                    
                     const div = document.createElement('div');
-                    // `crop-item` klassen bruger nu CSS-variabler for farver
-                    div.className = 'crop-item p-2 rounded-md flex justify-between items-center';
+                    div.className = 'crop-item';
                     div.innerHTML = `
-                        <span class="font-medium text-lg">${cropName}</span>
-                        <span class="text-sm"><strong>${locationTextParts.join(' - ')}</strong></span>
+                        <span class="crop-name">${cropName}</span>
+                        <span class="crop-status">${statusIcon} (${beds.join(', ')})</span>
                     `;
-                    div.dataset.cropName = cropName; // Gemmer afgrødenavn i data-attribut
-                    // Tilføjer klik-eventlistener for at fremhæve afgrøden i marken
+                    div.dataset.cropName = cropName;
                     div.addEventListener('click', () => highlightCropInField(cropName));
                     cropListContent.appendChild(div);
                 });
             }
 
-            /**
-             * Renderer den grafiske markoversigt.
-             */
+            function renderGroupList() {
+                groupListContent.innerHTML = '';
+                const sortedGroups = Object.keys(groupCrops).sort((a, b) => parseInt(a) - parseInt(b));
+                if (sortedGroups.length === 0) return;
+
+                sortedGroups.forEach(grupo => {
+                    const crops = groupCrops[grupo];
+                    const uniqueCrops = [...new Set(crops.map(c => c.crop))].sort();
+                    
+                    const div = document.createElement('div');
+                    div.className = 'crop-item';
+                    div.innerHTML = `
+                        <span class="crop-name">G${grupo}</span>
+                        <span class="crop-status">${uniqueCrops.join(', ')}</span>
+                    `;
+                    div.dataset.grupo = grupo;
+                    div.addEventListener('click', () => highlightGroup(grupo));
+                    groupListContent.appendChild(div);
+                });
+            }
+
             function renderFieldOverview() {
-                // Rydder eksisterende bede i alle sektioner
                 sectionT.innerHTML = '';
                 sectionM.innerHTML = '';
                 sectionB.innerHTML = '';
 
-                // Finder det højeste bed-nummer for at vide, hvor mange bede der skal vises
                 const maxBedNum = parsedFieldData.reduce((max, row) => Math.max(max, parseInt(row.Bed || 0)), 0);
 
-                // Opretter bede for hver sektion baseret på data
                 for (let i = 1; i <= maxBedNum; i++) {
-                    // Finder rækken i de parset data, der matcher det aktuelle bed-nummer
                     const bedData = parsedFieldData.find(row => parseInt(row.Bed) === i);
-
-                    // Opretter bed-elementer for Top, Midt og Bund sektionerne
-                    // Hvis bedData ikke findes for et nummer (f.eks. hul i nummerering), bruges tom streng
-                    const bedTDiv = createBedElement('T', i, bedData ? bedData.Top : '');
-                    sectionT.appendChild(bedTDiv);
-
-                    const bedMDiv = createBedElement('M', i, bedData ? bedData.Midt : '');
-                    sectionM.appendChild(bedMDiv);
-
-                    const bedBDiv = createBedElement('B', i, bedData ? bedData.Bund : '');
-                    sectionB.appendChild(bedBDiv);
+                    if (bedData) {
+                        sectionT.appendChild(createBedElement('T', i, bedData.Top, bedData.Lugegruppe, bedData.Frigivet));
+                        sectionM.appendChild(createBedElement('M', i, bedData.Midt, bedData.Lugegruppe, bedData.Frigivet));
+                        sectionB.appendChild(createBedElement('B', i, bedData.Bund, bedData.Lugegruppe, bedData.Frigivet));
+                    }
                 }
             }
 
-            /**
-             * Opretter et enkelt HTML-element for et bed.
-             * @param {string} section - 'T', 'M' eller 'B'.
-             * @param {number} bedNum - Bed-nummeret.
-             * @param {string} cropName - Navnet på afgrøden i dette bed.
-             * @returns {HTMLElement} Det oprettede div-element.
-             */
-            function createBedElement(section, bedNum, cropName) {
+            function createBedElement(section, bedNum, cropName, grupo, frigivet) {
                 const div = document.createElement('div');
-                div.id = `bed-${section}-${bedNum}`; // Unik ID for hvert bed
+                div.id = `bed-${section}-${bedNum}`;
                 div.className = 'bed';
-                div.dataset.section = section; // Gemmer sektion i data-attribut
-                div.dataset.bedNum = bedNum; // Gemmer bed-nummer i data-attribut
-                div.dataset.cropName = cropName; // Gemmer afgrødens navn i data-attribut for nem opslag
-
-                // Indsætter bed-nummer og afgrødens navn (undtagen "Brak")
+                div.dataset.section = section;
+                div.dataset.bedNum = bedNum;
+                div.dataset.cropName = cropName;
+                div.dataset.frigivet = frigivet;
+                
+                const statusIcon = getStatusIcon(frigivet);
+                const displayCrop = cropName && cropName !== 'Brak' ? `${cropName}<span class="status-icon">${statusIcon}</span>` : '';
+                
                 div.innerHTML = `
                     <span class="bed-number">${bedNum}</span>
-                    <span class="bed-crop">${cropName && cropName !== 'Brak' ? cropName : ''}</span>
+                    ${grupo ? `<span class="bed-group">G${grupo}</span>` : ''}
+                    <span class="bed-crop">${displayCrop}</span>
                 `;
                 return div;
             }
 
-            /**
-             * Fremhæver de bede, der indeholder den specificerede afgrøde i den grafiske oversigt.
-             * @param {string} cropName - Navnet på afgrøden, der skal fremhæves.
-             */
             function highlightCropInField(cropName) {
-                // Fjerner alle eksisterende fremhævelser fra alle bede
-                document.querySelectorAll('.bed.highlight').forEach(bed => {
-                    bed.classList.remove('highlight');
+                document.querySelectorAll('.bed.highlight').forEach(b => b.classList.remove('highlight'));
+                
+                const loc = cropLocations[cropName];
+                if (!loc) return;
+                
+                let first = null;
+                ['T', 'M', 'B'].forEach(s => {
+                    loc[s].forEach(item => {
+                        const el = document.getElementById(`bed-${s}-${item.bed || item}`);
+                        if (el) {
+                            el.classList.add('highlight');
+                            if (!first) first = el;
+                        }
+                    });
                 });
-
-                const locations = cropLocations[cropName];
-                if (!locations) return; // Afbryd, hvis afgrøden ikke findes
-
-                let firstHighlightedBed = null; // Gemmer reference til den første fremhævede bed for scrolling
-
-                // Fremhæver bede i Top-sektionen
-                locations.T.forEach(bedNum => {
-                    const bedElement = document.getElementById(`bed-T-${bedNum}`);
-                    if (bedElement) {
-                        bedElement.classList.add('highlight');
-                        if (!firstHighlightedBed) firstHighlightedBed = bedElement;
-                    }
-                });
-
-                // Fremhæver bede i Midt-sektionen
-                locations.M.forEach(bedNum => {
-                    const bedElement = document.getElementById(`bed-M-${bedNum}`);
-                    if (bedElement) {
-                        bedElement.classList.add('highlight');
-                        if (!firstHighlightedBed) firstHighlightedBed = bedElement;
-                    }
-                });
-
-                // Fremhæver bede i Bund-sektionen
-                locations.B.forEach(bedNum => {
-                    const bedElement = document.getElementById(`bed-B-${bedNum}`);
-                    if (bedElement) {
-                        bedElement.classList.add('highlight');
-                        if (!firstHighlightedBed) firstHighlightedBed = bedElement;
-                    }
-                });
-
-                // Ruller glat ned til den første fremhævede bed i den grafiske markoversigt.
-                // Bruges 'nearest' block for at sikre, at elementet er synligt, men undgår unødvendig scrolling.
-                if (firstHighlightedBed) {
-                    firstHighlightedBed.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
+                if (first) first.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
-            /**
-             * Toggler sollys-tilstanden (sort/hvid og inverteret markering).
-             */
-            function toggleSunlightMode() {
-                const isSunlightCurrentlyActive = body.classList.contains('theme-sunlight');
+            function highlightGroup(grupo) {
+                document.querySelectorAll('.bed.highlight').forEach(b => b.classList.remove('highlight'));
+                
+                const crops = groupCrops[grupo];
+                if (!crops) return;
+                
+                let first = null;
+                crops.forEach(c => {
+                    const el = document.getElementById(`bed-${c.section}-${c.bed}`);
+                    if (el) {
+                        el.classList.add('highlight');
+                        if (!first) first = el;
+                    }
+                });
+                if (first) first.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
 
-                if (isSunlightCurrentlyActive) {
-                    // Hvis sollys er aktiv, skift tilbage til standard-tema
+            function toggleSunlightMode() {
+                if (body.classList.contains('theme-sunlight')) {
                     body.classList.remove('theme-sunlight');
-                    body.classList.add('theme-default'); // Sørg for at default er aktiv
+                    body.classList.add('theme-default');
                     localStorage.setItem('sunlightMode', 'inactive');
                     sunModeButton.classList.remove('active');
                 } else {
-                    // Hvis sollys ikke er aktiv, skift til sollys-tema
-                    body.classList.remove('theme-default'); // Fjern default tema
+                    body.classList.remove('theme-default');
                     body.classList.add('theme-sunlight');
                     localStorage.setItem('sunlightMode', 'active');
                     sunModeButton.classList.add('active');
                 }
             }
 
-            // Tilføj event listener til Sollys-knappen
             sunModeButton.addEventListener('click', toggleSunlightMode);
 
-            // Hovedinitialiseringsfunktion, der kaldes, når siden er indlæst
             async function init() {
-                setRandomEmojis(); // Sæt tilfældige emojis ved indlæsning
-
-                // Tjek for gemt tema-præference i localStorage
+                setRandomEmojis();
+                
                 const savedSunlightMode = localStorage.getItem('sunlightMode') || 'inactive';
-
                 if (savedSunlightMode === 'active') {
                     body.classList.add('theme-sunlight');
                     sunModeButton.classList.add('active');
                 } else {
-                    body.classList.add('theme-default'); // Sørg for at default er aktiv, hvis intet er gemt
-                    sunModeButton.classList.remove('active');
+                    body.classList.add('theme-default');
                 }
 
-                // Stien til CSV-filen er indstillet til rodplacering.
-                // Husk at ændre dette, hvis din fil ligger i en undermappe (f.eks. 'data/markplan_aih.csv').
                 const data = await fetchCsvData('markplan_aih.csv');
                 if (data.length > 0) {
-                    processFieldData(data); // Behandler de indlæste data
-                    renderCropList();      // Renderer afgrødelisten
-                    renderFieldOverview(); // Renderer den grafiske markoversigt
+                    processFieldData(data);
+                    renderCropList();
+                    renderGroupList();
+                    renderFieldOverview();
                 }
             }
 
-            init(); // Start initialiseringen
+            init();
         });
     </script>
 </body>
