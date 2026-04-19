@@ -24,6 +24,10 @@
             --section-title-color: #065f46;
             --locked-color: #ef4444;
             --unlocked-color: #22c55e;
+            --bed-locked-bg: #fef2f2;
+            --bed-locked-border: #fecaca;
+            --bed-unlocked-bg: #f0fdf4;
+            --bed-unlocked-border: #bbf7d0;
         }
 
         body.theme-sunlight {
@@ -69,6 +73,8 @@
             align-items: center;
         }
         .crop-item:hover { background-color: var(--crop-item-hover-bg); }
+        .crop-item.locked { border-left: 3px solid var(--locked-color); }
+        .crop-item.unlocked { border-left: 3px solid var(--unlocked-color); }
         
         .crop-name { font-weight: 600; font-size: 1.1rem; }
         .crop-status { font-size: 0.9rem; }
@@ -98,6 +104,8 @@
             position: relative;
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
+        .bed.locked { background-color: var(--bed-locked-bg); border-color: var(--bed-locked-border); }
+        .bed.unlocked { background-color: var(--bed-unlocked-bg); border-color: var(--bed-unlocked-border); }
         
         .bed-number {
             font-weight: bold;
@@ -379,7 +387,7 @@
                     const beds = locations.map(l => l.bed || l);
                     
                     const div = document.createElement('div');
-                    div.className = 'crop-item';
+                    div.className = 'crop-item ' + (frigivet === '1' ? 'unlocked' : 'locked');
                     div.innerHTML = `
                         <span class="crop-name">${cropName}</span>
                         <span class="crop-status">${statusIcon} (${beds.join(', ')})</span>
@@ -431,7 +439,7 @@
             function createBedElement(section, bedNum, cropName, grupo, frigivet) {
                 const div = document.createElement('div');
                 div.id = `bed-${section}-${bedNum}`;
-                div.className = 'bed';
+                div.className = 'bed ' + (frigivet === '1' ? 'unlocked' : 'locked');
                 div.dataset.section = section;
                 div.dataset.bedNum = bedNum;
                 div.dataset.cropName = cropName;
