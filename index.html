@@ -444,16 +444,14 @@
 
                 data.forEach(row => {
                     const bedNum = parseInt(row.Bed);
-                    const grupo = row.Lugegruppe || '';
-                    const frigivet = row.Frigivet || '0';
                     
-                    if (grupo && !allGroups.includes(grupo)) allGroups.push(grupo);
-                    
-                    const addCropLocation = (section, cropName, bedNumber, frigivet) => {
-                        if (cropName && cropName !== 'Brak') {
-                            if (!cropLocations[cropName]) cropLocations[cropName] = { T: [], M: [], B: [], frigivet: frigivet };
-                            cropLocations[cropName][section].push({ bed: bedNumber, frigivet });
+                    const addCropLocation = (section, cropName, grupo, frigivet, bedNumber) => {
+                        if (cropName && cropName !== 'Brak' && cropName !== '') {
+                            let cropFrigivet = frigivet || '0';
+                            if (!cropLocations[cropName]) cropLocations[cropName] = { T: [], M: [], B: [], frigivet: cropFrigivet };
+                            cropLocations[cropName][section].push({ bed: bedNumber, frigivet: cropFrigivet });
                             
+                            if (grupo && !allGroups.includes(grupo)) allGroups.push(grupo);
                             if (grupo) {
                                 if (!groupCrops[grupo]) groupCrops[grupo] = [];
                                 groupCrops[grupo].push({ bed: bedNumber, section, crop: cropName });
@@ -461,9 +459,9 @@
                         }
                     };
 
-                    addCropLocation('T', row.Top, bedNum, frigivet);
-                    addCropLocation('M', row.Midt, bedNum, frigivet);
-                    addCropLocation('B', row.Bund, bedNum, frigivet);
+                    addCropLocation('T', row.Top, row.TopGruppe, row.TopFrigivet, bedNum);
+                    addCropLocation('M', row.Midt, row.MidtGruppe, row.MidtFrigivet, bedNum);
+                    addCropLocation('B', row.Bund, row.BundGruppe, row.BundFrigivet, bedNum);
                 });
 
                 allGroups.sort((a, b) => parseInt(a) - parseInt(b));
@@ -514,9 +512,16 @@
                 for (let i = 1; i <= maxBedNum; i++) {
                     const bedData = parsedFieldData.find(row => parseInt(row.Bed) === i);
                     if (bedData) {
-                        sectionT.appendChild(createBedElement('T', i, bedData.Top, bedData.Lugegruppe, bedData.Frigivet, selectedGroup));
-                        sectionM.appendChild(createBedElement('M', i, bedData.Midt, bedData.Lugegruppe, bedData.Frigivet, selectedGroup));
-                        sectionB.appendChild(createBedElement('B', i, bedData.Bund, bedData.Lugegruppe, bedData.Frigivet, selectedGroup));
+                        const topGrupo = bedData.TopGruppe || '';
+                        const topFrig = bedData.TopFrigivet || '0';
+                        const midtGrupo = bedData.MidtGruppe || '';
+                        const midtFrig = bedData.MidtFrigivet || '0';
+                        const bundGrupo = bedData.BundGruppe || '';
+                        const bundFrig = bedData.BundFrigivet || '0';
+                        
+                        sectionT.appendChild(createBedElement('T', i, bedData.Top, topGrupo, topFrig, selectedGroup));
+                        sectionM.appendChild(createBedElement('M', i, bedData.Midt, midtGrupo, midtFrig, selectedGroup));
+                        sectionB.appendChild(createBedElement('B', i, bedData.Bund, bundGrupo, bundFrig, selectedGroup));
                     }
                 }
             }
