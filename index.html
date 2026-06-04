@@ -21,13 +21,10 @@
             --tab-active-text: #ffffff;
             --tab-inactive-bg: #f3f4f6;
             --tab-inactive-text: #374151;
-            --subtab-active-color: #047857;
             --input-bg: #ffffff;
             --input-border: #d1d5db;
             --main-title-color: #047857;
             --section-title-color: #065f46;
-            --badge-released-bg: #dcfce7;
-            --badge-released-text: #166534;
         }
 
         body.theme-sunlight {
@@ -44,350 +41,248 @@
             --tab-active-text: #000000;
             --tab-inactive-bg: #2a2a2a;
             --tab-inactive-text: #ffffff;
-            --subtab-active-color: #eab308;
             --input-bg: #333333;
             --input-border: #555555;
             --main-title-color: #eab308;
             --section-title-color: #eab308;
-            --badge-released-bg: #422006;
-            --badge-released-text: #fde68a;
         }
 
         *, *::before, *::after { box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: var(--bg-page);
             color: var(--text-primary);
-            transition: background-color 0.25s ease, color 0.25s ease;
+            transition: background-color 0.25s, color 0.25s;
             min-height: 100vh;
         }
 
         /* ── Header ── */
         .app-header {
-            background-color: var(--bg-header);
+            background: var(--bg-header);
             border-bottom: 1px solid var(--bed-border);
-            padding: 0.75rem 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 50;
+            padding: 0.7rem 1rem;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50;
             box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-            transition: background-color 0.25s ease;
+            transition: background 0.25s;
         }
         .app-title {
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 0.95rem; font-weight: 700;
             color: var(--main-title-color);
-            line-height: 1.2;
-            flex: 1;
+            line-height: 1.25; flex: 1;
+            cursor: pointer; user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
-        .app-title .emoji { font-size: 1.1rem; }
-
-        .sun-btn {
-            width: 38px;
-            height: 38px;
+        .header-btns { display: flex; gap: 0.4rem; flex-shrink: 0; }
+        .icon-btn {
+            width: 36px; height: 36px;
             border-radius: 8px;
             border: 1px solid var(--input-border);
             background: var(--tab-inactive-bg);
             color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s;
         }
-        .sun-btn:hover { opacity: 0.8; }
-        .sun-btn.active {
-            background: var(--text-highlight-bg);
-            border-color: var(--text-highlight-border);
-            color: #000;
-        }
-        .sun-btn svg { width: 20px; height: 20px; }
+        .icon-btn svg { width: 18px; height: 18px; }
+        .icon-btn:hover { opacity: 0.8; }
+        .icon-btn.active { background: var(--text-highlight-bg); border-color: var(--text-highlight-border); color: #000; }
 
         /* ── Main tabs ── */
         .main-tabs {
             display: flex;
             background: var(--bg-card);
             border-bottom: 2px solid var(--bed-border);
-            position: sticky;
-            top: 57px;
-            z-index: 40;
+            position: sticky; top: 55px; z-index: 40;
         }
         .main-tab-btn {
-            flex: 1;
-            padding: 0.65rem 0.5rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-            background: var(--tab-inactive-bg);
-            color: var(--tab-inactive-text);
-            transition: all 0.2s;
-            border-bottom: 3px solid transparent;
+            flex: 1; padding: 0.6rem 0.25rem;
+            font-weight: 600; font-size: 0.8rem;
+            text-align: center; cursor: pointer;
+            border: none; border-bottom: 3px solid transparent;
+            background: var(--tab-inactive-bg); color: var(--tab-inactive-text);
+            transition: all 0.2s; white-space: nowrap;
         }
-        .main-tab-btn.active {
-            background: var(--tab-active-bg);
-            color: var(--tab-active-text);
-            border-bottom-color: var(--tab-active-bg);
-        }
+        .main-tab-btn.active { background: var(--tab-active-bg); color: var(--tab-active-text); border-bottom-color: var(--tab-active-bg); }
 
-        /* ── Tab panels ── */
+        /* ── Panels ── */
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        /* ── Afgrøder tab ── */
-        .search-wrap {
-            padding: 0.75rem 1rem 0.5rem;
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--bed-border);
-        }
+        /* ── Search ── */
+        .search-wrap { padding: 0.75rem 1rem 0.5rem; background: var(--bg-card); border-bottom: 1px solid var(--bed-border); }
         .search-input {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
-            background: var(--input-bg);
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
+            width: 100%; padding: 0.5rem 0.75rem;
+            border: 1px solid var(--input-border); border-radius: 8px;
+            background: var(--input-bg); color: var(--text-primary);
+            font-size: 0.95rem; outline: none; transition: border-color 0.2s;
         }
         .search-input:focus { border-color: #047857; }
         body.theme-sunlight .search-input:focus { border-color: #eab308; }
 
+        /* ── Crop list ── */
         .crop-list { padding: 0.5rem 1rem 1rem; }
 
         .crop-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 0.75rem;
-            margin-bottom: 0.4rem;
-            border-radius: 8px;
-            cursor: pointer;
-            background: var(--bg-card);
-            border: 1px solid var(--bed-border);
-            transition: background-color 0.15s, transform 0.1s;
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.55rem 0.65rem; margin-bottom: 0.35rem;
+            border-radius: 8px; cursor: pointer;
+            background: var(--bg-card); border: 1px solid var(--bed-border);
             border-left-width: 4px;
+            transition: background-color 0.15s, transform 0.1s;
         }
         .crop-item:hover { transform: translateX(2px); }
         .crop-item.released { border-left-color: #16a34a; }
-        .crop-item.locked { border-left-color: #9ca3af; }
-        .crop-item.selected-crop {
-            outline: 2px solid #eab308;
-            outline-offset: 1px;
-        }
+        .crop-item.locked   { border-left-color: #d1d5db; }
+        .crop-item.selected-crop { outline: 2px solid #eab308; outline-offset: 1px; }
+        .crop-item.is-fav   { background: color-mix(in srgb, var(--bg-card) 90%, #fef9c3 10%); }
 
-        .crop-item-name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            flex: 1;
-            color: var(--text-primary);
-        }
-        .crop-item-right {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            flex-shrink: 0;
-        }
-        .crop-item-loc {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-        .badge-released {
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 1px 6px;
-            border-radius: 999px;
-            background: var(--badge-released-bg);
-            color: var(--badge-released-text);
-            white-space: nowrap;
-        }
+        /* Status icon (lock / check) */
+        .status-icon { width: 18px; height: 18px; flex-shrink: 0; }
+        .status-icon.check { color: #16a34a; }
+        .status-icon.lock  { color: #9ca3af; }
+        body.theme-sunlight .status-icon.check { color: #4ade80; }
+        body.theme-sunlight .status-icon.lock  { color: #6b7280; }
 
-        /* ── Section sub-tabs ── */
-        .sub-tabs {
-            display: flex;
-            padding: 0.75rem 1rem 0;
-            gap: 0.4rem;
-            background: var(--bg-page);
+        .crop-item-name { font-weight: 600; font-size: 0.9rem; flex: 1; color: var(--text-primary); }
+        .crop-item-right { display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+        .crop-item-loc { font-size: 0.72rem; color: var(--text-secondary); }
+
+        /* Star / favourite button */
+        .star-btn {
+            background: none; border: none; cursor: pointer; padding: 2px;
+            font-size: 1rem; line-height: 1; color: #d1d5db;
+            transition: color 0.15s, transform 0.1s;
+            -webkit-tap-highlight-color: transparent;
         }
+        .star-btn:hover { transform: scale(1.2); }
+        .star-btn.active { color: #f59e0b; }
+
+        /* ── Sub-tabs (section) ── */
+        .sub-tabs { display: flex; padding: 0.75rem 1rem 0; gap: 0.4rem; background: var(--bg-page); }
         .sub-tab-btn {
-            padding: 0.35rem 1rem;
-            font-weight: 600;
-            font-size: 0.85rem;
-            border-radius: 6px 6px 0 0;
-            border: 1px solid var(--bed-border);
-            border-bottom: none;
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
+            padding: 0.35rem 1rem; font-weight: 600; font-size: 0.85rem;
+            border-radius: 6px 6px 0 0; border: 1px solid var(--bed-border); border-bottom: none;
+            background: var(--bg-card); color: var(--text-secondary); cursor: pointer; transition: all 0.2s;
         }
-        .sub-tab-btn.active {
-            background: var(--tab-active-bg);
-            color: var(--tab-active-text);
-            border-color: var(--tab-active-bg);
-        }
+        .sub-tab-btn.active { background: var(--tab-active-bg); color: var(--tab-active-text); border-color: var(--tab-active-bg); }
 
         .section-panel { display: none; padding: 0.75rem 1rem 2rem; }
         .section-panel.active { display: block; }
-
-        .section-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--section-title-color);
-            margin-bottom: 0.6rem;
-        }
+        .section-title { font-size: 1rem; font-weight: 700; color: var(--section-title-color); margin-bottom: 0.6rem; }
 
         /* ── Bed grid ── */
-        .bed-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            gap: 0.45rem;
-        }
+        .bed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 0.45rem; }
 
         .bed-card {
-            position: relative;
-            min-width: 75px;
-            height: 60px;
-            background: var(--bed-bg);
-            border: 1px solid var(--bed-border);
-            border-radius: 7px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            position: relative; min-width: 0; height: 60px;
+            background: var(--bed-bg); border: 1px solid var(--bed-border);
+            border-radius: 7px; border-top-width: 3px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden;
             transition: background-color 0.2s, border-color 0.2s, transform 0.15s;
-            border-top-width: 3px;
         }
         .bed-card.released { border-top-color: #16a34a; }
-        .bed-card.locked { border-top-color: var(--bed-border); }
+        .bed-card.locked   { border-top-color: var(--bed-border); }
         .bed-card.highlighted {
             background-color: var(--text-highlight-bg) !important;
             border-color: var(--text-highlight-border) !important;
             animation: bedpulse 0.9s ease-in-out infinite alternate;
         }
-        .bed-card.group-highlighted {
-            background-color: #dbeafe;
-            border-color: #3b82f6;
-        }
-        body.theme-sunlight .bed-card.group-highlighted {
-            background-color: #422006;
-            border-color: #eab308;
-        }
+        .bed-card.group-highlighted { background-color: #dbeafe; border-color: #3b82f6; }
+        body.theme-sunlight .bed-card.group-highlighted { background-color: #422006; border-color: #eab308; }
+        .bed-card.my-group-bed { box-shadow: 0 0 0 2px #047857; }
+        body.theme-sunlight .bed-card.my-group-bed { box-shadow: 0 0 0 2px #eab308; }
 
-        @keyframes bedpulse {
-            from { transform: scale(1); }
-            to   { transform: scale(1.06); }
-        }
+        @keyframes bedpulse { from { transform: scale(1); } to { transform: scale(1.06); } }
 
-        .bed-num {
-            position: absolute;
-            top: 3px;
-            left: 4px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-            line-height: 1;
-        }
-        .bed-crop-name {
-            font-size: 0.68rem;
-            font-weight: 500;
-            text-align: center;
-            color: var(--text-primary);
-            padding: 0 4px;
-            line-height: 1.2;
-            word-break: break-word;
-            max-height: 36px;
-            overflow: hidden;
-        }
+        .bed-num { position: absolute; top: 3px; left: 4px; font-size: 0.6rem; font-weight: 700; color: var(--text-secondary); line-height: 1; }
+        .bed-crop-name { font-size: 0.68rem; font-weight: 500; text-align: center; color: var(--text-primary); padding: 0 4px; line-height: 1.2; word-break: break-word; max-height: 36px; overflow: hidden; }
         .bed-card.highlighted .bed-crop-name,
-        .bed-card.highlighted .bed-num {
-            color: #000 !important;
-        }
+        .bed-card.highlighted .bed-num { color: #000 !important; }
 
         .group-badge {
-            position: absolute;
-            bottom: 3px;
-            right: 3px;
-            font-size: 0.58rem;
-            font-weight: 700;
-            padding: 1px 4px;
-            border-radius: 4px;
-            cursor: pointer;
-            line-height: 1.3;
-            white-space: nowrap;
+            position: absolute; bottom: 3px; right: 3px;
+            font-size: 0.58rem; font-weight: 700; padding: 1px 4px;
+            border-radius: 4px; cursor: pointer; line-height: 1.3; white-space: nowrap;
             transition: transform 0.1s;
         }
         .group-badge:hover { transform: scale(1.15); }
 
-        /* Group badge colors */
-        .g1  { background: #dcfce7; color: #166534; }
-        .g2  { background: #dbeafe; color: #1e40af; }
-        .g3  { background: #fce7f3; color: #9d174d; }
-        .g4  { background: #fef9c3; color: #854d0e; }
-        .g5  { background: #f3e8ff; color: #6b21a8; }
-        .g6  { background: #ffedd5; color: #9a3412; }
-        .g7  { background: #d1fae5; color: #065f46; }
-        .g8  { background: #e0f2fe; color: #0c4a6e; }
-        .g9  { background: #fef3c7; color: #92400e; }
-        .g10 { background: #fce7f3; color: #701a75; }
+        .g1  { background:#dcfce7; color:#166534; }
+        .g2  { background:#dbeafe; color:#1e40af; }
+        .g3  { background:#fce7f3; color:#9d174d; }
+        .g4  { background:#fef9c3; color:#854d0e; }
+        .g5  { background:#f3e8ff; color:#6b21a8; }
+        .g6  { background:#ffedd5; color:#9a3412; }
+        .g7  { background:#d1fae5; color:#065f46; }
+        .g8  { background:#e0f2fe; color:#0c4a6e; }
+        .g9  { background:#fef3c7; color:#92400e; }
+        .g10 { background:#fce7f3; color:#701a75; }
 
-        /* ── Loading / Error ── */
-        .spinner-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem 1rem;
-            gap: 1rem;
-            color: var(--text-secondary);
+        /* ── Min side ── */
+        .mine-panel { padding: 1rem; max-width: 600px; margin: 0 auto; }
+        .mine-section { margin-bottom: 1.5rem; background: var(--bg-card); border: 1px solid var(--bed-border); border-radius: 12px; padding: 1rem; }
+        .mine-section h2 { font-size: 1rem; font-weight: 700; color: var(--section-title-color); margin: 0 0 0.75rem; }
+
+        /* Group picker */
+        .group-picker { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .group-pick-btn {
+            padding: 0.35rem 0.65rem; border-radius: 20px;
+            border: 2px solid transparent; cursor: pointer; font-weight: 700; font-size: 0.85rem;
+            transition: all 0.15s; background: var(--tab-inactive-bg); color: var(--text-primary);
         }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--bed-border);
-            border-top-color: #047857;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        .group-pick-btn:hover { opacity: 0.85; }
+        .group-pick-btn.selected { border-color: #047857; box-shadow: 0 0 0 2px rgba(4,120,87,0.2); }
+        body.theme-sunlight .group-pick-btn.selected { border-color: #eab308; box-shadow: 0 0 0 2px rgba(234,179,8,0.3); }
+
+        .group-info {
+            margin-top: 0.75rem; padding: 0.75rem;
+            background: var(--bg-page); border-radius: 8px;
+            font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
         }
+        .group-info strong { color: var(--text-primary); display: block; margin-bottom: 0.25rem; }
+
+        .goto-btn {
+            margin-top: 0.6rem; padding: 0.45rem 1rem;
+            background: #047857; color: #fff; border: none; border-radius: 8px;
+            font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.2s;
+        }
+        .goto-btn:hover { background: #065f46; }
+        body.theme-sunlight .goto-btn { background: #eab308; color: #000; }
+        body.theme-sunlight .goto-btn:hover { background: #ca8a04; }
+
+        /* Fav list in Min side */
+        .fav-crop-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 0.25rem; border-bottom: 1px solid var(--bed-border);
+            cursor: pointer;
+        }
+        .fav-crop-item:last-child { border-bottom: none; }
+        .fav-crop-item:hover { background: var(--bg-page); border-radius: 6px; }
+        .fav-crop-item .crop-item-name { font-size: 0.9rem; }
+        .fav-crop-item .crop-item-loc  { font-size: 0.72rem; color: var(--text-secondary); }
+        .clear-fav-btn {
+            margin-top: 0.6rem; font-size: 0.8rem; color: #9ca3af;
+            background: none; border: none; cursor: pointer; padding: 0;
+        }
+        .clear-fav-btn:hover { color: #ef4444; }
+        .empty-state { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; text-align: center; padding: 0.5rem 0; }
+
+        /* ── Loading / error ── */
+        .spinner-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1rem; gap: 1rem; color: var(--text-secondary); }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--bed-border); border-top-color: #047857; border-radius: 50%; animation: spin 0.8s linear infinite; }
         body.theme-sunlight .spinner { border-top-color: #eab308; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .error-msg { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; border-radius: 8px; padding: 1rem; margin: 1rem; text-align: center; font-weight: 500; }
+        body.theme-sunlight .error-msg { background: #3b0a0a; border-color: #7f1d1d; color: #fca5a5; }
+        .empty-msg { text-align: center; color: var(--text-secondary); padding: 1.5rem; font-size: 0.9rem; }
 
-        .error-msg {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #991b1b;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem;
-            text-align: center;
-            font-weight: 500;
-        }
-        body.theme-sunlight .error-msg {
-            background: #3b0a0a;
-            border-color: #7f1d1d;
-            color: #fca5a5;
-        }
-
-        .empty-msg {
-            text-align: center;
-            color: var(--text-secondary);
-            padding: 1.5rem;
-            font-size: 0.9rem;
-        }
-
-        /* ── Responsive tweaks ── */
+        /* ── Responsive ── */
         @media (min-width: 640px) {
-            .app-title { font-size: 1.15rem; }
+            .app-title { font-size: 1.05rem; }
+            .main-tab-btn { font-size: 0.9rem; padding: 0.65rem 0.5rem; }
             .bed-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
         }
         @media (min-width: 1024px) {
@@ -400,68 +295,105 @@
 
 <!-- ── Header ── -->
 <header class="app-header">
-    <h1 class="app-title">
-        <span id="emoji-left" class="emoji"></span>
-        Markplan for Grøntsagsordningen i AiH
-        <span id="emoji-right" class="emoji"></span>
+    <h1 class="app-title" id="appTitle">
+        <span id="emoji-left"></span>
+        Markplan · Grøntsagsordningen i AiH
+        <span id="emoji-right"></span>
     </h1>
-    <button id="sunBtn" class="sun-btn" title="Skift til sollys-tilstand" aria-label="Sollys-tilstand">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"/>
-            <line x1="12" y1="1" x2="12" y2="3"/>
-            <line x1="12" y1="21" x2="12" y2="23"/>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-            <line x1="1" y1="12" x2="3" y2="12"/>
-            <line x1="21" y1="12" x2="23" y2="12"/>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-        </svg>
-    </button>
+    <div class="header-btns">
+        <button id="helpBtn" class="icon-btn" title="Hjælp" aria-label="Hjælp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+        </button>
+        <button id="sunBtn" class="icon-btn" title="Sollys-tilstand" aria-label="Sollys-tilstand">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+        </button>
+    </div>
 </header>
 
 <!-- ── Main tabs ── -->
 <nav class="main-tabs" role="tablist">
-    <button class="main-tab-btn active" id="tab-crops" role="tab" aria-selected="true" aria-controls="panel-crops">
-        Afgrøder
-    </button>
-    <button class="main-tab-btn" id="tab-field" role="tab" aria-selected="false" aria-controls="panel-field">
-        Markoversigt
-    </button>
+    <button class="main-tab-btn active" id="tab-crops" role="tab">Afgrøder</button>
+    <button class="main-tab-btn"        id="tab-field" role="tab">Markoversigt</button>
+    <button class="main-tab-btn"        id="tab-mine"  role="tab">Min side</button>
 </nav>
 
-<!-- ── Afgrøder panel ── -->
-<div id="panel-crops" class="tab-panel active" role="tabpanel">
-    <div class="search-wrap">
-        <input type="search" id="cropSearch" class="search-input" placeholder="Søg efter afgrøde..." autocomplete="off" aria-label="Søg afgrøder">
-    </div>
-    <div class="crop-list" id="cropListEl">
-        <div class="spinner-wrap">
-            <div class="spinner"></div>
-            <span>Indlæser afgrøder…</span>
+<!-- ── Help modal ── -->
+<div id="helpModal" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.55); padding:1rem; overflow-y:auto;" role="dialog" aria-modal="true" aria-label="Hjælp">
+    <div style="background:var(--bg-card); border-radius:14px; max-width:480px; margin:2rem auto; padding:1.5rem; position:relative; color:var(--text-primary);">
+        <button id="helpClose" style="position:absolute;top:0.75rem;right:0.75rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-secondary);line-height:1;">✕</button>
+        <h2 style="font-size:1.1rem;font-weight:700;color:var(--section-title-color);margin:0 0 1rem;">Sådan bruger du appen</h2>
+        <div style="display:flex;flex-direction:column;gap:0.9rem;font-size:0.9rem;line-height:1.55;">
+            <div>
+                <strong>🌿 Afgrøder</strong><br>
+                Se alle afgrøder i sæsonen. <svg style="width:14px;height:14px;vertical-align:middle;display:inline" viewBox="0 0 24 24" fill="#16a34a"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> = klar til høst,
+                <svg style="width:14px;height:14px;vertical-align:middle;display:inline" viewBox="0 0 24 24" fill="#9ca3af"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg> = ikke klar endnu.
+                Tryk på en afgrøde for at se, hvilke bede den ligger i.
+            </div>
+            <div>
+                <strong>🗺 Markoversigt</strong><br>
+                Se alle bede fordelt på Top, Midt og Bund. Tryk på et <strong>G-mærke</strong> (f.eks. G3) for at fremhæve alle bede, som den lugegruppe passer.
+            </div>
+            <div>
+                <strong>⭐ Favoritter</strong><br>
+                Tryk ★ på en afgrøde for at gemme den som favorit. Favoritter vises øverst i listen og kan ses samlet under "Min side".
+            </div>
+            <div>
+                <strong>👤 Min side</strong><br>
+                Vælg din lugegruppe for at se dine bede fremhævet med en grøn kant. Tryk "Vis mine bede" for at hoppe direkte til dem på marken.
+            </div>
+            <div>
+                <strong>☀️ Sollys-tilstand</strong><br>
+                Tryk på sol-ikonet øverst for et mørkt, høj-kontrast tema — praktisk i direkte sollys på marken.
+            </div>
         </div>
     </div>
 </div>
 
-<!-- ── Markoversigt panel ── -->
-<div id="panel-field" class="tab-panel" role="tabpanel">
-    <div class="sub-tabs" role="tablist" aria-label="Marksektioner">
-        <button class="sub-tab-btn active" id="stab-T" data-section="T" role="tab">Top</button>
-        <button class="sub-tab-btn" id="stab-M" data-section="M" role="tab">Midt</button>
-        <button class="sub-tab-btn" id="stab-B" data-section="B" role="tab">Bund</button>
+<!-- ── Panel: Afgrøder ── -->
+<div id="panel-crops" class="tab-panel active">
+    <div class="search-wrap">
+        <input type="search" id="cropSearch" class="search-input" placeholder="Søg efter afgrøde…" autocomplete="off" aria-label="Søg">
     </div>
+    <div class="crop-list" id="cropListEl">
+        <div class="spinner-wrap"><div class="spinner"></div><span>Indlæser…</span></div>
+    </div>
+</div>
 
+<!-- ── Panel: Markoversigt ── -->
+<div id="panel-field" class="tab-panel">
+    <div class="sub-tabs" role="tablist">
+        <button class="sub-tab-btn active" data-section="T">Top</button>
+        <button class="sub-tab-btn"        data-section="M">Midt</button>
+        <button class="sub-tab-btn"        data-section="B">Bund</button>
+    </div>
     <div id="sec-T" class="section-panel active">
         <p class="section-title">Top-afsnit</p>
-        <div class="bed-grid" id="grid-T"></div>
+        <div class="bed-grid" id="grid-T"><div class="spinner-wrap"><div class="spinner"></div></div></div>
     </div>
     <div id="sec-M" class="section-panel">
         <p class="section-title">Midt-afsnit</p>
-        <div class="bed-grid" id="grid-M"></div>
+        <div class="bed-grid" id="grid-M"><div class="spinner-wrap"><div class="spinner"></div></div></div>
     </div>
     <div id="sec-B" class="section-panel">
         <p class="section-title">Bund-afsnit</p>
-        <div class="bed-grid" id="grid-B"></div>
+        <div class="bed-grid" id="grid-B"><div class="spinner-wrap"><div class="spinner"></div></div></div>
+    </div>
+</div>
+
+<!-- ── Panel: Min side ── -->
+<div id="panel-mine" class="tab-panel">
+    <div class="mine-panel" id="minePanelContent">
+        <div class="spinner-wrap"><div class="spinner"></div><span>Indlæser…</span></div>
     </div>
 </div>
 
@@ -469,50 +401,59 @@
 (function () {
     'use strict';
 
-    /* ── Constants ── */
     const SUPABASE_URL = 'https://ujxmftvftcbjrdmzhlrw.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_EeimAI1x6_X1KxT-Clw5Bg_zIveRDYb';
 
     const EMOJIS = ['🌸','🫘','🍄‍🟫','🫛','🥕','🫚','🧅','🧄','🥔','🥒','🥬','🥦','🍄','🌶️','🌽','🍅','🫑','🍓','🍑','🍎','🍐','🥭','🍊','🍉','🦋','🐛','🐝','🪳','🦗','🪱','🕷️','🦠','🐞','🪲','🌱','🪻','🌼','🌷','🌻','🌺','🌹','🏵️','🌿','🌤️','🌧️','🌞','🌈','💧'];
-
-    const GROUP_COLORS = {
-        1:'g1', 2:'g2', 3:'g3', 4:'g4', 5:'g5',
-        6:'g6', 7:'g7', 8:'g8', 9:'g9', 10:'g10'
-    };
+    const GROUP_COLORS = { 1:'g1',2:'g2',3:'g3',4:'g4',5:'g5',6:'g6',7:'g7',8:'g8',9:'g9',10:'g10' };
 
     /* ── State ── */
-    let bedsData    = [];   // raw from DB
-    let cropsMap    = {};   // name -> { is_released }
-    let groupsMap   = {};   // group_number -> { description, beds_text }
-    let cropToBeds  = {};   // crop_name -> [{section, bed_number}]
-    let groupToBeds = {};   // group_number -> [{section, bed_number}]
+    let bedsData   = [];
+    let cropsMap   = {};
+    let groupsMap  = {};
+    let cropToBeds = {};
+    let groupToBeds= {};
+    let activeCrop = null;
+    let activeGroup= null;
+    let myGroup    = parseInt(localStorage.getItem('myGroup')) || null;
+    let myFavorites= new Set(JSON.parse(localStorage.getItem('myFavorites') || '[]'));
 
-    let activeCrop  = null;  // highlighted crop name
-    let activeGroup = null;  // highlighted group number (toggled by badge click)
+    /* ── DOM ── */
+    const body         = document.body;
+    const sunBtn       = document.getElementById('sunBtn');
+    const helpBtn      = document.getElementById('helpBtn');
+    const helpModal    = document.getElementById('helpModal');
+    const helpClose    = document.getElementById('helpClose');
 
-    /* ── DOM refs ── */
-    const body        = document.body;
-    const sunBtn      = document.getElementById('sunBtn');
-    const tabCrops    = document.getElementById('tab-crops');
-    const tabField    = document.getElementById('tab-field');
-    const panelCrops  = document.getElementById('panel-crops');
-    const panelField  = document.getElementById('panel-field');
-    const cropListEl  = document.getElementById('cropListEl');
-    const cropSearch  = document.getElementById('cropSearch');
-    const emojiLeft   = document.getElementById('emoji-left');
-    const emojiRight  = document.getElementById('emoji-right');
+    /* ── Help modal ── */
+    helpBtn.addEventListener('click', () => { helpModal.style.display = 'block'; });
+    helpClose.addEventListener('click', () => { helpModal.style.display = 'none'; });
+    helpModal.addEventListener('click', e => { if (e.target === helpModal) helpModal.style.display = 'none'; });
+    const appTitle     = document.getElementById('appTitle');
+    const emojiLeft    = document.getElementById('emoji-left');
+    const emojiRight   = document.getElementById('emoji-right');
+    const tabCrops     = document.getElementById('tab-crops');
+    const tabField     = document.getElementById('tab-field');
+    const tabMine      = document.getElementById('tab-mine');
+    const panelCrops   = document.getElementById('panel-crops');
+    const panelField   = document.getElementById('panel-field');
+    const panelMine    = document.getElementById('panel-mine');
+    const cropListEl   = document.getElementById('cropListEl');
+    const cropSearch   = document.getElementById('cropSearch');
+    const minePanelEl  = document.getElementById('minePanelContent');
 
     /* ── Helpers ── */
     function rnd(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-    function setEmojis() {
-        emojiLeft.textContent  = rnd(EMOJIS);
-        emojiRight.textContent = rnd(EMOJIS);
+    function setEmojis() { emojiLeft.textContent = rnd(EMOJIS); emojiRight.textContent = rnd(EMOJIS); }
+    function escHtml(s) {
+        if (!s) return '';
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
+    function showError(el, msg) { el.innerHTML = '<div class="error-msg">' + msg + '</div>'; }
 
-    function showError(container, msg) {
-        container.innerHTML = `<div class="error-msg">${msg}</div>`;
-    }
+    /* ── SVG icons ── */
+    const SVG_CHECK = '<svg class="status-icon check" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+    const SVG_LOCK  = '<svg class="status-icon lock"  viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg>';
 
     /* ── Sunlight mode ── */
     function applySunlight(on) {
@@ -522,59 +463,55 @@
     }
     sunBtn.addEventListener('click', () => applySunlight(!body.classList.contains('theme-sunlight')));
 
-    /* ── Tab switching (main) ── */
-    function switchMainTab(tab) {
-        const isCrops = tab === 'crops';
-        tabCrops.classList.toggle('active', isCrops);
-        tabField.classList.toggle('active', !isCrops);
-        panelCrops.classList.toggle('active', isCrops);
-        panelField.classList.toggle('active', !isCrops);
-        tabCrops.setAttribute('aria-selected', isCrops ? 'true' : 'false');
-        tabField.setAttribute('aria-selected', isCrops ? 'false' : 'true');
+    /* ── Secret 5-tap on title → admin ── */
+    let tapCount = 0, tapTimer = null;
+    appTitle.addEventListener('click', () => {
+        tapCount++;
+        clearTimeout(tapTimer);
+        tapTimer = setTimeout(() => { tapCount = 0; }, 3000);
+        if (tapCount >= 5) { tapCount = 0; window.location.href = 'admin.html'; }
+    });
+
+    /* ── Tab switching ── */
+    const TABS = [
+        { btn: tabCrops, panel: panelCrops, id: 'crops' },
+        { btn: tabField, panel: panelField, id: 'field' },
+        { btn: tabMine,  panel: panelMine,  id: 'mine'  },
+    ];
+    function switchTab(id) {
+        TABS.forEach(t => {
+            const on = t.id === id;
+            t.btn.classList.toggle('active', on);
+            t.panel.classList.toggle('active', on);
+        });
     }
-    tabCrops.addEventListener('click', () => switchMainTab('crops'));
-    tabField.addEventListener('click', () => switchMainTab('field'));
+    TABS.forEach(t => t.btn.addEventListener('click', () => switchTab(t.id)));
 
     /* ── Section sub-tabs ── */
     document.querySelectorAll('.sub-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const sec = btn.dataset.section;
             document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.section === sec));
-            ['T','M','B'].forEach(s => {
-                const p = document.getElementById('sec-' + s);
-                p.classList.toggle('active', s === sec);
-            });
+            ['T','M','B'].forEach(s => document.getElementById('sec-'+s).classList.toggle('active', s === sec));
         });
     });
 
     /* ── Data loading ── */
     async function loadData() {
         const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         const [bedsRes, cropsRes, groupsRes] = await Promise.all([
             sb.from('beds').select('*').order('bed_number'),
             sb.from('crops').select('*').order('name'),
             sb.from('weeding_groups').select('*').order('group_number'),
         ]);
-
-        if (bedsRes.error || cropsRes.error || groupsRes.error) {
-            const err = (bedsRes.error || cropsRes.error || groupsRes.error).message;
-            throw new Error(err);
-        }
+        if (bedsRes.error || cropsRes.error || groupsRes.error)
+            throw new Error((bedsRes.error || cropsRes.error || groupsRes.error).message);
 
         bedsData = bedsRes.data || [];
-        const cropsArr = cropsRes.data || [];
-        const groupsArr = groupsRes.data || [];
+        (cropsRes.data  || []).forEach(c => { cropsMap[c.name] = c; });
+        (groupsRes.data || []).forEach(g => { groupsMap[g.group_number] = g; });
 
-        // Build cropsMap
-        cropsArr.forEach(c => { cropsMap[c.name] = c; });
-
-        // Build groupsMap
-        groupsArr.forEach(g => { groupsMap[g.group_number] = g; });
-
-        // Build cropToBeds and groupToBeds
-        cropToBeds  = {};
-        groupToBeds = {};
+        cropToBeds = {}; groupToBeds = {};
         bedsData.forEach(bed => {
             if (bed.crop_name) {
                 if (!cropToBeds[bed.crop_name]) cropToBeds[bed.crop_name] = [];
@@ -588,52 +525,73 @@
         });
     }
 
-    /* ── Crop list rendering ── */
+    /* ── Location summary ── */
     function locationSummary(cropName) {
         const beds = cropToBeds[cropName] || [];
-        const bySection = {};
-        beds.forEach(b => {
-            if (!bySection[b.section]) bySection[b.section] = [];
-            bySection[b.section].push(b.bed_number);
-        });
-        const parts = [];
-        ['T','M','B'].forEach(s => {
-            if (bySection[s] && bySection[s].length) {
-                bySection[s].sort((a,b)=>a-b);
-                parts.push(s + ': ' + bySection[s].join(','));
-            }
-        });
-        return parts.join(' · ');
+        const by = {};
+        beds.forEach(b => { if (!by[b.section]) by[b.section]=[]; by[b.section].push(b.bed_number); });
+        return ['T','M','B'].filter(s => by[s]&&by[s].length)
+            .map(s => s + ': ' + by[s].sort((a,b)=>a-b).join(','))
+            .join(' · ');
     }
 
+    /* ── Favourites ── */
+    function saveFavorites() { localStorage.setItem('myFavorites', JSON.stringify([...myFavorites])); }
+    function toggleFavorite(cropName, e) {
+        if (e) e.stopPropagation();
+        if (myFavorites.has(cropName)) myFavorites.delete(cropName);
+        else myFavorites.add(cropName);
+        saveFavorites();
+        renderCropList(cropSearch.value);
+        renderMinSide();
+    }
+
+    /* ── My group ── */
+    function selectMyGroup(g) {
+        myGroup = g;
+        localStorage.setItem('myGroup', String(g));
+        renderMinSide();
+        renderFieldOverview();
+    }
+
+    /* ── Render: crop list ── */
     function renderCropList(filter) {
         const q = (filter || '').trim().toLowerCase();
-        const names = Object.keys(cropToBeds).sort((a,b) => a.localeCompare(b, 'da'));
-        const filtered = q ? names.filter(n => n.toLowerCase().includes(q)) : names;
+        let names = Object.keys(cropToBeds).sort((a,b) => a.localeCompare(b,'da'));
+        if (q) names = names.filter(n => n.toLowerCase().includes(q));
 
-        if (!filtered.length) {
-            cropListEl.innerHTML = '<div class="empty-msg">Ingen afgrøder funder for "' + (filter||'') + '"</div>';
+        // Favourites at top (only if no search)
+        if (!q && myFavorites.size > 0) {
+            const favs = names.filter(n => myFavorites.has(n));
+            const rest = names.filter(n => !myFavorites.has(n));
+            names = [...favs, ...rest];
+        }
+
+        if (!names.length) {
+            cropListEl.innerHTML = '<div class="empty-msg">Ingen afgrøder fundet for "' + escHtml(filter||'') + '"</div>';
             return;
         }
 
         const frag = document.createDocumentFragment();
-        filtered.forEach(name => {
-            const cropInfo = cropsMap[name];
-            const released = cropInfo && cropInfo.is_released;
-            const locText  = locationSummary(name);
+        names.forEach(name => {
+            const info     = cropsMap[name];
+            const released = info && info.is_released;
+            const isFav    = myFavorites.has(name);
 
             const div = document.createElement('div');
-            div.className = 'crop-item ' + (released ? 'released' : 'locked');
+            div.className = 'crop-item ' + (released ? 'released' : 'locked') + (isFav ? ' is-fav' : '');
             div.dataset.crop = name;
             if (activeCrop === name) div.classList.add('selected-crop');
 
             div.innerHTML =
+                (released ? SVG_CHECK : SVG_LOCK) +
                 '<span class="crop-item-name">' + escHtml(name) + '</span>' +
                 '<span class="crop-item-right">' +
-                    '<span class="crop-item-loc">' + escHtml(locText) + '</span>' +
-                    (released ? '<span class="badge-released">Klar til høst</span>' : '') +
+                    '<span class="crop-item-loc">' + escHtml(locationSummary(name)) + '</span>' +
+                    '<button class="star-btn' + (isFav ? ' active' : '') + '" title="' + (isFav ? 'Fjern favorit' : 'Tilføj favorit') + '" aria-label="Favorit">★</button>' +
                 '</span>';
 
+            div.querySelector('.star-btn').addEventListener('click', e => toggleFavorite(name, e));
             div.addEventListener('click', () => onCropClick(name));
             frag.appendChild(div);
         });
@@ -642,67 +600,125 @@
         cropListEl.appendChild(frag);
     }
 
-    /* ── Field overview rendering ── */
+    /* ── Render: field overview ── */
     function renderFieldOverview() {
         ['T','M','B'].forEach(sec => {
             const grid = document.getElementById('grid-' + sec);
             grid.innerHTML = '';
-
-            const secBeds = bedsData
-                .filter(b => b.section === sec)
-                .sort((a,b) => a.bed_number - b.bed_number);
-
-            if (!secBeds.length) {
-                grid.innerHTML = '<div class="empty-msg">Ingen bede i dette afsnit.</div>';
-                return;
-            }
-
-            secBeds.forEach(bed => {
-                grid.appendChild(createBedCard(bed));
-            });
+            const secBeds = bedsData.filter(b => b.section === sec).sort((a,b) => a.bed_number - b.bed_number);
+            if (!secBeds.length) { grid.innerHTML = '<div class="empty-msg">Ingen bede.</div>'; return; }
+            secBeds.forEach(bed => grid.appendChild(createBedCard(bed)));
         });
     }
 
     function createBedCard(bed) {
-        const cropInfo = bed.crop_name ? cropsMap[bed.crop_name] : null;
-        const released = cropInfo && cropInfo.is_released;
+        const info     = bed.crop_name ? cropsMap[bed.crop_name] : null;
+        const released = info && info.is_released;
         const g        = bed.luge_gruppe;
+        const isMyGroup= myGroup != null && g === myGroup;
 
         const card = document.createElement('div');
-        card.className = 'bed-card ' + (released ? 'released' : 'locked');
+        card.className = 'bed-card ' + (released ? 'released' : 'locked') + (isMyGroup ? ' my-group-bed' : '');
         card.id = 'bed-' + bed.section + '-' + bed.bed_number;
-        card.dataset.section = bed.section;
+        card.dataset.section   = bed.section;
         card.dataset.bedNumber = bed.bed_number;
-        card.dataset.crop = bed.crop_name || '';
+        card.dataset.crop  = bed.crop_name || '';
         card.dataset.group = g != null ? g : '';
 
         let inner = '<span class="bed-num">' + bed.bed_number + '</span>';
-
-        if (bed.crop_name) {
-            inner += '<span class="bed-crop-name">' + escHtml(bed.crop_name) + '</span>';
-        }
-
+        if (bed.crop_name) inner += '<span class="bed-crop-name">' + escHtml(bed.crop_name) + '</span>';
         if (g != null) {
-            const cls = GROUP_COLORS[g] || 'g1';
-            inner += '<span class="group-badge ' + cls + '" data-group="' + g + '" title="Lugegruppe ' + g + '">G' + g + '</span>';
+            inner += '<span class="group-badge ' + (GROUP_COLORS[g]||'g1') + '" data-group="' + g + '" title="Lugegruppe ' + g + '">G' + g + '</span>';
         }
-
         card.innerHTML = inner;
 
-        // Badge click: toggle group highlight
         const badge = card.querySelector('.group-badge');
-        if (badge) {
-            badge.addEventListener('click', e => {
-                e.stopPropagation();
-                const gNum = parseInt(badge.dataset.group);
-                toggleGroupHighlight(gNum);
-            });
-        }
+        if (badge) badge.addEventListener('click', e => { e.stopPropagation(); toggleGroupHighlight(parseInt(badge.dataset.group)); });
 
         return card;
     }
 
-    /* ── Highlight logic ── */
+    /* ── Render: Min side ── */
+    function renderMinSide() {
+        if (!Object.keys(groupsMap).length) return; // data not loaded yet
+
+        /* Group picker */
+        let groupHtml = '<div class="mine-section"><h2>🌿 Min lugegruppe</h2>';
+        groupHtml += '<div class="group-picker">';
+        for (let i = 1; i <= 10; i++) {
+            const cls = GROUP_COLORS[i] || '';
+            const sel = myGroup === i ? ' selected' : '';
+            groupHtml += '<button class="group-pick-btn ' + cls + sel + '" data-g="' + i + '">G' + i + '</button>';
+        }
+        groupHtml += '</div>';
+
+        if (myGroup && groupsMap[myGroup]) {
+            const gi = groupsMap[myGroup];
+            groupHtml += '<div class="group-info">';
+            groupHtml += '<strong>Gruppe ' + myGroup + ' er ansvarlig for:</strong>';
+            groupHtml += escHtml(gi.description) + '<br>';
+            groupHtml += '<span style="font-size:0.8rem">' + escHtml(gi.beds_text) + '</span>';
+            groupHtml += '</div>';
+            groupHtml += '<button class="goto-btn" id="gotoGroupBtn">Vis mine bede i markoversigten →</button>';
+        } else {
+            groupHtml += '<p class="empty-state" style="margin-top:0.5rem">Vælg din lugegruppe for at se dine bede fremhævet på marken.</p>';
+        }
+        groupHtml += '</div>';
+
+        /* Favourites */
+        let favHtml = '<div class="mine-section"><h2>⭐ Mine favorit-afgrøder</h2>';
+        if (myFavorites.size === 0) {
+            favHtml += '<p class="empty-state">Tryk ★ på en afgrøde i "Afgrøder"-fanen for at tilføje den her.</p>';
+        } else {
+            const favNames = [...myFavorites].sort((a,b) => a.localeCompare(b,'da'));
+            favNames.forEach(name => {
+                const info = cropsMap[name];
+                const released = info && info.is_released;
+                favHtml +=
+                    '<div class="fav-crop-item" data-fav-crop="' + escHtml(name) + '">' +
+                    (released ? SVG_CHECK : SVG_LOCK) +
+                    '<span class="crop-item-name">' + escHtml(name) + '</span>' +
+                    '<span class="crop-item-loc">' + escHtml(locationSummary(name)) + '</span>' +
+                    '</div>';
+            });
+            favHtml += '<button class="clear-fav-btn" id="clearFavBtn">Ryd alle favoritter</button>';
+        }
+        favHtml += '</div>';
+
+        minePanelEl.innerHTML = groupHtml + favHtml;
+
+        /* Bind events */
+        minePanelEl.querySelectorAll('.group-pick-btn').forEach(btn => {
+            btn.addEventListener('click', () => selectMyGroup(parseInt(btn.dataset.g)));
+        });
+        const gotoBtn = document.getElementById('gotoGroupBtn');
+        if (gotoBtn) gotoBtn.addEventListener('click', () => {
+            switchTab('field');
+            toggleGroupHighlight(myGroup);
+            // Show the section with first bed of this group
+            const beds = groupToBeds[myGroup] || [];
+            if (beds.length) {
+                const firstSec = beds[0].section;
+                document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.section === firstSec));
+                ['T','M','B'].forEach(s => document.getElementById('sec-'+s).classList.toggle('active', s === firstSec));
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        const el = document.getElementById('bed-' + beds[0].section + '-' + beds[0].bed_number);
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 80);
+                });
+            }
+        });
+        minePanelEl.querySelectorAll('.fav-crop-item').forEach(el => {
+            el.addEventListener('click', () => onCropClick(el.dataset.favCrop));
+        });
+        const clearBtn = document.getElementById('clearFavBtn');
+        if (clearBtn) clearBtn.addEventListener('click', () => {
+            myFavorites.clear(); saveFavorites(); renderCropList(cropSearch.value); renderMinSide();
+        });
+    }
+
+    /* ── Highlights ── */
     function clearAllHighlights() {
         document.querySelectorAll('.bed-card.highlighted').forEach(el => el.classList.remove('highlighted'));
         document.querySelectorAll('.bed-card.group-highlighted').forEach(el => el.classList.remove('group-highlighted'));
@@ -711,101 +727,56 @@
 
     function highlightCropBeds(cropName) {
         clearAllHighlights();
-        activeCrop  = cropName;
-        activeGroup = null;
-
-        const beds = cropToBeds[cropName] || [];
+        activeCrop = cropName; activeGroup = null;
         let firstEl = null;
-        beds.forEach(b => {
+        (cropToBeds[cropName] || []).forEach(b => {
             const el = document.getElementById('bed-' + b.section + '-' + b.bed_number);
-            if (el) {
-                el.classList.add('highlighted');
-                if (!firstEl) firstEl = el;
-            }
+            if (el) { el.classList.add('highlighted'); if (!firstEl) firstEl = el; }
         });
-
-        // Mark selected in crop list
-        document.querySelectorAll('.crop-item').forEach(el => {
-            el.classList.toggle('selected-crop', el.dataset.crop === cropName);
-        });
-
+        document.querySelectorAll('.crop-item').forEach(el => el.classList.toggle('selected-crop', el.dataset.crop === cropName));
         return firstEl;
     }
 
     function toggleGroupHighlight(gNum) {
-        if (activeGroup === gNum) {
-            // Deselect
-            clearAllHighlights();
-            activeGroup = null;
-            activeCrop  = null;
-            return;
-        }
+        if (activeGroup === gNum) { clearAllHighlights(); activeGroup = null; activeCrop = null; return; }
         clearAllHighlights();
-        activeGroup = gNum;
-        activeCrop  = null;
-
-        const beds = groupToBeds[gNum] || [];
-        beds.forEach(b => {
+        activeGroup = gNum; activeCrop = null;
+        (groupToBeds[gNum] || []).forEach(b => {
             const el = document.getElementById('bed-' + b.section + '-' + b.bed_number);
             if (el) el.classList.add('group-highlighted');
         });
     }
 
     function onCropClick(cropName) {
-        // Switch to field tab, highlight beds, switch to correct section, scroll
-        switchMainTab('field');
+        switchTab('field');
         const firstEl = highlightCropBeds(cropName);
-
         if (firstEl) {
             const sec = firstEl.dataset.section;
-            // Activate correct sub-tab
             document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.section === sec));
-            ['T','M','B'].forEach(s => {
-                document.getElementById('sec-' + s).classList.toggle('active', s === sec);
-            });
-
-            // Scroll after a brief paint delay
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 80);
-            });
+            ['T','M','B'].forEach(s => document.getElementById('sec-'+s).classList.toggle('active', s === sec));
+            requestAnimationFrame(() => setTimeout(() => firstEl.scrollIntoView({ behavior:'smooth', block:'center' }), 80));
         }
     }
 
-    /* ── Crop search ── */
+    /* ── Search ── */
     cropSearch.addEventListener('input', () => renderCropList(cropSearch.value));
-
-    /* ── XSS helper ── */
-    function escHtml(str) {
-        if (!str) return '';
-        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
 
     /* ── Init ── */
     async function init() {
-        // Emojis
         setEmojis();
-
-        // Sunlight mode from localStorage
-        const sl = localStorage.getItem('sunlightMode');
-        if (sl === '1') applySunlight(true);
-
-        // Show loading spinner in field grids too
-        ['T','M','B'].forEach(s => {
-            document.getElementById('grid-' + s).innerHTML =
-                '<div class="spinner-wrap"><div class="spinner"></div></div>';
-        });
+        if (localStorage.getItem('sunlightMode') === '1') applySunlight(true);
 
         try {
             await loadData();
             renderCropList('');
             renderFieldOverview();
+            renderMinSide();
         } catch (err) {
-            console.error('Fejl ved indlæsning fra Supabase:', err);
-            const msg = 'Der opstod en fejl ved indlæsning af markplanen. Prøv at genindlæse siden.<br><small>' + escHtml(err.message) + '</small>';
+            console.error(err);
+            const msg = 'Fejl ved indlæsning af markplanen. Prøv at genindlæse siden.<br><small>' + escHtml(err.message) + '</small>';
             showError(cropListEl, msg);
-            ['T','M','B'].forEach(s => showError(document.getElementById('grid-' + s), msg));
+            ['T','M','B'].forEach(s => showError(document.getElementById('grid-'+s), msg));
+            minePanelEl.innerHTML = '<div class="error-msg">' + msg + '</div>';
         }
     }
 
