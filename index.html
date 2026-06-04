@@ -429,11 +429,12 @@
     const GROUP_COLORS = { 1:'g1',2:'g2',3:'g3',4:'g4',5:'g5',6:'g6',7:'g7',8:'g8',9:'g9',10:'g10' };
 
     /* ── State ── */
-    let bedsData   = [];
-    let cropsMap   = {};
-    let groupsMap  = {};
-    let cropToBeds = {};
-    let groupToBeds= {};
+    let bedsData      = [];
+    let cropsMap      = {};
+    let groupsMap     = {};
+    let cropToBeds    = {};
+    let groupToBeds   = {};
+    let groupFirstnames = {}; // group_number -> [first_name, ...]
     let activeCrop = null;
     let activeGroup= null;
     let myGroup    = parseInt(localStorage.getItem('myGroup')) || null;
@@ -520,10 +521,11 @@
     /* ── Data loading ── */
     async function loadData() {
         const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const [bedsRes, cropsRes, groupsRes] = await Promise.all([
+        const [bedsRes, cropsRes, groupsRes, namesRes] = await Promise.all([
             sb.from('beds').select('*').order('bed_number'),
             sb.from('crops').select('*').order('name'),
             sb.from('weeding_groups').select('*').order('group_number'),
+            sb.rpc('get_group_firstnames'),
         ]);
         if (bedsRes.error || cropsRes.error || groupsRes.error)
             throw new Error((bedsRes.error || cropsRes.error || groupsRes.error).message);
@@ -531,6 +533,12 @@
         bedsData = bedsRes.data || [];
         (cropsRes.data  || []).forEach(c => { cropsMap[c.name] = c; });
         (groupsRes.data || []).forEach(g => { groupsMap[g.group_number] = g; });
+
+        groupFirstnames = {};
+        (namesRes.data || []).forEach(({ luge_gruppe, first_name }) => {
+            if (!groupFirstnames[luge_gruppe]) groupFirstnames[luge_gruppe] = [];
+            groupFirstnames[luge_gruppe].push(first_name);
+        });
 
         cropToBeds = {}; groupToBeds = {};
         bedsData.forEach(bed => {
@@ -675,10 +683,17 @@
 
         if (myGroup && groupsMap[myGroup]) {
             const gi = groupsMap[myGroup];
+            const names = groupFirstnames[myGroup] || [];
             groupHtml += '<div class="group-info">';
             groupHtml += '<strong>Gruppe ' + myGroup + ' er ansvarlig for:</strong>';
             groupHtml += escHtml(gi.description) + '<br>';
             groupHtml += '<span style="font-size:0.8rem">' + escHtml(gi.beds_text) + '</span>';
+            if (names.length) {
+                groupHtml += '<div style="margin-top:0.6rem;padding-top:0.5rem;border-top:1px solid var(--bed-border)">';
+                groupHtml += '<span style="font-size:0.8rem;color:var(--text-secondary)">Medlemmer: </span>';
+                groupHtml += '<span style="font-size:0.88rem;font-weight:600">' + names.map(escHtml).join(', ') + '</span>';
+                groupHtml += '</div>';
+            }
             groupHtml += '</div>';
             groupHtml += '<button class="goto-btn" id="gotoGroupBtn">Vis mine bede i markoversigten →</button>';
         } else {
