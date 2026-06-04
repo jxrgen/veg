@@ -427,14 +427,19 @@
     let activeTab  = 'members';
     let sessionJwt = null; // set after login; used to bypass SDK session issues
 
-    // Returns a client with an explicit Authorization header when JWT is available.
-    // The new sb_publishable_* key format doesn't always get injected automatically.
-    function authClient() {
-        if (!sessionJwt) return sb;
-        return window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-            global: { headers: { Authorization: 'Bearer ' + sessionJwt } },
-            auth: { persistSession: false }
+    // Direct fetch for RLS-protected tables — bypasses SDK session issues with sb_publishable_* keys.
+    async function fetchProtected(path) {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+            headers: {
+                'apikey':        SUPABASE_KEY,
+                'Authorization': 'Bearer ' + sessionJwt
+            }
         });
+        if (!res.ok) {
+            const body = await res.text();
+            throw new Error('HTTP ' + res.status + ': ' + body);
+        }
+        return res.json();
     }
 
     // ── Auth ──────────────────────────────────────────────────────────────────
@@ -490,24 +495,16 @@
             return;
         }
 
-        const [membersRes, cropsRes] = await Promise.all([
-            authClient().from('members').select('*').order('luge_gruppe').order('name'),
+        const [members, cropsRes] = await Promise.all([
+            fetchProtected('members?select=*&order=luge_gruppe.asc,name.asc').catch(e => { throw new Error('Medlemmer: ' + e.message); }),
             sb.from('crops').select('*').order('name')
         ]);
 
-        if (membersRes.error) {
-            // Don't block the whole admin — note error in members section, still show everything
-            document.getElementById('loadError').textContent =
-                'Medlemmer kunne ikke hentes: ' + membersRes.error.message
-                + ' — Afgrøder & Høst og Import fungerer stadig.';
-            show('loadError');
-        }
-
-        allMembers = membersRes.data || [];
-        allCrops   = cropsRes.data  || [];
+        allMembers = Array.isArray(members) ? members : [];
+        allCrops   = cropsRes.data || [];
 
         hide('loadingIndicator');
-        switchTab(allMembers.length ? activeTab : 'crops');
+        switchTab(activeTab);
     }
 
     // ── Tab switching ─────────────────────────────────────────────────────────
