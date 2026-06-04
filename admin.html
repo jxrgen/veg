@@ -425,6 +425,17 @@
     let allMembers = [];
     let allCrops   = [];
     let activeTab  = 'members';
+    let sessionJwt = null; // set after login; used to bypass SDK session issues
+
+    // Returns a client with an explicit Authorization header when JWT is available.
+    // The new sb_publishable_* key format doesn't always get injected automatically.
+    function authClient() {
+        if (!sessionJwt) return sb;
+        return window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+            global: { headers: { Authorization: 'Bearer ' + sessionJwt } },
+            auth: { persistSession: false }
+        });
+    }
 
     // ── Auth ──────────────────────────────────────────────────────────────────
     async function login() {
@@ -435,7 +446,7 @@
         btn.disabled = true;
         btn.textContent = 'Logger ind…';
 
-        const { error } = await sb.auth.signInWithPassword({
+        const { data, error } = await sb.auth.signInWithPassword({
             email: 'jxrgen@gmail.com',
             password: input.value
         });
@@ -446,6 +457,7 @@
             btn.textContent = 'Log ind';
             input.select();
         } else {
+            sessionJwt = data.session.access_token;
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('adminPage').classList.remove('hidden');
             loadAllData();
@@ -454,11 +466,8 @@
 
     async function logout() {
         await sb.auth.signOut();
-        document.getElementById('adminPage').classList.add('hidden');
-        document.getElementById('loginPage').classList.remove('hidden');
-        document.getElementById('passwordInput').value = '';
-        allMembers = [];
-        allCrops   = [];
+        sessionJwt = null;
+        window.location.href = './';
     }
 
     // ── Data loading ──────────────────────────────────────────────────────────
@@ -469,9 +478,12 @@
         hide('sectionCrops');
         hide('sectionImport');
 
-        // Ensure the auth session is active before querying protected tables
-        const { data: { session } } = await sb.auth.getSession();
-        if (!session) {
+        // Ensure we have a JWT (either stored or from SDK session)
+        if (!sessionJwt) {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) sessionJwt = session.access_token;
+        }
+        if (!sessionJwt) {
             hide('loadingIndicator');
             document.getElementById('loadError').textContent = 'Sessionen er udløbet — log ind igen.';
             show('loadError');
@@ -479,7 +491,7 @@
         }
 
         const [membersRes, cropsRes] = await Promise.all([
-            sb.from('members').select('*').order('luge_gruppe').order('name'),
+            authClient().from('members').select('*').order('luge_gruppe').order('name'),
             sb.from('crops').select('*').order('name')
         ]);
 
