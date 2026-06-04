@@ -432,14 +432,16 @@
         const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
             headers: {
                 'apikey':        SUPABASE_KEY,
-                'Authorization': 'Bearer ' + sessionJwt
+                'Authorization': 'Bearer ' + sessionJwt,
+                'Accept':        'application/json'
             }
         });
         if (!res.ok) {
             const body = await res.text();
             throw new Error('HTTP ' + res.status + ': ' + body);
         }
-        return res.json();
+        const text = await res.text();
+        return text ? JSON.parse(text) : [];
     }
 
     // ── Auth ──────────────────────────────────────────────────────────────────
@@ -498,13 +500,22 @@
             return;
         }
 
-        const [members, cropsRes] = await Promise.all([
-            fetchProtected('members?select=*&order=luge_gruppe.asc,name.asc').catch(e => { throw new Error('Medlemmer: ' + e.message); }),
-            sb.from('crops').select('*').order('name')
-        ]);
+        try {
+            const [members, cropsRes] = await Promise.all([
+                fetchProtected('members?select=*&order=luge_gruppe.asc,name.asc'),
+                sb.from('crops').select('*').order('name')
+            ]);
 
-        allMembers = Array.isArray(members) ? members : [];
-        allCrops   = cropsRes.data || [];
+            if (cropsRes.error) throw new Error('Afgrøder: ' + cropsRes.error.message);
+
+            allMembers = Array.isArray(members) ? members : [];
+            allCrops   = cropsRes.data || [];
+        } catch (e) {
+            hide('loadingIndicator');
+            document.getElementById('loadError').textContent = 'Fejl: ' + e.message;
+            show('loadError');
+            // Still try to show what we have
+        }
 
         hide('loadingIndicator');
         switchTab(activeTab);
