@@ -119,10 +119,16 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 
 ---
 
-## Kendte begrænsninger
+## Kendte begrænsninger / åbne problemer
 - Admin kan kun ændre `is_released` per afgrøde (alle bede af samme afgrøde frigives samlet)
 - Ingen mulighed for at redigere markplan eller medlemmer via admin — kræver ny CSV + genkøre setup_db.py
 - GitHub Pages tillader ikke server-side skrivning, så al data går via Supabase REST API
+- **UAFKLARET:** Members vises ikke i admin efter login. Supabase-testen bekræfter at authenticated fetch virker korrekt (RLS OK, data OK). Fejlen er sandsynligvis at `sb_publishable_*`-nøglen ikke virker med Supabase JS SDK v2's session-håndtering. Næste skridt: tjek den præcise fejlbesked der nu vises i admin, eller byt til den gamle `eyJ...` anon-nøgle fra Supabase Dashboard → Settings → API.
+
+## PWA-filer
+- `manifest.json` — app-navn, ikoner, tema-farve, start_url
+- `sw.js` — service worker: cacher app-shell, henter altid live data fra Supabase
+- `icon-192.png`, `icon-512.png`, `icon-512-maskable.png` — genereret med Python/PIL
 
 ---
 
@@ -136,3 +142,6 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 | 2026-06-04 | Ny index.html: tabs, søgning, lugegruppe-badges, hængelås/check-ikoner |
 | 2026-06-04 | Ny admin.html: Supabase Auth, medlemsoversigt, afgrøde-frigiv-toggles |
 | 2026-06-04 | Tilføjet: Min side, favoritter, ?-hjælpeside, 5-tap admin-adgang |
+| 2026-06-04 | PWA-support: manifest.json, sw.js, app-ikoner — kan installeres på hjemmeskærm |
+| 2026-06-04 | ?-menu: installationsvejledning til iPhone (Safari) og Android (Chrome) tilføjet |
+| 2026-06-04 | Admin-fix: synlig fejlbesked + getSession()-tjek i loadAllData() (members-bug under undersøgelse) |
