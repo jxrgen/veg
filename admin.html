@@ -151,6 +151,11 @@
                     class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-50"
                     onclick="switchTab('crops')"
                 >Afgrøder &amp; Høst</button>
+                <button
+                    id="tabImport"
+                    class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-50"
+                    onclick="switchTab('import')"
+                >Importer markplan</button>
             </div>
         </div>
     </div>
@@ -215,6 +220,207 @@
 
             <!-- Mobile cards -->
             <div id="memberCards" class="md:hidden space-y-3"></div>
+        </section>
+
+        <!-- ---- SECTION: IMPORT ---- -->
+        <section id="sectionImport" class="hidden">
+            <div class="space-y-6">
+
+                <!-- Upload card -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                        </svg>
+                        Importer ny markplan
+                    </h2>
+                    <p class="text-sm text-gray-500 mb-4">Vælg en CSV-fil i det rigtige format for at opdatere markplanen.</p>
+
+                    <label class="block mb-4">
+                        <span class="sr-only">Vælg CSV-fil</span>
+                        <input
+                            type="file"
+                            id="csvFileInput"
+                            accept=".csv"
+                            onchange="onCsvFileChosen(event)"
+                            class="block w-full text-sm text-gray-600
+                                   file:mr-4 file:py-2 file:px-4
+                                   file:rounded-lg file:border-0
+                                   file:text-sm file:font-semibold
+                                   file:bg-green-50 file:text-green-700
+                                   hover:file:bg-green-100 cursor-pointer"
+                        >
+                    </label>
+
+                    <!-- Preview table -->
+                    <div id="importPreviewWrap" class="hidden mb-4">
+                        <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Forhåndsvisning</p>
+                        <div class="table-scroll border border-gray-200 rounded-lg overflow-hidden">
+                            <table id="importPreviewTable" class="w-full text-sm">
+                                <thead>
+                                    <tr class="bg-gray-50 text-left">
+                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Bed</th>
+                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Top afgrøde</th>
+                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap text-center">Status</th>
+                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Midt afgrøde</th>
+                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap text-center">Status</th>
+                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Bund afgrøde</th>
+                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="importPreviewBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <button
+                        id="doImportBtn"
+                        onclick="confirmAndImport()"
+                        disabled
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold
+                               bg-green-700 text-white opacity-40 cursor-not-allowed
+                               transition-all"
+                    >Importer bede &rarr;</button>
+
+                    <!-- Status / progress -->
+                    <div id="importStatus" class="hidden mt-4 flex items-center gap-2 text-sm">
+                        <svg id="importSpinner" class="hidden animate-spin h-4 w-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                        <span id="importStatusText" class="text-gray-600"></span>
+                    </div>
+                </div>
+
+                <!-- Format guide card -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Filformat
+                    </h2>
+                    <p class="text-sm text-gray-500 mb-4">Filen skal v&#230;re semikolon-separeret (.csv) med f&#248;lgende kolonner:</p>
+
+                    <!-- Example table -->
+                    <div class="table-scroll border border-gray-200 rounded-lg overflow-hidden mb-4">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-50 text-left">
+                                    <th class="px-3 py-2 font-semibold text-gray-700">Bed</th>
+                                    <th class="px-3 py-2 font-semibold text-gray-700">Top afgr&#248;de</th>
+                                    <th class="px-3 py-2 font-semibold text-gray-700 text-center">Top status</th>
+                                    <th class="px-3 py-2 font-semibold text-gray-700">Midt afgr&#248;de</th>
+                                    <th class="px-3 py-2 font-semibold text-gray-700 text-center">Midt status</th>
+                                    <th class="px-3 py-2 font-semibold text-gray-700">Bund afgr&#248;de</th>
+                                    <th class="px-3 py-2 font-semibold text-gray-700 text-center">Bund status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-t border-gray-100">
+                                    <td class="px-3 py-2 font-medium text-gray-800">38</td>
+                                    <td class="px-3 py-2 text-gray-600">Gr&#248;nk&#229;l</td>
+                                    <td class="px-3 py-2 text-center">
+                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-2 text-gray-400 italic text-xs">(tom)</td>
+                                    <td class="px-3 py-2 text-center">
+                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-2 text-gray-400 italic text-xs">(tom)</td>
+                                    <td class="px-3 py-2 text-center">
+                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="border-t border-gray-100">
+                                    <td class="px-3 py-2 font-medium text-gray-800">15</td>
+                                    <td class="px-3 py-2 text-gray-600">Majs</td>
+                                    <td class="px-3 py-2 text-center">
+                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-2 text-gray-600">L&#248;g</td>
+                                    <td class="px-3 py-2 text-center">
+                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-2 text-gray-600">Spidsk&#229;l</td>
+                                    <td class="px-3 py-2 text-center">
+                                        <span class="inline-flex items-center gap-1 text-xs text-green-600 font-medium">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>-
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="border-t border-gray-100">
+                                    <td class="px-3 py-2 font-medium text-gray-800">1</td>
+                                    <td class="px-3 py-2 text-gray-400 italic text-xs">(tom)</td>
+                                    <td class="px-3 py-2 text-center">
+                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-2 text-gray-400 italic text-xs">(tom)</td>
+                                    <td class="px-3 py-2 text-center">
+                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-2 text-gray-600">Esteb&#248;nner</td>
+                                    <td class="px-3 py-2 text-center">
+                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- CSV example -->
+                    <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Eksempel p&#229; CSV-indhold</p>
+                    <pre class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-xs text-gray-700 overflow-x-auto leading-relaxed">;Top;;Midt;;Bund;
+38;Gr&#248;nk&#229;l;X;;X;;X
+37;Gr&#248;nk&#229;l;X;;X;;X
+15;Majs;X;L&#248;g;X;Spidsk&#229;l;-
+1;;X;;X;Hesteb&#248;nner;X</pre>
+
+                    <!-- Rules -->
+                    <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-4 mb-2">Regler</p>
+                    <ul class="text-sm text-gray-600 space-y-1.5">
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 text-green-700 font-bold">&#8226;</span>
+                            <span>Separator: <code class="bg-gray-100 px-1 rounded text-xs font-mono">;</code> (semikolon)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 text-green-700 font-bold">&#8226;</span>
+                            <span>Maks 40 r&#230;kker (bede)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 text-green-700 font-bold">&#8226;</span>
+                            <span>Status: <code class="bg-gray-100 px-1 rounded text-xs font-mono">X</code> = ikke frigivet (l&#229;st), <code class="bg-gray-100 px-1 rounded text-xs font-mono">-</code> = klar til h&#248;st (frigivet)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 text-green-700 font-bold">&#8226;</span>
+                            <span>F&#248;rste linje er header og ignoreres</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 text-green-700 font-bold">&#8226;</span>
+                            <span>Tomme afgr&#248;defelter betyder tomt bed i den p&#229;g&#230;ldende sektion</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
         </section>
 
         <!-- ---- SECTION: CROPS ---- -->
@@ -295,6 +501,7 @@
         show('loadingIndicator');
         hide('sectionMembers');
         hide('sectionCrops');
+        hide('sectionImport');
 
         // Ensure the auth session is active before querying protected tables
         const { data: { session } } = await sb.auth.getSession();
@@ -331,23 +538,31 @@
 
         const tM = document.getElementById('tabMembers');
         const tC = document.getElementById('tabCrops');
+        const tI = document.getElementById('tabImport');
+
+        // Reset all tabs
+        [tM, tC, tI].forEach(t => {
+            t.classList.remove('active');
+            t.classList.add('text-gray-600');
+        });
+        hide('sectionMembers');
+        hide('sectionCrops');
+        hide('sectionImport');
 
         if (tab === 'members') {
             tM.classList.add('active');
-            tC.classList.remove('active');
-            tC.classList.add('text-gray-600');
             tM.classList.remove('text-gray-600');
             show('sectionMembers');
-            hide('sectionCrops');
             renderMembers();
-        } else {
+        } else if (tab === 'crops') {
             tC.classList.add('active');
-            tM.classList.remove('active');
-            tM.classList.add('text-gray-600');
             tC.classList.remove('text-gray-600');
             show('sectionCrops');
-            hide('sectionMembers');
             renderCrops();
+        } else if (tab === 'import') {
+            tI.classList.add('active');
+            tI.classList.remove('text-gray-600');
+            show('sectionImport');
         }
     }
 
@@ -455,17 +670,17 @@
         crop.is_released = newValue;
         renderCrops();
 
-        // Persist
-        const { error } = await sb
-            .from('crops')
-            .update({ is_released: newValue })
-            .eq('name', crop.name);
+        // Persist to crops table and sync all matching beds
+        const [cropsRes, bedsRes] = await Promise.all([
+            sb.from('crops').update({ is_released: newValue }).eq('name', crop.name),
+            sb.from('beds').update({ is_released: newValue }).eq('crop_name', crop.name),
+        ]);
 
-        if (error) {
+        if (cropsRes.error || bedsRes.error) {
             // Revert
             crop.is_released = !newValue;
             renderCrops();
-            alert('Fejl ved gemning: ' + error.message);
+            alert('Fejl ved gemning: ' + (cropsRes.error || bedsRes.error).message);
             return;
         }
 
@@ -496,6 +711,181 @@
 
     function show(id) { document.getElementById(id).classList.remove('hidden'); }
     function hide(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // ── Import: state ────────────────────────────────────────────────────────
+    let parsedBeds = null;
+
+    // ── Import: file chosen ───────────────────────────────────────────────────
+    function onCsvFileChosen(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                parsedBeds = parseMarkplanCSV(e.target.result);
+                renderImportPreview(parsedBeds);
+                setImportStatus('', false);
+            } catch (err) {
+                parsedBeds = null;
+                hide('importPreviewWrap');
+                setImportStatus('Fejl ved læsning af fil: ' + err.message, false, true);
+            }
+        };
+        reader.readAsText(file, 'UTF-8');
+    }
+
+    // ── Import: parse CSV ─────────────────────────────────────────────────────
+    function parseMarkplanCSV(text) {
+        const lines = text.trim().split('\n');
+        const beds = [];
+        for (let i = 1; i < lines.length; i++) {  // skip header
+            const cols = lines[i].split(';');
+            if (!cols[0] || !cols[0].trim()) continue;
+            const bedNum = parseInt(cols[0].trim());
+            if (isNaN(bedNum)) continue;
+            beds.push({
+                bed_number:  bedNum,
+                top_crop:    (cols[1] || '').trim() || null,
+                top_status:  (cols[2] || 'X').trim(),
+                midt_crop:   (cols[3] || '').trim() || null,
+                midt_status: (cols[4] || 'X').trim(),
+                bund_crop:   (cols[5] || '').trim() || null,
+                bund_status: (cols[6] || 'X').trim(),
+            });
+        }
+        return beds;
+    }
+
+    // ── Import: render preview ────────────────────────────────────────────────
+    function renderImportPreview(beds) {
+        const tbody = document.getElementById('importPreviewBody');
+        tbody.innerHTML = '';
+        beds.forEach(b => {
+            const tr = document.createElement('tr');
+            tr.className = 'border-t border-gray-100';
+            tr.innerHTML = `
+                <td class="px-3 py-2 font-medium text-gray-800">${b.bed_number}</td>
+                <td class="px-3 py-2 text-gray-600">${b.top_crop  ? esc(b.top_crop)  : '<span class="text-gray-400 italic text-xs">(tom)</span>'}</td>
+                <td class="px-3 py-2 text-center">${previewStatusIcon(b.top_status)}</td>
+                <td class="px-3 py-2 text-gray-600">${b.midt_crop ? esc(b.midt_crop) : '<span class="text-gray-400 italic text-xs">(tom)</span>'}</td>
+                <td class="px-3 py-2 text-center">${previewStatusIcon(b.midt_status)}</td>
+                <td class="px-3 py-2 text-gray-600">${b.bund_crop ? esc(b.bund_crop) : '<span class="text-gray-400 italic text-xs">(tom)</span>'}</td>
+                <td class="px-3 py-2 text-center">${previewStatusIcon(b.bund_status)}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        show('importPreviewWrap');
+
+        // Enable import button
+        const btn = document.getElementById('doImportBtn');
+        btn.textContent = 'Importer ' + beds.length + ' bede →';
+        btn.disabled = false;
+        btn.classList.remove('opacity-40', 'cursor-not-allowed');
+        btn.classList.add('hover:bg-green-800', 'cursor-pointer');
+    }
+
+    function previewStatusIcon(status) {
+        if (status === '-') {
+            return '<span class="inline-flex items-center gap-1 text-xs text-green-600 font-medium">'
+                 + '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">'
+                 + '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>-</span>';
+        }
+        return '<span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">'
+             + '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">'
+             + '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X</span>';
+    }
+
+    // ── Import: confirm dialog & run ──────────────────────────────────────────
+    function confirmAndImport() {
+        if (!parsedBeds || parsedBeds.length === 0) return;
+        const totalSections = parsedBeds.length * 3;
+        const ok = confirm(
+            'Er du sikker? Dette erstatter hele den nuværende markplan med data fra filen.\n\n'
+            + 'Bed-antallet i filen: ' + parsedBeds.length + '\n'
+            + 'Total bed-sektioner: ' + totalSections
+        );
+        if (!ok) return;
+        runImport(parsedBeds);
+    }
+
+    async function runImport(beds) {
+        const btn = document.getElementById('doImportBtn');
+        btn.disabled = true;
+        btn.classList.add('opacity-40', 'cursor-not-allowed');
+
+        setImportStatus('Importerer bede…', true);
+
+        try {
+            // Build flat list of bed-section rows
+            const updates = [];
+            beds.forEach(b => {
+                updates.push({ bed_number: b.bed_number, section: 'T', crop_name: b.top_crop  || null, is_released: b.top_status  === '-' });
+                updates.push({ bed_number: b.bed_number, section: 'M', crop_name: b.midt_crop || null, is_released: b.midt_status === '-' });
+                updates.push({ bed_number: b.bed_number, section: 'B', crop_name: b.bund_crop || null, is_released: b.bund_status === '-' });
+            });
+
+            // 1. Upsert beds (preserves luge_gruppe since we don't include it)
+            const { error: bedsErr } = await sb.from('beds')
+                .upsert(updates, { onConflict: 'bed_number,section' });
+            if (bedsErr) throw bedsErr;
+
+            setImportStatus('Genopbygger afgrødetabel…', true);
+
+            // 2. Rebuild crops table
+            const { data: bedData, error: bedFetchErr } = await sb.from('beds')
+                .select('crop_name, is_released')
+                .not('crop_name', 'is', null);
+            if (bedFetchErr) throw bedFetchErr;
+
+            // Group: crop is released if ANY bed section is released
+            const cropMap = {};
+            bedData.forEach(b => {
+                if (!cropMap[b.crop_name]) cropMap[b.crop_name] = false;
+                if (b.is_released) cropMap[b.crop_name] = true;
+            });
+
+            const { error: delErr } = await sb.from('crops').delete().neq('id', 0);
+            if (delErr) throw delErr;
+
+            const cropRows = Object.entries(cropMap).map(([name, is_released]) => ({ name, is_released }));
+            if (cropRows.length > 0) {
+                const { error: insErr } = await sb.from('crops').insert(cropRows);
+                if (insErr) throw insErr;
+            }
+
+            setImportStatus(
+                '✓ Markplan importeret — ' + beds.length + ' bede, ' + cropRows.length + ' unikke afgrøder opdateret.',
+                false, false, true
+            );
+
+            // Re-enable button (allow re-import)
+            btn.disabled = false;
+            btn.classList.remove('opacity-40', 'cursor-not-allowed');
+
+        } catch (err) {
+            setImportStatus('Fejl: ' + err.message, false, true);
+            btn.disabled = false;
+            btn.classList.remove('opacity-40', 'cursor-not-allowed');
+        }
+    }
+
+    // ── Import: status helper ─────────────────────────────────────────────────
+    function setImportStatus(msg, spinning, isError, isSuccess) {
+        const wrap    = document.getElementById('importStatus');
+        const spinner = document.getElementById('importSpinner');
+        const text    = document.getElementById('importStatusText');
+
+        if (!msg) { hide('importStatus'); return; }
+
+        show('importStatus');
+        text.textContent = msg;
+        text.className = isError   ? 'text-red-600 font-medium'
+                       : isSuccess ? 'text-green-700 font-semibold'
+                       : 'text-gray-600';
+        if (spinning) { spinner.classList.remove('hidden'); }
+        else          { spinner.classList.add('hidden'); }
+    }
 
     // ── Init: hide login error, hide admin ────────────────────────────────────
     hide('loginError');
