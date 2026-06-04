@@ -5,652 +5,812 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markplan for Grøntsagsordningen i AiH</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-page: #f3f4f6;
             --bg-card: #ffffff;
+            --bg-header: #ffffff;
             --text-primary: #1f2937;
-            --text-secondary: #4b5563;
+            --text-secondary: #6b7280;
             --text-highlight-bg: #facc15;
             --text-highlight-border: #eab308;
-            --bed-bg: #eff6ff;
-            --bed-border: #d1d5db;
-            --crop-item-bg: #e6f0ff;
-            --crop-item-text: #1a56cc;
-            --crop-item-hover-bg: #d1e4ff;
-            --accent-color: #10b981;
-            --accent-hover-color: #059669;
+            --bed-bg: #f9fafb;
+            --bed-border: #e5e7eb;
+            --tab-active-bg: #047857;
+            --tab-active-text: #ffffff;
+            --tab-inactive-bg: #f3f4f6;
+            --tab-inactive-text: #374151;
+            --subtab-active-color: #047857;
+            --input-bg: #ffffff;
+            --input-border: #d1d5db;
             --main-title-color: #047857;
             --section-title-color: #065f46;
-            --locked-color: #ef4444;
-            --unlocked-color: #22c55e;
-            --bed-locked-bg: #fef2f2;
-            --bed-locked-border: #fecaca;
-            --bed-unlocked-bg: #f0fdf4;
-            --bed-unlocked-border: #bbf7d0;
+            --badge-released-bg: #dcfce7;
+            --badge-released-text: #166534;
         }
 
         body.theme-sunlight {
-            --bg-page: #666666;
-            --bg-card: #555555;
+            --bg-page: #1a1a1a;
+            --bg-card: #2a2a2a;
+            --bg-header: #111111;
             --text-primary: #ffffff;
             --text-secondary: #cccccc;
             --text-highlight-bg: #ffff00;
             --text-highlight-border: #eab308;
-            --bed-bg: #444444;
-            --bed-border: #777777;
-            --crop-item-bg: #333333;
-            --crop-item-text: #ffffff;
-            --crop-item-hover-bg: #666666;
-            --accent-color: #000000;
-            --main-title-color: #000000;
-            --section-title-color: #000000;
+            --bed-bg: #333333;
+            --bed-border: #555555;
+            --tab-active-bg: #eab308;
+            --tab-active-text: #000000;
+            --tab-inactive-bg: #2a2a2a;
+            --tab-inactive-text: #ffffff;
+            --subtab-active-color: #eab308;
+            --input-bg: #333333;
+            --input-border: #555555;
+            --main-title-color: #eab308;
+            --section-title-color: #eab308;
+            --badge-released-bg: #422006;
+            --badge-released-text: #fde68a;
         }
 
+        *, *::before, *::after { box-sizing: border-box; }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 0;
             background-color: var(--bg-page);
             color: var(--text-primary);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.25s ease, color 0.25s ease;
+            min-height: 100vh;
         }
-        .container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
-        h1 { color: var(--main-title-color); }
-        h2, h3 { color: var(--section-title-color); }
-        
-        .crop-item {
-            cursor: pointer;
-            padding: 0.5rem;
-            margin-bottom: 0.25rem;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s ease-in-out;
-            background-color: var(--crop-item-bg);
-            color: var(--crop-item-text);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .crop-item:hover { background-color: var(--crop-item-hover-bg); }
-        .crop-item.locked { border-left: 3px solid var(--locked-color); }
-        .crop-item.unlocked { border-left: 3px solid var(--unlocked-color); }
-        .crop-item.selected { border: 2px solid #eab308; }
-        .crop-name { font-weight: 600; font-size: 1.1rem; }
-        .crop-status { font-size: 0.9rem; }
 
-        .field-section {
-            background-color: var(--bg-card);
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 0.5rem;
-            padding: 1rem;
+        /* ── Header ── */
+        .app-header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--bed-border);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            transition: background-color 0.25s ease;
         }
-        
-        .bed {
+        .app-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--main-title-color);
+            line-height: 1.2;
+            flex: 1;
+        }
+        .app-title .emoji { font-size: 1.1rem; }
+
+        .sun-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            background: var(--tab-inactive-bg);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .sun-btn:hover { opacity: 0.8; }
+        .sun-btn.active {
+            background: var(--text-highlight-bg);
+            border-color: var(--text-highlight-border);
+            color: #000;
+        }
+        .sun-btn svg { width: 20px; height: 20px; }
+
+        /* ── Main tabs ── */
+        .main-tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--bed-border);
+            position: sticky;
+            top: 57px;
+            z-index: 40;
+        }
+        .main-tab-btn {
+            flex: 1;
+            padding: 0.65rem 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: var(--tab-inactive-bg);
+            color: var(--tab-inactive-text);
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+        .main-tab-btn.active {
+            background: var(--tab-active-bg);
+            color: var(--tab-active-text);
+            border-bottom-color: var(--tab-active-bg);
+        }
+
+        /* ── Tab panels ── */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── Afgrøder tab ── */
+        .search-wrap {
+            padding: 0.75rem 1rem 0.5rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--bed-border);
+        }
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-input:focus { border-color: #047857; }
+        body.theme-sunlight .search-input:focus { border-color: #eab308; }
+
+        .crop-list { padding: 0.5rem 1rem 1rem; }
+
+        .crop-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0.75rem;
+            margin-bottom: 0.4rem;
+            border-radius: 8px;
+            cursor: pointer;
+            background: var(--bg-card);
+            border: 1px solid var(--bed-border);
+            transition: background-color 0.15s, transform 0.1s;
+            border-left-width: 4px;
+        }
+        .crop-item:hover { transform: translateX(2px); }
+        .crop-item.released { border-left-color: #16a34a; }
+        .crop-item.locked { border-left-color: #9ca3af; }
+        .crop-item.selected-crop {
+            outline: 2px solid #eab308;
+            outline-offset: 1px;
+        }
+
+        .crop-item-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            flex: 1;
+            color: var(--text-primary);
+        }
+        .crop-item-right {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-shrink: 0;
+        }
+        .crop-item-loc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .badge-released {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 999px;
+            background: var(--badge-released-bg);
+            color: var(--badge-released-text);
+            white-space: nowrap;
+        }
+
+        /* ── Section sub-tabs ── */
+        .sub-tabs {
+            display: flex;
+            padding: 0.75rem 1rem 0;
+            gap: 0.4rem;
+            background: var(--bg-page);
+        }
+        .sub-tab-btn {
+            padding: 0.35rem 1rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 6px 6px 0 0;
+            border: 1px solid var(--bed-border);
+            border-bottom: none;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sub-tab-btn.active {
+            background: var(--tab-active-bg);
+            color: var(--tab-active-text);
+            border-color: var(--tab-active-bg);
+        }
+
+        .section-panel { display: none; padding: 0.75rem 1rem 2rem; }
+        .section-panel.active { display: block; }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--section-title-color);
+            margin-bottom: 0.6rem;
+        }
+
+        /* ── Bed grid ── */
+        .bed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 0.45rem;
+        }
+
+        .bed-card {
+            position: relative;
+            min-width: 75px;
+            height: 60px;
+            background: var(--bed-bg);
+            border: 1px solid var(--bed-border);
+            border-radius: 7px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 55px;
-            border: 1px solid var(--bed-border);
-            border-radius: 0.5rem;
-            background-color: var(--bed-bg);
-            font-size: 0.875rem;
-            text-align: center;
             overflow: hidden;
-            position: relative;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            transition: background-color 0.2s, border-color 0.2s, transform 0.15s;
+            border-top-width: 3px;
         }
-        .bed.locked { background-color: var(--bed-locked-bg); border-color: var(--bed-locked-border); }
-        .bed.unlocked { background-color: var(--bed-unlocked-bg); border-color: var(--bed-unlocked-border); }
-        
-        .bed-number {
-            font-weight: bold;
-            color: var(--text-secondary);
-            position: absolute;
-            top: 2px;
-            left: 3px;
-            font-size: 0.65rem;
-        }
-        
-        .bed-group {
-            position: absolute;
-            top: 2px;
-            right: 3px;
-            font-size: 0.55rem;
-            font-weight: bold;
-            background-color: #f97316;
-            color: white;
-            padding: 0 3px;
-            border-radius: 0.25rem;
-            display: none;
-        }
-        .bed-group.visible { display: block; }
-        
-        body.theme-sunlight .bed-group { color: black; }
-        
-        .bed-crop {
-            color: var(--text-primary);
-            font-size: 0.7rem;
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            word-wrap: break-word;
-            padding: 0 2px;
-        }
-        
-        .status-icon { font-size: 0.65rem; margin-left: 2px; }
-        
-        .highlight {
+        .bed-card.released { border-top-color: #16a34a; }
+        .bed-card.locked { border-top-color: var(--bed-border); }
+        .bed-card.highlighted {
             background-color: var(--text-highlight-bg) !important;
             border-color: var(--text-highlight-border) !important;
-            animation: pulse 1s infinite alternate;
+            animation: bedpulse 0.9s ease-in-out infinite alternate;
+        }
+        .bed-card.group-highlighted {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+        body.theme-sunlight .bed-card.group-highlighted {
+            background-color: #422006;
+            border-color: #eab308;
         }
 
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.03); } }
-        
-        .to-top-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 1.5rem;
-            margin-bottom: 2rem;
-            color: var(--accent-color);
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            width: 100%;
+        @keyframes bedpulse {
+            from { transform: scale(1); }
+            to   { transform: scale(1.06); }
         }
-        .to-top-link:hover { color: var(--accent-hover-color); }
-        .to-top-link svg { margin-right: 0.5rem; }
 
-        .top-controls-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--bed-border);
-        }
-        
-        .sun-mode-button {
-            width: 40px;
-            height: 40px;
-            background-color: var(--crop-item-bg);
-            border: 1px solid var(--bed-border);
-            border-radius: 0.3rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease-in-out;
-            color: var(--crop-item-text);
-        }
-        .sun-mode-button:hover { background-color: var(--crop-item-hover-bg); transform: translateY(-2px); }
-        .sun-mode-button svg { width: 24px; height: 24px; fill: currentColor; }
-        .sun-mode-button.active { background-color: var(--text-highlight-bg); border-color: var(--text-highlight-border); color: var(--text-primary); }
-        .sun-mode-button.active svg { fill: #000000; }
-        
-        .settings-button {
-            width: 40px;
-            height: 40px;
-            background-color: var(--crop-item-bg);
-            border: 1px solid var(--bed-border);
-            border-radius: 0.3rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 0.5rem;
-            color: var(--crop-item-text);
-        }
-        .settings-button:hover { background-color: var(--crop-item-hover-bg); }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 100;
-            overflow-y: auto;
-        }
-        .modal.show { display: flex; align-items: center; justify-content: center; }
-        .modal-content {
-            background-color: var(--bg-card);
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            max-width: 90%;
-            max-height: 90%;
-            overflow-y: auto;
-        }
-        .modal h2 { margin-bottom: 1rem; }
-        .close-btn {
-            float: right;
-            cursor: pointer;
-            font-size: 1.5rem;
+        .bed-num {
+            position: absolute;
+            top: 3px;
+            left: 4px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--text-secondary);
             line-height: 1;
         }
-        .setting-group { margin-bottom: 1rem; }
-        .setting-label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-        .checkbox-item {
-            padding: 0.5rem 0.75rem;
-            border: 1px solid var(--bed-border);
-            border-radius: 0.5rem;
-            cursor: pointer;
-            background-color: var(--crop-item-bg);
-            color: var(--crop-item-text);
+        .bed-crop-name {
+            font-size: 0.68rem;
+            font-weight: 500;
+            text-align: center;
+            color: var(--text-primary);
+            padding: 0 4px;
+            line-height: 1.2;
+            word-break: break-word;
+            max-height: 36px;
+            overflow: hidden;
         }
-        .checkbox-item.checked { background-color: var(--accent-color); color: white; }
-        
-        .save-btn {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 1rem;
+        .bed-card.highlighted .bed-crop-name,
+        .bed-card.highlighted .bed-num {
+            color: #000 !important;
         }
-        .save-btn:hover { background-color: var(--accent-hover-color); }
+
+        .group-badge {
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            font-size: 0.58rem;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            line-height: 1.3;
+            white-space: nowrap;
+            transition: transform 0.1s;
+        }
+        .group-badge:hover { transform: scale(1.15); }
+
+        /* Group badge colors */
+        .g1  { background: #dcfce7; color: #166534; }
+        .g2  { background: #dbeafe; color: #1e40af; }
+        .g3  { background: #fce7f3; color: #9d174d; }
+        .g4  { background: #fef9c3; color: #854d0e; }
+        .g5  { background: #f3e8ff; color: #6b21a8; }
+        .g6  { background: #ffedd5; color: #9a3412; }
+        .g7  { background: #d1fae5; color: #065f46; }
+        .g8  { background: #e0f2fe; color: #0c4a6e; }
+        .g9  { background: #fef3c7; color: #92400e; }
+        .g10 { background: #fce7f3; color: #701a75; }
+
+        /* ── Loading / Error ── */
+        .spinner-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+            gap: 1rem;
+            color: var(--text-secondary);
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--bed-border);
+            border-top-color: #047857;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        body.theme-sunlight .spinner { border-top-color: #eab308; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-msg {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        body.theme-sunlight .error-msg {
+            background: #3b0a0a;
+            border-color: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* ── Responsive tweaks ── */
+        @media (min-width: 640px) {
+            .app-title { font-size: 1.15rem; }
+            .bed-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+        }
+        @media (min-width: 1024px) {
+            .crop-list { max-width: 700px; margin: 0 auto; }
+            .section-panel { max-width: 1000px; margin: 0 auto; }
+        }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 theme-default" id="top">
-    <div class="container py-6">
-        <h1 class="text-3xl font-bold text-center mb-8">
-            <span id="emoji-left"></span> Markplan for Grøntsagsordningen i AiH <span id="emoji-right"></span>
-        </h1>
+<body id="top">
 
-        <section id="cropList" class="mb-12 p-6 bg-white rounded-lg shadow-lg">
-            <div class="top-controls-container">
-                <h2 class="font-semibold text-lg">T = Top, M = Midt, B = Bund</h2>
-                <div class="flex">
-<button id="sunModeButton" class="sun-mode-button" title="Skift til sollys-tilstand">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="5"/>
-                            <line x1="12" y1="1" x2="12" y2="3"/>
-                            <line x1="12" y1="21" x2="12" y2="23"/>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                            <line x1="1" y1="12" x2="3" y2="12"/>
-                            <line x1="21" y1="12" x2="23" y2="12"/>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                        </svg>
-                    </button>
-                    <button id="settingsButton" class="settings-button" title="Dine indstillinger">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                    </button>
-                    <button id="settingsButton" class="settings-button" title="Indstillinger">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.25 8a2.75 2.75 0 1 1 5.5 0 2.75 2.75 0 0 1-5.5 0"/>
-                            <path d="M9.879 8a.75.75 0 0 1 .122.573l-.016.021-.016.021a2.25 2.25 0 0 1-.676 2.011l-.11.106-.11.106a.75.75 0 0 1-.28.205l-.063.064-.063.064a2.25 2.25 0 0 1-2.012.927l-.09.088-.09.088a2.25 2.25 0 0 1-2.685-2.685l.09-.088.09-.088a.75.75 0 0 1 .205-.28l.064-.063.064-.063a.75.75 0 0 1 .573-.122l.021.016.021.016a.75.75 0 0 1-.011.144l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063a2.25 2.25 0 0 1-.927 2.012l-.088.09-.088.09a2.25 2.25 0 0 1 2.685 2.685l-.088.09-.088.09a.75.75 0 0 1-.28.28l-.063.064-.063.064a.75.75 0 0 1-.122.573l-.016.021-.016.021a.75.75 0 0 1 .122.573l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063a2.25 2.25 0 0 1-.927 2.012l-.088.09-.088.09a2.25 2.25 0 0 1-2.685-2.685l.09-.088.09-.088a.75.75 0 0 1 .205-.28l.064-.063.064-.063a.75.75 0 0 1 .573-.122l.021.016.021.016a.75.75 0 0 1-.011.144l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063a2.25 2.25 0 0 1-.927 2.012l-.088.09-.088.09a2.25 2.25 0 0 1-2.685-2.685l.09-.088.09-.088a.75.75 0 0 1 .205-.28l.064-.063.064-.063a.75.75 0 0 1 .573-.122l.021.016.021.016.021.016a.75.75 0 0 1-.011.144l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063a2.25 2.25 0 0 1-.927 2.012l-.088.09-.088.09a2.25 2.25 0 0 1-2.685-2.685l.09-.088.09-.088a.75.75 0 0 1 .205-.28l.064-.063.064-.063a.75.75 0 0 1 .573-.122l.021.016.021.016a.75.75 0 0 1-.011.144l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063a2.25 2.25 0 0 1-.927 2.012l-.088.09-.088.09a2.25 2.25 0 0 1-2.685-2.685l.09-.088.09-.088a.75.75 0 0 1 .205-.28l.064-.063.064-.063a.75.75 0 0 1 .573-.122l.021.016.021.016a.75.75 0 0 1-.011.144l-.016.021-.016.021a.75.75 0 0 1-.28.28l-.064.063-.064.063Z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div id="cropListContent" class="space-y-2 mt-4">
-                <div class="text-center py-4 text-gray-500">Indlæser markplan...</div>
-            </div>
-        </section>
+<!-- ── Header ── -->
+<header class="app-header">
+    <h1 class="app-title">
+        <span id="emoji-left" class="emoji"></span>
+        Markplan for Grøntsagsordningen i AiH
+        <span id="emoji-right" class="emoji"></span>
+    </h1>
+    <button id="sunBtn" class="sun-btn" title="Skift til sollys-tilstand" aria-label="Sollys-tilstand">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+    </button>
+</header>
 
-        <section id="fieldOverview" class="mb-12 p-6 bg-white rounded-lg shadow-lg">
-            <h2 class="text-2xl font-semibold mb-6">Grafisk Markoversigt</h2>
-            <div id="fieldContent" class="space-y-8">
-                <div class="section-container">
-                    <h3 class="text-xl font-medium mb-2 text-center">Top-afsnit</h3>
-                    <div id="section-T" class="field-section"></div>
-                    <a href="#top" class="to-top-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                        Til toppen <span class="ml-2" id="top-emoji-T"></span>
-                    </a>
-                </div>
+<!-- ── Main tabs ── -->
+<nav class="main-tabs" role="tablist">
+    <button class="main-tab-btn active" id="tab-crops" role="tab" aria-selected="true" aria-controls="panel-crops">
+        Afgrøder
+    </button>
+    <button class="main-tab-btn" id="tab-field" role="tab" aria-selected="false" aria-controls="panel-field">
+        Markoversigt
+    </button>
+</nav>
 
-                <div class="section-container mt-8">
-                    <h3 class="text-xl font-medium mb-2 text-center">Midt-afsnit</h3>
-                    <div id="section-M" class="field-section"></div>
-                    <a href="#top" class="to-top-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                        Til toppen <span class="ml-2" id="top-emoji-M"></span>
-                    </a>
-                </div>
-
-                <div class="section-container mt-8">
-                    <h3 class="text-xl font-medium mb-2 text-center">Bund-afsnit</h3>
-                    <div id="section-B" class="field-section"></div>
-                    <a href="#top" class="to-top-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                        Til toppen <span class="ml-2" id="top-emoji-B"></span>
-                    </a>
-                </div>
-            </div>
-        </section>
+<!-- ── Afgrøder panel ── -->
+<div id="panel-crops" class="tab-panel active" role="tabpanel">
+    <div class="search-wrap">
+        <input type="search" id="cropSearch" class="search-input" placeholder="Søg efter afgrøde..." autocomplete="off" aria-label="Søg afgrøder">
     </div>
-
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeModal">&times;</span>
-            <h2>Indstillinger</h2>
-            
-            <div class="setting-group">
-                <label class="setting-label">Vælg din lugegruppe:</label>
-                <div id="groupCheckboxes" class="checkbox-group"></div>
-            </div>
-            
-            <div class="setting-group">
-                <label class="setting-label">Favoritafgrøder:</label>
-                <div id="cropCheckboxes" class="checkbox-group"></div>
-            </div>
-            
-            <button id="saveSettings" class="save-btn">Gem indstillinger</button>
+    <div class="crop-list" id="cropListEl">
+        <div class="spinner-wrap">
+            <div class="spinner"></div>
+            <span>Indlæser afgrøder…</span>
         </div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const body = document.body;
-            const cropListContent = document.getElementById('cropListContent');
-            const sectionT = document.getElementById('section-T');
-            const sectionM = document.getElementById('section-M');
-            const sectionB = document.getElementById('section-B');
-            const emojiLeft = document.getElementById('emoji-left');
-            const emojiRight = document.getElementById('emoji-right');
-            const sunModeButton = document.getElementById('sunModeButton');
-            const settingsButton = document.getElementById('settingsButton');
-            const settingsModal = document.getElementById('settingsModal');
-            const closeModal = document.getElementById('closeModal');
-            const saveSettings = document.getElementById('saveSettings');
-            const groupCheckboxes = document.getElementById('groupCheckboxes');
-            const cropCheckboxes = document.getElementById('cropCheckboxes');
-            const topEmojiT = document.getElementById('top-emoji-T');
-            const topEmojiM = document.getElementById('top-emoji-M');
-            const topEmojiB = document.getElementById('top-emoji-B');
+<!-- ── Markoversigt panel ── -->
+<div id="panel-field" class="tab-panel" role="tabpanel">
+    <div class="sub-tabs" role="tablist" aria-label="Marksektioner">
+        <button class="sub-tab-btn active" id="stab-T" data-section="T" role="tab">Top</button>
+        <button class="sub-tab-btn" id="stab-M" data-section="M" role="tab">Midt</button>
+        <button class="sub-tab-btn" id="stab-B" data-section="B" role="tab">Bund</button>
+    </div>
 
-            let parsedFieldData = [];
-            let cropLocations = {};
-            let groupCrops = {};
-            let allGroups = [];
-            let userSettings = { selectedGroup: '', favoriteCrops: [] };
-            
-            const vegetableEmojis = ['🌸', '🫘', '🍄‍🟫', '🫛', '🥕', '🫚', '🧅', '🧄', '🥔', '🥒', '🥬', '🥦', '🍄', '🌶️', '🌽', '🍅', '🫑', '🍓', '🍑', '🍎', '🍐', '🥭', '🍊', '🍉', '🦋', '🐛', '🐝', '🪳', '🦗', '🪱', '🕷️', '🦠', '🐞', '🪲', '🌱', '🪻', '🌼', '🌷', '🌻', '🌺', '🌹', '🏵️', '🌿', '🌤️', '🌧️', '🌞', '🌈', '💧'];
+    <div id="sec-T" class="section-panel active">
+        <p class="section-title">Top-afsnit</p>
+        <div class="bed-grid" id="grid-T"></div>
+    </div>
+    <div id="sec-M" class="section-panel">
+        <p class="section-title">Midt-afsnit</p>
+        <div class="bed-grid" id="grid-M"></div>
+    </div>
+    <div id="sec-B" class="section-panel">
+        <p class="section-title">Bund-afsnit</p>
+        <div class="bed-grid" id="grid-B"></div>
+    </div>
+</div>
 
-            function loadSettings() {
-                const saved = localStorage.getItem('markplanSettings');
-                if (saved) userSettings = JSON.parse(saved);
-            }
+<script>
+(function () {
+    'use strict';
 
-            function saveSettingsFunc() {
-                localStorage.setItem('markplanSettings', JSON.stringify(userSettings));
-                settingsModal.classList.remove('show');
-                renderFieldOverview();
-            }
+    /* ── Constants ── */
+    const SUPABASE_URL = 'https://ujxmftvftcbjrdmzhlrw.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_EeimAI1x6_X1KxT-Clw5Bg_zIveRDYb';
 
-            function getRandomEmoji() { return vegetableEmojis[Math.floor(Math.random() * vegetableEmojis.length)]; }
-            function setRandomEmojis() {
-                emojiLeft.textContent = getRandomEmoji();
-                emojiRight.textContent = getRandomEmoji();
-                topEmojiT.textContent = getRandomEmoji();
-                topEmojiM.textContent = getRandomEmoji();
-                topEmojiB.textContent = getRandomEmoji();
-            }
+    const EMOJIS = ['🌸','🫘','🍄‍🟫','🫛','🥕','🫚','🧅','🧄','🥔','🥒','🥬','🥦','🍄','🌶️','🌽','🍅','🫑','🍓','🍑','🍎','🍐','🥭','🍊','🍉','🦋','🐛','🐝','🪳','🦗','🪱','🕷️','🦠','🐞','🪲','🌱','🪻','🌼','🌷','🌻','🌺','🌹','🏵️','🌿','🌤️','🌧️','🌞','🌈','💧'];
 
-            function getStatusIcon(frigivet) { return frigivet === '1' ? '✅' : '🔒'; }
+    const GROUP_COLORS = {
+        1:'g1', 2:'g2', 3:'g3', 4:'g4', 5:'g5',
+        6:'g6', 7:'g7', 8:'g8', 9:'g9', 10:'g10'
+    };
 
-            async function fetchCsvData(url) {
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`HTTP fejl! status: ${response.status}`);
-                    const text = await response.text();
-                    return parseCsv(text);
-                } catch (error) {
-                    console.error("Fejl ved indlæsning:", error);
-                    cropListContent.innerHTML = '<div class="text-red-600 text-center py-4">Kunne ikke indlæse markplanen.</div>';
-                    return [];
-                }
-            }
+    /* ── State ── */
+    let bedsData    = [];   // raw from DB
+    let cropsMap    = {};   // name -> { is_released }
+    let groupsMap   = {};   // group_number -> { description, beds_text }
+    let cropToBeds  = {};   // crop_name -> [{section, bed_number}]
+    let groupToBeds = {};   // group_number -> [{section, bed_number}]
 
-            function parseCsv(csvText) {
-                const lines = csvText.trim().split('\n');
-                if (lines.length === 0) return [];
-                const headers = lines[0].split(',').map(h => h.trim());
-                return lines.slice(1).map(line => {
-                    const values = line.split(',').map(v => v.trim());
-                    return headers.reduce((obj, h, i) => ({ ...obj, [h]: values[i] || '' }), {});
-                });
-            }
+    let activeCrop  = null;  // highlighted crop name
+    let activeGroup = null;  // highlighted group number (toggled by badge click)
 
-            function processFieldData(data) {
-                cropLocations = {};
-                groupCrops = {};
-                allGroups = [];
-                parsedFieldData = data;
+    /* ── DOM refs ── */
+    const body        = document.body;
+    const sunBtn      = document.getElementById('sunBtn');
+    const tabCrops    = document.getElementById('tab-crops');
+    const tabField    = document.getElementById('tab-field');
+    const panelCrops  = document.getElementById('panel-crops');
+    const panelField  = document.getElementById('panel-field');
+    const cropListEl  = document.getElementById('cropListEl');
+    const cropSearch  = document.getElementById('cropSearch');
+    const emojiLeft   = document.getElementById('emoji-left');
+    const emojiRight  = document.getElementById('emoji-right');
 
-                data.forEach(row => {
-                    const bedNum = parseInt(row.Bed);
-                    
-                    const addCropLocation = (section, cropName, grupo, frigivet, bedNumber) => {
-                        if (cropName && cropName !== 'Brak' && cropName !== '') {
-                            let cropFrigivet = frigivet || '0';
-                            if (!cropLocations[cropName]) cropLocations[cropName] = { T: [], M: [], B: [], frigivet: cropFrigivet };
-                            cropLocations[cropName][section].push({ bed: bedNumber, frigivet: cropFrigivet });
-                            
-                            if (grupo && !allGroups.includes(grupo)) allGroups.push(grupo);
-                            if (grupo) {
-                                if (!groupCrops[grupo]) groupCrops[grupo] = [];
-                                groupCrops[grupo].push({ bed: bedNumber, section, crop: cropName });
-                            }
-                        }
-                    };
+    /* ── Helpers ── */
+    function rnd(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-                    addCropLocation('T', row.Top, row.TopGruppe, row.TopFrigivet, bedNum);
-                    addCropLocation('M', row.Midt, row.MidtGruppe, row.MidtFrigivet, bedNum);
-                    addCropLocation('B', row.Bund, row.BundGruppe, row.BundFrigivet, bedNum);
-                });
+    function setEmojis() {
+        emojiLeft.textContent  = rnd(EMOJIS);
+        emojiRight.textContent = rnd(EMOJIS);
+    }
 
-                allGroups.sort((a, b) => parseInt(a) - parseInt(b));
-                for (const cropName in cropLocations) {
-                    ['T', 'M', 'B'].forEach(s => cropLocations[cropName][s].sort((a, b) => a.bed - b.bed));
-                }
-            }
+    function showError(container, msg) {
+        container.innerHTML = `<div class="error-msg">${msg}</div>`;
+    }
 
-            function renderCropList() {
-                cropListContent.innerHTML = '';
-                const sortedCropNames = Object.keys(cropLocations).sort();
-                if (sortedCropNames.length === 0) {
-                    cropListContent.innerHTML = '<div class="text-center py-4 text-gray-500">Ingen afgrøder fundet.</div>';
-                    return;
-                }
+    /* ── Sunlight mode ── */
+    function applySunlight(on) {
+        body.classList.toggle('theme-sunlight', on);
+        sunBtn.classList.toggle('active', on);
+        localStorage.setItem('sunlightMode', on ? '1' : '0');
+    }
+    sunBtn.addEventListener('click', () => applySunlight(!body.classList.contains('theme-sunlight')));
 
-                sortedCropNames.forEach(cropName => {
-                    const loc = cropLocations[cropName];
-                    const frigivet = loc.frigivet;
-                    const statusIcon = getStatusIcon(frigivet);
-                    const isFavorite = userSettings.favoriteCrops.includes(cropName);
-                    
-                    const locations = [...new Set([...loc.T, ...loc.M, ...loc.B])];
-                    const beds = locations.map(l => l.bed || l);
-                    
-                    const div = document.createElement('div');
-                    let classes = 'crop-item ' + (frigivet === '1' ? 'unlocked' : 'locked');
-                    if (isFavorite) classes += ' selected';
-                    div.className = classes;
-                    div.innerHTML = `
-                        <span class="crop-name">${cropName}</span>
-                        <span class="crop-status">${statusIcon} (${beds.join(', ')})</span>
-                    `;
-                    div.dataset.cropName = cropName;
-                    div.addEventListener('click', () => highlightCropInField(cropName));
-                    cropListContent.appendChild(div);
-                });
-            }
+    /* ── Tab switching (main) ── */
+    function switchMainTab(tab) {
+        const isCrops = tab === 'crops';
+        tabCrops.classList.toggle('active', isCrops);
+        tabField.classList.toggle('active', !isCrops);
+        panelCrops.classList.toggle('active', isCrops);
+        panelField.classList.toggle('active', !isCrops);
+        tabCrops.setAttribute('aria-selected', isCrops ? 'true' : 'false');
+        tabField.setAttribute('aria-selected', isCrops ? 'false' : 'true');
+    }
+    tabCrops.addEventListener('click', () => switchMainTab('crops'));
+    tabField.addEventListener('click', () => switchMainTab('field'));
 
-            function renderFieldOverview() {
-                sectionT.innerHTML = '';
-                sectionM.innerHTML = '';
-                sectionB.innerHTML = '';
-
-                const maxBedNum = parsedFieldData.reduce((max, row) => Math.max(max, parseInt(row.Bed || 0)), 0);
-                const selectedGroup = userSettings.selectedGroup;
-
-                for (let i = 1; i <= maxBedNum; i++) {
-                    const bedData = parsedFieldData.find(row => parseInt(row.Bed) === i);
-                    if (bedData) {
-                        const topGrupo = bedData.TopGruppe || '';
-                        const topFrig = bedData.TopFrigivet || '0';
-                        const midtGrupo = bedData.MidtGruppe || '';
-                        const midtFrig = bedData.MidtFrigivet || '0';
-                        const bundGrupo = bedData.BundGruppe || '';
-                        const bundFrig = bedData.BundFrigivet || '0';
-                        
-                        sectionT.appendChild(createBedElement('T', i, bedData.Top, topGrupo, topFrig, selectedGroup));
-                        sectionM.appendChild(createBedElement('M', i, bedData.Midt, midtGrupo, midtFrig, selectedGroup));
-                        sectionB.appendChild(createBedElement('B', i, bedData.Bund, bundGrupo, bundFrig, selectedGroup));
-                    }
-                }
-            }
-
-            function createBedElement(section, bedNum, cropName, grupo, frigivet, selectedGroup) {
-                const div = document.createElement('div');
-                div.id = `bed-${section}-${bedNum}`;
-                const locked = frigivet !== '1';
-                div.className = 'bed ' + (locked ? 'locked' : 'unlocked');
-                div.dataset.section = section;
-                div.dataset.bedNum = bedNum;
-                div.dataset.cropName = cropName;
-                div.dataset.frigivet = frigivet;
-                
-                const statusIcon = getStatusIcon(frigivet);
-                const displayCrop = cropName && cropName !== 'Brak' ? `${cropName}<span class="status-icon">${statusIcon}</span>` : '';
-                
-                const showGroup = selectedGroup && grupo === selectedGroup;
-                
-                div.innerHTML = `
-                    <span class="bed-number">${bedNum}</span>
-                    ${grupo ? `<span class="bed-group ${showGroup ? 'visible' : ''}">G${grupo}</span>` : ''}
-                    <span class="bed-crop">${displayCrop}</span>
-                `;
-                return div;
-            }
-
-            function highlightCropInField(cropName) {
-                document.querySelectorAll('.bed.highlight').forEach(b => b.classList.remove('highlight'));
-                
-                const loc = cropLocations[cropName];
-                if (!loc) return;
-                
-                let first = null;
-                ['T', 'M', 'B'].forEach(s => {
-                    loc[s].forEach(item => {
-                        const el = document.getElementById(`bed-${s}-${item.bed || item}`);
-                        if (el) {
-                            el.classList.add('highlight');
-                            if (!first) first = el;
-                        }
-                    });
-                });
-                if (first) first.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-
-            function toggleSunlightMode() {
-                if (body.classList.contains('theme-sunlight')) {
-                    body.classList.remove('theme-sunlight');
-                    body.classList.add('theme-default');
-                    localStorage.setItem('sunlightMode', 'inactive');
-                    sunModeButton.classList.remove('active');
-                } else {
-                    body.classList.remove('theme-default');
-                    body.classList.add('theme-sunlight');
-                    localStorage.setItem('sunlightMode', 'active');
-                    sunModeButton.classList.add('active');
-                }
-            }
-
-            function openSettings() {
-                groupCheckboxes.innerHTML = '';
-                allGroups.forEach(grupo => {
-                    const label = document.createElement('div');
-                    label.className = 'checkbox-item' + (userSettings.selectedGroup === grupo ? ' checked' : '');
-                    label.textContent = 'G' + grupo;
-                    label.dataset.grupo = grupo;
-                    label.addEventListener('click', () => {
-                        document.querySelectorAll('#groupCheckboxes .checkbox-item').forEach(c => c.classList.remove('checked'));
-                        if (userSettings.selectedGroup === grupo) {
-                            userSettings.selectedGroup = '';
-                        } else {
-                            label.classList.add('checked');
-                            userSettings.selectedGroup = grupo;
-                        }
-                    });
-                    groupCheckboxes.appendChild(label);
-                });
-                
-                cropCheckboxes.innerHTML = '';
-                const sortedCrops = Object.keys(cropLocations).sort();
-                sortedCrops.forEach(cropName => {
-                    const label = document.createElement('div');
-                    const isChecked = userSettings.favoriteCrops.includes(cropName);
-                    label.className = 'checkbox-item' + (isChecked ? ' checked' : '');
-                    label.textContent = cropName;
-                    label.dataset.crop = cropName;
-                    label.addEventListener('click', () => {
-                        if (userSettings.favoriteCrops.includes(cropName)) {
-                            userSettings.favoriteCrops = userSettings.favoriteCrops.filter(c => c !== cropName);
-                            label.classList.remove('checked');
-                        } else {
-                            userSettings.favoriteCrops.push(cropName);
-                            label.classList.add('checked');
-                        }
-                    });
-                    cropCheckboxes.appendChild(label);
-                });
-                
-                settingsModal.classList.add('show');
-            }
-
-            sunModeButton.addEventListener('click', toggleSunlightMode);
-            settingsButton.addEventListener('click', openSettings);
-            closeModal.addEventListener('click', () => settingsModal.classList.remove('show'));
-            saveSettings.addEventListener('click', saveSettingsFunc);
-
-            async function init() {
-                loadSettings();
-                setRandomEmojis();
-                
-                const savedSunlightMode = localStorage.getItem('sunlightMode') || 'inactive';
-                if (savedSunlightMode === 'active') {
-                    body.classList.add('theme-sunlight');
-                    sunModeButton.classList.add('active');
-                } else {
-                    body.classList.add('theme-default');
-                }
-
-                const data = await fetchCsvData('markplan_aih.csv');
-                if (data.length > 0) {
-                    processFieldData(data);
-                    renderCropList();
-                    renderFieldOverview();
-                }
-            }
-
-            init();
+    /* ── Section sub-tabs ── */
+    document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const sec = btn.dataset.section;
+            document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.section === sec));
+            ['T','M','B'].forEach(s => {
+                const p = document.getElementById('sec-' + s);
+                p.classList.toggle('active', s === sec);
+            });
         });
-    </script>
+    });
+
+    /* ── Data loading ── */
+    async function loadData() {
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const [bedsRes, cropsRes, groupsRes] = await Promise.all([
+            sb.from('beds').select('*').order('bed_number'),
+            sb.from('crops').select('*').order('name'),
+            sb.from('weeding_groups').select('*').order('group_number'),
+        ]);
+
+        if (bedsRes.error || cropsRes.error || groupsRes.error) {
+            const err = (bedsRes.error || cropsRes.error || groupsRes.error).message;
+            throw new Error(err);
+        }
+
+        bedsData = bedsRes.data || [];
+        const cropsArr = cropsRes.data || [];
+        const groupsArr = groupsRes.data || [];
+
+        // Build cropsMap
+        cropsArr.forEach(c => { cropsMap[c.name] = c; });
+
+        // Build groupsMap
+        groupsArr.forEach(g => { groupsMap[g.group_number] = g; });
+
+        // Build cropToBeds and groupToBeds
+        cropToBeds  = {};
+        groupToBeds = {};
+        bedsData.forEach(bed => {
+            if (bed.crop_name) {
+                if (!cropToBeds[bed.crop_name]) cropToBeds[bed.crop_name] = [];
+                cropToBeds[bed.crop_name].push({ section: bed.section, bed_number: bed.bed_number });
+            }
+            if (bed.luge_gruppe != null) {
+                const g = bed.luge_gruppe;
+                if (!groupToBeds[g]) groupToBeds[g] = [];
+                groupToBeds[g].push({ section: bed.section, bed_number: bed.bed_number });
+            }
+        });
+    }
+
+    /* ── Crop list rendering ── */
+    function locationSummary(cropName) {
+        const beds = cropToBeds[cropName] || [];
+        const bySection = {};
+        beds.forEach(b => {
+            if (!bySection[b.section]) bySection[b.section] = [];
+            bySection[b.section].push(b.bed_number);
+        });
+        const parts = [];
+        ['T','M','B'].forEach(s => {
+            if (bySection[s] && bySection[s].length) {
+                bySection[s].sort((a,b)=>a-b);
+                parts.push(s + ': ' + bySection[s].join(','));
+            }
+        });
+        return parts.join(' · ');
+    }
+
+    function renderCropList(filter) {
+        const q = (filter || '').trim().toLowerCase();
+        const names = Object.keys(cropToBeds).sort((a,b) => a.localeCompare(b, 'da'));
+        const filtered = q ? names.filter(n => n.toLowerCase().includes(q)) : names;
+
+        if (!filtered.length) {
+            cropListEl.innerHTML = '<div class="empty-msg">Ingen afgrøder funder for "' + (filter||'') + '"</div>';
+            return;
+        }
+
+        const frag = document.createDocumentFragment();
+        filtered.forEach(name => {
+            const cropInfo = cropsMap[name];
+            const released = cropInfo && cropInfo.is_released;
+            const locText  = locationSummary(name);
+
+            const div = document.createElement('div');
+            div.className = 'crop-item ' + (released ? 'released' : 'locked');
+            div.dataset.crop = name;
+            if (activeCrop === name) div.classList.add('selected-crop');
+
+            div.innerHTML =
+                '<span class="crop-item-name">' + escHtml(name) + '</span>' +
+                '<span class="crop-item-right">' +
+                    '<span class="crop-item-loc">' + escHtml(locText) + '</span>' +
+                    (released ? '<span class="badge-released">Klar til høst</span>' : '') +
+                '</span>';
+
+            div.addEventListener('click', () => onCropClick(name));
+            frag.appendChild(div);
+        });
+
+        cropListEl.innerHTML = '';
+        cropListEl.appendChild(frag);
+    }
+
+    /* ── Field overview rendering ── */
+    function renderFieldOverview() {
+        ['T','M','B'].forEach(sec => {
+            const grid = document.getElementById('grid-' + sec);
+            grid.innerHTML = '';
+
+            const secBeds = bedsData
+                .filter(b => b.section === sec)
+                .sort((a,b) => a.bed_number - b.bed_number);
+
+            if (!secBeds.length) {
+                grid.innerHTML = '<div class="empty-msg">Ingen bede i dette afsnit.</div>';
+                return;
+            }
+
+            secBeds.forEach(bed => {
+                grid.appendChild(createBedCard(bed));
+            });
+        });
+    }
+
+    function createBedCard(bed) {
+        const cropInfo = bed.crop_name ? cropsMap[bed.crop_name] : null;
+        const released = cropInfo && cropInfo.is_released;
+        const g        = bed.luge_gruppe;
+
+        const card = document.createElement('div');
+        card.className = 'bed-card ' + (released ? 'released' : 'locked');
+        card.id = 'bed-' + bed.section + '-' + bed.bed_number;
+        card.dataset.section = bed.section;
+        card.dataset.bedNumber = bed.bed_number;
+        card.dataset.crop = bed.crop_name || '';
+        card.dataset.group = g != null ? g : '';
+
+        let inner = '<span class="bed-num">' + bed.bed_number + '</span>';
+
+        if (bed.crop_name) {
+            inner += '<span class="bed-crop-name">' + escHtml(bed.crop_name) + '</span>';
+        }
+
+        if (g != null) {
+            const cls = GROUP_COLORS[g] || 'g1';
+            inner += '<span class="group-badge ' + cls + '" data-group="' + g + '" title="Lugegruppe ' + g + '">G' + g + '</span>';
+        }
+
+        card.innerHTML = inner;
+
+        // Badge click: toggle group highlight
+        const badge = card.querySelector('.group-badge');
+        if (badge) {
+            badge.addEventListener('click', e => {
+                e.stopPropagation();
+                const gNum = parseInt(badge.dataset.group);
+                toggleGroupHighlight(gNum);
+            });
+        }
+
+        return card;
+    }
+
+    /* ── Highlight logic ── */
+    function clearAllHighlights() {
+        document.querySelectorAll('.bed-card.highlighted').forEach(el => el.classList.remove('highlighted'));
+        document.querySelectorAll('.bed-card.group-highlighted').forEach(el => el.classList.remove('group-highlighted'));
+        document.querySelectorAll('.crop-item.selected-crop').forEach(el => el.classList.remove('selected-crop'));
+    }
+
+    function highlightCropBeds(cropName) {
+        clearAllHighlights();
+        activeCrop  = cropName;
+        activeGroup = null;
+
+        const beds = cropToBeds[cropName] || [];
+        let firstEl = null;
+        beds.forEach(b => {
+            const el = document.getElementById('bed-' + b.section + '-' + b.bed_number);
+            if (el) {
+                el.classList.add('highlighted');
+                if (!firstEl) firstEl = el;
+            }
+        });
+
+        // Mark selected in crop list
+        document.querySelectorAll('.crop-item').forEach(el => {
+            el.classList.toggle('selected-crop', el.dataset.crop === cropName);
+        });
+
+        return firstEl;
+    }
+
+    function toggleGroupHighlight(gNum) {
+        if (activeGroup === gNum) {
+            // Deselect
+            clearAllHighlights();
+            activeGroup = null;
+            activeCrop  = null;
+            return;
+        }
+        clearAllHighlights();
+        activeGroup = gNum;
+        activeCrop  = null;
+
+        const beds = groupToBeds[gNum] || [];
+        beds.forEach(b => {
+            const el = document.getElementById('bed-' + b.section + '-' + b.bed_number);
+            if (el) el.classList.add('group-highlighted');
+        });
+    }
+
+    function onCropClick(cropName) {
+        // Switch to field tab, highlight beds, switch to correct section, scroll
+        switchMainTab('field');
+        const firstEl = highlightCropBeds(cropName);
+
+        if (firstEl) {
+            const sec = firstEl.dataset.section;
+            // Activate correct sub-tab
+            document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.section === sec));
+            ['T','M','B'].forEach(s => {
+                document.getElementById('sec-' + s).classList.toggle('active', s === sec);
+            });
+
+            // Scroll after a brief paint delay
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 80);
+            });
+        }
+    }
+
+    /* ── Crop search ── */
+    cropSearch.addEventListener('input', () => renderCropList(cropSearch.value));
+
+    /* ── XSS helper ── */
+    function escHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /* ── Init ── */
+    async function init() {
+        // Emojis
+        setEmojis();
+
+        // Sunlight mode from localStorage
+        const sl = localStorage.getItem('sunlightMode');
+        if (sl === '1') applySunlight(true);
+
+        // Show loading spinner in field grids too
+        ['T','M','B'].forEach(s => {
+            document.getElementById('grid-' + s).innerHTML =
+                '<div class="spinner-wrap"><div class="spinner"></div></div>';
+        });
+
+        try {
+            await loadData();
+            renderCropList('');
+            renderFieldOverview();
+        } catch (err) {
+            console.error('Fejl ved indlæsning fra Supabase:', err);
+            const msg = 'Der opstod en fejl ved indlæsning af markplanen. Prøv at genindlæse siden.<br><small>' + escHtml(err.message) + '</small>';
+            showError(cropListEl, msg);
+            ['T','M','B'].forEach(s => showError(document.getElementById('grid-' + s), msg));
+        }
+    }
+
+    init();
+})();
+</script>
 </body>
 </html>

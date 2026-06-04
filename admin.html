@@ -5,239 +5,490 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markplan Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .admin-container { max-width: 900px; margin: 0 auto; padding: 1rem; }
-        .crop-section { margin-bottom: 1.5rem; }
-        .crop-header { font-weight: bold; background: #065f46; color: white; padding: 1rem; border-radius: 0.5rem 0.5rem 0 0; display: flex; justify-content: space-between; }
-        .crop-list { background: white; border-radius: 0 0 0.5rem 0.5rem; padding: 0.5rem; }
-        .crop-row { display: grid; grid-template-columns: 80px 1fr 90px; gap: 0.5rem; padding: 0.75rem; border-bottom: 1px solid #e5e7eb; align-items: center; }
-        .crop-row:last-child { border-bottom: none; }
-        .lock-btn { cursor: pointer; padding: 0.5rem; border-radius: 0.5rem; text-align: center; transition: all 0.2s; }
-        .lock-btn.locked { background: #fef2f2; border: 2px solid #fecaca; }
-        .lock-btn.unlocked { background: #f0fdf4; border: 2px solid #22c55e; }
-        .action-btn { background: #10b981; color: white; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-size: 1.1rem; cursor: pointer; }
-        .action-btn:hover { background: #059669; }
-        .upload-btn { background: #3b82f6; color: white; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-size: 1.1rem; cursor: pointer; display: inline-block; }
-        .upload-btn:hover { background: #2563eb; }
-        .error { color: red; margin-top: 0.5rem; }
         .hidden { display: none !important; }
+
+        /* Group badge colors */
+        .badge-g1  { background: #dcfce7; color: #166534; }
+        .badge-g2  { background: #dbeafe; color: #1e40af; }
+        .badge-g3  { background: #fce7f3; color: #9d174d; }
+        .badge-g4  { background: #fef9c3; color: #854d0e; }
+        .badge-g5  { background: #f3e8ff; color: #6b21a8; }
+        .badge-g6  { background: #ffedd5; color: #9a3412; }
+        .badge-g7  { background: #d1fae5; color: #065f46; }
+        .badge-g8  { background: #e0f2fe; color: #0c4a6e; }
+        .badge-g9  { background: #fef3c7; color: #92400e; }
+        .badge-g10 { background: #fce7f3; color: #701a75; }
+
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #d1d5db;
+            border-radius: 26px;
+            transition: 0.25s;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px; width: 20px;
+            left: 3px; bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.25s;
+        }
+        input:checked + .toggle-slider { background: #047857; }
+        input:checked + .toggle-slider:before { transform: translateX(22px); }
+
+        /* Flash animation */
+        @keyframes flash-green {
+            0%   { background-color: #d1fae5; }
+            100% { background-color: transparent; }
+        }
+        .flash { animation: flash-green 0.8s ease-out; }
+
+        /* Member table */
+        .member-table th {
+            background: #065f46;
+            color: white;
+            padding: 0.6rem 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .member-table td {
+            padding: 0.6rem 0.75rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .member-table tr:last-child td { border-bottom: none; }
+        .member-table tr:hover td { background: #f0fdf4; }
+
+        /* Nav tab active */
+        .nav-tab { transition: all 0.15s; }
+        .nav-tab.active {
+            background: #047857;
+            color: white;
+            border-color: #047857;
+        }
+
+        /* Scrollable table wrapper */
+        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        /* Crop row */
+        .crop-row { transition: background 0.15s; }
+        .crop-row:hover { background: #f9fafb; }
     </style>
 </head>
 <body>
-    <div id="loginPage" class="login-container">
-        <div class="bg-white p-8 rounded-lg shadow-lg text-center w-80">
-            <h1 class="text-2xl font-bold mb-4 text-green-700">Markplan Admin</h1>
-            <input type="password" id="passwordInput" placeholder="Kode" class="border p-2 rounded w-full mb-4 text-center">
-            <button onclick="login()" class="bg-green-600 text-white px-6 py-2 rounded w-full">Login</button>
-            <p id="loginError" class="error text-center mt-2">Forkert kode</p>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="loginPage" class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-80 text-center">
+        <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-7 h-7 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+        </div>
+        <h1 class="text-2xl font-bold mb-1 text-green-700">Markplan Admin</h1>
+        <p class="text-gray-500 text-sm mb-6">Grøntsagsordningen i AiH</p>
+        <input
+            type="password"
+            id="passwordInput"
+            placeholder="Admin kode"
+            class="border border-gray-300 p-2.5 rounded-lg w-full mb-3 text-center text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            onkeydown="if(event.key==='Enter') login()"
+        >
+        <button
+            onclick="login()"
+            id="loginBtn"
+            class="bg-green-700 hover:bg-green-800 text-white px-6 py-2.5 rounded-lg w-full font-semibold transition-colors"
+        >Log ind</button>
+        <p id="loginError" class="hidden text-red-600 text-sm mt-3 font-medium">Forkert kode</p>
+    </div>
+</div>
+
+<!-- ===== ADMIN PAGE ===== -->
+<div id="adminPage" class="hidden min-h-screen bg-gray-100">
+
+    <!-- Top bar -->
+    <header class="bg-green-800 text-white shadow-md">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-bold leading-tight">Markplan Admin</h1>
+                <p class="text-green-300 text-xs">Grøntsagsordningen i AiH</p>
+            </div>
+            <button
+                onclick="logout()"
+                class="text-sm bg-green-700 hover:bg-red-700 border border-green-600 hover:border-red-600 px-3 py-1.5 rounded-lg transition-colors"
+            >Log ud</button>
+        </div>
+    </header>
+
+    <!-- Nav tabs -->
+    <div class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="flex gap-1 pt-2">
+                <button
+                    id="tabMembers"
+                    class="nav-tab active px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200"
+                    onclick="switchTab('members')"
+                >Lugegrupper &amp; Medlemmer</button>
+                <button
+                    id="tabCrops"
+                    class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-50"
+                    onclick="switchTab('crops')"
+                >Afgrøder &amp; Høst</button>
+            </div>
         </div>
     </div>
 
-    <div id="adminPage" class="admin-container">
-        <h1 class="text-3xl font-bold text-center mb-4 text-green-700">Markplan Admin</h1>
-        
-        <div class="flex justify-center gap-4 mb-6 flex-wrap">
-            <button onclick="loadData()" class="action-btn">Vis afgrøder</button>
-            <label class="action-btn upload-btn">
-                Upload ny fil
-                <input type="file" id="fileInput" accept=".csv" onchange="uploadFile()" style="display:none;">
-            </label>
-            <button onclick="logout()" class="bg-gray-500 text-white px-6 py-2 rounded">Logout</button>
+    <main class="max-w-5xl mx-auto px-4 py-6">
+
+        <!-- Loading indicator -->
+        <div id="loadingIndicator" class="text-center py-12 text-gray-500">
+            <svg class="animate-spin h-8 w-8 text-green-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+            </svg>
+            Henter data…
         </div>
-        
-        <div id="contentArea"></div>
-        
-        <div class="flex justify-center mt-6">
-            <button onclick="downloadCSV()" class="action-btn">Download ændringer</button>
-        </div>
-        <p id="saveMessage" class="text-center mt-2 text-green-600 hidden">Klar til download!</p>
-    </div>
 
-    <script>
-        let fieldData = [];
-        let changes = {};
+        <!-- ---- SECTION: MEMBERS ---- -->
+        <section id="sectionMembers" class="hidden">
+            <div class="flex flex-wrap gap-3 items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-gray-800">Lugegrupper &amp; Medlemmer</h2>
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600 font-medium">Filter:</label>
+                    <select
+                        id="groupFilter"
+                        onchange="renderMembers()"
+                        class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                        <option value="">Alle grupper</option>
+                        <option value="1">Gruppe 1</option>
+                        <option value="2">Gruppe 2</option>
+                        <option value="3">Gruppe 3</option>
+                        <option value="4">Gruppe 4</option>
+                        <option value="5">Gruppe 5</option>
+                        <option value="6">Gruppe 6</option>
+                        <option value="7">Gruppe 7</option>
+                        <option value="8">Gruppe 8</option>
+                        <option value="9">Gruppe 9</option>
+                        <option value="10">Gruppe 10</option>
+                    </select>
+                    <span id="memberCount" class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"></span>
+                </div>
+            </div>
 
-        function login() {
-            if (document.getElementById('passwordInput').value === 'aihmark') {
-                document.getElementById('loginPage').classList.add('hidden');
-                document.getElementById('adminPage').classList.remove('hidden');
-                loadData();
-            } else {
-                document.getElementById('loginError').classList.remove('hidden');
-            }
+            <!-- Desktop table -->
+            <div class="hidden md:block bg-white rounded-xl shadow-sm overflow-hidden table-scroll">
+                <table class="member-table w-full">
+                    <thead>
+                        <tr>
+                            <th>Gruppe</th>
+                            <th>Navn</th>
+                            <th>Adresse</th>
+                            <th>Telefon</th>
+                            <th>Email</th>
+                            <th class="text-center">BG</th>
+                        </tr>
+                    </thead>
+                    <tbody id="memberTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Mobile cards -->
+            <div id="memberCards" class="md:hidden space-y-3"></div>
+        </section>
+
+        <!-- ---- SECTION: CROPS ---- -->
+        <section id="sectionCrops" class="hidden">
+            <div class="flex flex-wrap gap-3 items-center justify-between mb-2">
+                <h2 class="text-lg font-bold text-gray-800">Afgrøder &amp; Høst</h2>
+                <span id="cropsCount" class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"></span>
+            </div>
+            <p class="text-sm text-gray-500 mb-4">Klik på en afgrøde for at skifte dens status</p>
+
+            <!-- Released crops -->
+            <div id="releasedSection" class="mb-5">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-green-700 mb-2">Frigivet</h3>
+                <div id="releasedList" class="bg-white rounded-xl shadow-sm divide-y divide-gray-100"></div>
+                <p id="releasedEmpty" class="hidden text-sm text-gray-400 italic px-4 py-3">Ingen frigivne afgrøder</p>
+            </div>
+
+            <!-- Locked crops -->
+            <div id="lockedSection">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Låst</h3>
+                <div id="lockedList" class="bg-white rounded-xl shadow-sm divide-y divide-gray-100"></div>
+                <p id="lockedEmpty" class="hidden text-sm text-gray-400 italic px-4 py-3">Ingen låste afgrøder</p>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script>
+    // ── Supabase ──────────────────────────────────────────────────────────────
+    const SUPABASE_URL = 'https://ujxmftvftcbjrdmzhlrw.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_EeimAI1x6_X1KxT-Clw5Bg_zIveRDYb';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ── State ─────────────────────────────────────────────────────────────────
+    let allMembers = [];
+    let allCrops   = [];
+    let activeTab  = 'members';
+
+    // ── Auth ──────────────────────────────────────────────────────────────────
+    async function login() {
+        const btn   = document.getElementById('loginBtn');
+        const input = document.getElementById('passwordInput');
+        const err   = document.getElementById('loginError');
+        err.classList.add('hidden');
+        btn.disabled = true;
+        btn.textContent = 'Logger ind…';
+
+        const { error } = await sb.auth.signInWithPassword({
+            email: 'jxrgen@gmail.com',
+            password: input.value
+        });
+
+        if (error) {
+            err.classList.remove('hidden');
+            btn.disabled = false;
+            btn.textContent = 'Log ind';
+            input.select();
+        } else {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('adminPage').classList.remove('hidden');
+            loadAllData();
+        }
+    }
+
+    async function logout() {
+        await sb.auth.signOut();
+        document.getElementById('adminPage').classList.add('hidden');
+        document.getElementById('loginPage').classList.remove('hidden');
+        document.getElementById('passwordInput').value = '';
+        allMembers = [];
+        allCrops   = [];
+    }
+
+    // ── Data loading ──────────────────────────────────────────────────────────
+    async function loadAllData() {
+        show('loadingIndicator');
+        hide('sectionMembers');
+        hide('sectionCrops');
+
+        const [membersRes, cropsRes] = await Promise.all([
+            sb.from('members').select('*').order('luge_gruppe').order('name'),
+            sb.from('crops').select('*').order('name')
+        ]);
+
+        allMembers = membersRes.data || [];
+        allCrops   = cropsRes.data  || [];
+
+        hide('loadingIndicator');
+        switchTab(activeTab);
+    }
+
+    // ── Tab switching ─────────────────────────────────────────────────────────
+    function switchTab(tab) {
+        activeTab = tab;
+
+        const tM = document.getElementById('tabMembers');
+        const tC = document.getElementById('tabCrops');
+
+        if (tab === 'members') {
+            tM.classList.add('active');
+            tC.classList.remove('active');
+            tC.classList.add('text-gray-600');
+            tM.classList.remove('text-gray-600');
+            show('sectionMembers');
+            hide('sectionCrops');
+            renderMembers();
+        } else {
+            tC.classList.add('active');
+            tM.classList.remove('active');
+            tM.classList.add('text-gray-600');
+            tC.classList.remove('text-gray-600');
+            show('sectionCrops');
+            hide('sectionMembers');
+            renderCrops();
+        }
+    }
+
+    // ── Members ───────────────────────────────────────────────────────────────
+    function renderMembers() {
+        const filter  = document.getElementById('groupFilter').value;
+        const members = filter
+            ? allMembers.filter(m => String(m.luge_gruppe) === filter)
+            : allMembers;
+
+        document.getElementById('memberCount').textContent =
+            members.length + ' ' + (members.length === 1 ? 'medlem' : 'medlemmer');
+
+        // ---- Desktop table ----
+        const tbody = document.getElementById('memberTableBody');
+        tbody.innerHTML = '';
+        members.forEach(m => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass(m.luge_gruppe)}">G${m.luge_gruppe}</span></td>
+                <td class="font-medium">${esc(m.name || '')}</td>
+                <td class="text-gray-600">${esc(m.address || '')}</td>
+                <td class="text-gray-600 whitespace-nowrap">${esc(m.phone || '')}</td>
+                <td class="text-gray-600">${esc(m.email || '')}</td>
+                <td class="text-center">${m.bg != null ? `<span class="text-xs font-semibold text-gray-700">${m.bg}</span>` : ''}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // ---- Mobile cards ----
+        const cards = document.getElementById('memberCards');
+        cards.innerHTML = '';
+        members.forEach(m => {
+            const div = document.createElement('div');
+            div.className = 'bg-white rounded-xl shadow-sm p-4';
+            div.innerHTML = `
+                <div class="flex items-start justify-between mb-2">
+                    <span class="font-semibold text-gray-900">${esc(m.name || '')}</span>
+                    <span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass(m.luge_gruppe)}">G${m.luge_gruppe}</span>
+                </div>
+                ${m.address ? `<p class="text-sm text-gray-500 mb-1">${esc(m.address)}</p>` : ''}
+                <div class="flex flex-wrap gap-3 mt-2 text-sm">
+                    ${m.phone ? `<a href="tel:${esc(m.phone)}" class="text-green-700 font-medium">${esc(m.phone)}</a>` : ''}
+                    ${m.email ? `<a href="mailto:${esc(m.email)}" class="text-blue-600">${esc(m.email)}</a>` : ''}
+                    ${m.bg != null ? `<span class="text-gray-500">BG: ${m.bg}</span>` : ''}
+                </div>
+            `;
+            cards.appendChild(div);
+        });
+    }
+
+    // ── Crops ─────────────────────────────────────────────────────────────────
+    function renderCrops() {
+        const released = allCrops.filter(c => c.is_released);
+        const locked   = allCrops.filter(c => !c.is_released);
+
+        document.getElementById('cropsCount').textContent =
+            allCrops.length + ' afgrøder · ' + released.length + ' frigivet';
+
+        renderCropList('releasedList', 'releasedEmpty', released);
+        renderCropList('lockedList',   'lockedEmpty',   locked);
+    }
+
+    function renderCropList(listId, emptyId, crops) {
+        const list  = document.getElementById(listId);
+        const empty = document.getElementById(emptyId);
+        list.innerHTML = '';
+
+        if (crops.length === 0) {
+            list.classList.add('hidden');
+            empty.classList.remove('hidden');
+            return;
+        }
+        list.classList.remove('hidden');
+        empty.classList.add('hidden');
+
+        crops.forEach(crop => {
+            const row = document.createElement('div');
+            row.id = 'crop-row-' + crop.id;
+            row.className = 'crop-row flex items-center gap-3 px-4 py-3 cursor-pointer select-none';
+            row.onclick = () => toggleCrop(crop);
+            row.innerHTML = `
+                <span class="flex-1 font-medium text-gray-800">${esc(crop.name)}</span>
+                <span id="crop-label-${crop.id}" class="text-xs font-semibold ${crop.is_released ? 'text-green-700' : 'text-gray-400'}">
+                    ${crop.is_released ? 'Frigivet' : 'Låst'}
+                </span>
+                <label class="toggle-switch" onclick="event.stopPropagation()">
+                    <input type="checkbox" id="crop-toggle-${crop.id}" ${crop.is_released ? 'checked' : ''} onchange="toggleCrop(getCropById(${crop.id}))">
+                    <span class="toggle-slider"></span>
+                </label>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function getCropById(id) {
+        return allCrops.find(c => c.id === id);
+    }
+
+    async function toggleCrop(crop) {
+        if (!crop) return;
+        const newValue = !crop.is_released;
+
+        // Optimistic UI update
+        crop.is_released = newValue;
+        renderCrops();
+
+        // Persist
+        const { error } = await sb
+            .from('crops')
+            .update({ is_released: newValue })
+            .eq('name', crop.name);
+
+        if (error) {
+            // Revert
+            crop.is_released = !newValue;
+            renderCrops();
+            alert('Fejl ved gemning: ' + error.message);
+            return;
         }
 
-        function logout() {
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('adminPage').classList.add('hidden');
-            document.getElementById('passwordInput').value = '';
+        // Flash feedback
+        const row = document.getElementById('crop-row-' + crop.id);
+        if (row) {
+            row.classList.add('flash');
+            row.addEventListener('animationend', () => row.classList.remove('flash'), { once: true });
         }
+    }
 
-        async function loadData() {
-            try {
-                const response = await fetch('markplan_aih.csv');
-                const text = await response.text();
-                const lines = text.trim().split('\n');
-                const headers = lines[0].split(',').map(h => h.trim());
-                
-                fieldData = lines.slice(1).map(line => {
-                    const values = line.split(',').map(v => v.trim());
-                    return headers.reduce((obj, h, i) => ({ ...obj, [h]: values[i] || '' }), {});
-                });
-                
-                changes = {};
-                renderAllCrops();
-            } catch (error) {
-                alert('Kunne ikke indlæse: ' + error.message);
-            }
-        }
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function badgeClass(g) {
+        const map = {
+            1: 'badge-g1', 2: 'badge-g2', 3: 'badge-g3', 4: 'badge-g4', 5: 'badge-g5',
+            6: 'badge-g6', 7: 'badge-g7', 8: 'badge-g8', 9: 'badge-g9', 10: 'badge-g10'
+        };
+        return map[g] || 'bg-gray-100 text-gray-600';
+    }
 
-        function renderAllCrops() {
-            const area = document.getElementById('contentArea');
-            area.innerHTML = '';
-            
-            const cropsBySection = { Top: {}, Midt: {}, Bund: {} };
-            const groupFields = { Top: 'TopGruppe', Midt: 'MidtGruppe', Bund: 'BundGruppe' };
-            const frigivFields = { Top: 'TopFrigivet', Midt: 'MidtFrigivet', Bund: 'BundFrigivet' };
-            const cropFields = { Top: 'Top', Midt: 'Midt', Bund: 'Bund' };
-            
-            fieldData.forEach(row => {
-                ['Top', 'Midt', 'Bund'].forEach(sec => {
-                    const crop = row[cropFields[sec]];
-                    const grupo = row[groupFields[sec]];
-                    const frigivet = row[frigivFields[sec]] || '0';
-                    
-                    if (crop && crop !== 'Brak' && crop !== '') {
-                        const key = sec + '|' + crop;
-                        if (!cropsBySection[sec][crop]) {
-                            cropsBySection[sec][crop] = { grupo, frigivet, beds: [] };
-                        }
-                        cropsBySection[sec][crop].beds.push(row.Bed);
-                    }
-                });
-            });
-            
-            ['Top', 'Midt', 'Bund'].forEach(sec => {
-                const section = cropsBySection[sec];
-                const sorted = Object.keys(section).sort();
-                
-                const div = document.createElement('div');
-                div.className = 'crop-section';
-                
-                const header = document.createElement('div');
-                header.className = 'crop-header';
-                header.innerHTML = `<span>${sec === 'Top' ? 'Top' : sec === 'Midt' ? 'Midt' : 'Bund'}-afsnit</span><span>Gruppe/Status</span>`;
-                div.appendChild(header);
-                
-                const list = document.createElement('div');
-                list.className = 'crop-list';
-                
-                sorted.forEach(crop => {
-                    const data = section[crop];
-                    const icon = data.frigivet === '1' ? '✓' : '🔒';
-                    const lockClass = data.frigivet === '1' ? 'unlocked' : 'locked';
-                    
-                    const row = document.createElement('div');
-                    row.className = 'crop-row';
-                    row.innerHTML = `
-                        <span>${crop}</span>
-                        <span class="text-sm text-gray-500">Bed ${data.beds.join(', ')}</span>
-                        <span class="lock-btn ${lockClass}" data-section="${sec}" data-crop="${crop}">${icon}</span>
-                    `;
-                    row.querySelector('.lock-btn').onclick = () => toggleCrop(sec, crop);
-                    list.appendChild(row);
-                });
-                
-                div.appendChild(list);
-                area.appendChild(div);
-            });
-        }
+    function esc(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
 
-        function toggleCrop(section, cropName) {
-            const key = section + '|' + cropName;
-            if (changes[key] === undefined) {
-                const cropFields = { Top: 'Top', Midt: 'Midt', Bund: 'Bund' };
-                const frigivFields = { Top: 'TopFrigivet', Midt: 'MidtFrigivet', Bund: 'BundFrigivet' };
-                
-                fieldData.forEach(row => {
-                    if (row[cropFields[section]] === cropName) {
-                        if (!changes[key]) changes[key] = row[frigivFields[section]] || '0';
-                    }
-                });
-            }
-            
-            changes[key] = changes[key] === '1' ? '0' : '1';
-            renderAllCrops();
-        }
+    function show(id) { document.getElementById(id).classList.remove('hidden'); }
+    function hide(id) { document.getElementById(id).classList.add('hidden'); }
 
-        function downloadCSV() {
-            const cropFields = { Top: 'Top', Midt: 'Midt', Bund: 'Bund' };
-            const frigivFields = { Top: 'TopFrigivet', Midt: 'MidtFrigivet', Bund: 'BundFrigivet' };
-            
-            fieldData.forEach(row => {
-                ['Top', 'Midt', 'Bund'].forEach(sec => {
-                    const cropName = row[cropFields[sec]];
-                    const key = sec + '|' + cropName;
-                    if (changes[key]) {
-                        row[frigivFields[sec]] = changes[key];
-                    }
-                });
-            });
-            
-            const lines = ['Bed,Top,TopGruppe,TopFrigivet,Midt,MidtGruppe,MidtFrigivet,Bund,BundGruppe,BundFrigivet'];
-            fieldData.forEach(row => {
-                if (row.Bed) {
-                    lines.push(`${row.Bed},${row.Top},${row.TopGruppe || ''},${row.TopFrigivet || '0'},${row.Midt},${row.MidtGruppe || ''},${row.MidtFrigivet || '0'},${row.Bund},${row.BundGruppe || ''},${row.BundFrigivet || '0'}`);
-                }
-            });
-            
-            const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'markplan_aih.csv';
-            a.click();
-            
-            document.getElementById('saveMessage').classList.remove('hidden');
-            setTimeout(() => document.getElementById('saveMessage').classList.add('hidden'), 3000);
-        }
+    // ── Init: hide login error, hide admin ────────────────────────────────────
+    hide('loginError');
+    hide('adminPage');
 
-        async function uploadFile() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            if (!file) return;
-            
-            if (!confirm('Er du sikker på at du vil uploade en ny fil? Den gamle fil downloades som backup.')) {
-                fileInput.value = '';
-                return;
-            }
-            
-            try {
-                const response = await fetch('markplan_aih.csv');
-                const oldContent = await response.text();
-                
-                const timestamp = new Date().toISOString().replace(/[:-]/g,'').slice(0,14);
-                const backupBlob = new Blob([oldContent], { type: 'text/csv' });
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(backupBlob);
-                a.download = `markplan_backup_${timestamp}.csv`;
-                a.click();
-                
-                const newContent = await file.text();
-                const newBlob = new Blob([newContent], { type: 'text/csv' });
-                const b = document.createElement('a');
-                b.href = URL.createObjectURL(newBlob);
-                b.download = 'markplan_aih.csv';
-                b.click();
-                
-                alert('Fil uploadet! Download den nye fil og erstat den eksisterende på GitHub.');
-                fileInput.value = '';
-            } catch (error) {
-                alert('Kunne ikke uploade: ' + error.message);
-            }
+    // Check if already logged in (e.g. page refresh with valid session)
+    (async () => {
+        const { data: { session } } = await sb.auth.getSession();
+        if (session) {
+            hide('loginPage');
+            show('adminPage');
+            loadAllData();
         }
-    </script>
+    })();
+</script>
 </body>
 </html>
