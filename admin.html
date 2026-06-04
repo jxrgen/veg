@@ -67,7 +67,15 @@
             text-align: left;
             font-weight: 600;
             font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            user-select: none;
         }
+        .member-table th:hover { background: #047857; }
+        .member-table th .sort-arrow { margin-left: 4px; opacity: 0.5; font-size: 0.75rem; }
+        .member-table th.sort-asc .sort-arrow::after  { content: ' ▲'; opacity: 1; }
+        .member-table th.sort-desc .sort-arrow::after { content: ' ▼'; opacity: 1; }
+        .member-table th:not(.sort-asc):not(.sort-desc) .sort-arrow::after { content: ' ⇅'; }
         .member-table td {
             padding: 0.6rem 0.75rem;
             font-size: 0.875rem;
@@ -207,12 +215,13 @@
                 <table class="member-table w-full">
                     <thead>
                         <tr>
-                            <th>Gruppe</th>
-                            <th>Navn</th>
-                            <th>Adresse</th>
-                            <th>Telefon</th>
-                            <th>Email</th>
-                            <th class="text-center">BG</th>
+                            <th onclick="sortMembers('luge_gruppe')" data-col="luge_gruppe" class="sort-asc">Gruppe<span class="sort-arrow"></span></th>
+                            <th onclick="sortMembers('first_name')"  data-col="first_name">Fornavn<span class="sort-arrow"></span></th>
+                            <th onclick="sortMembers('last_name')"   data-col="last_name">Efternavn<span class="sort-arrow"></span></th>
+                            <th onclick="sortMembers('address')"     data-col="address">Adresse<span class="sort-arrow"></span></th>
+                            <th onclick="sortMembers('phone')"       data-col="phone">Telefon<span class="sort-arrow"></span></th>
+                            <th onclick="sortMembers('email')"       data-col="email">Email<span class="sort-arrow"></span></th>
+                            <th onclick="sortMembers('bg')"          data-col="bg" class="text-center">BG<span class="sort-arrow"></span></th>
                         </tr>
                     </thead>
                     <tbody id="memberTableBody"></tbody>
@@ -557,11 +566,44 @@
     }
 
     // ── Members ───────────────────────────────────────────────────────────────
+    // ── Sorting state ─────────────────────────────────────────────────────────
+    let sortCol = 'luge_gruppe', sortDir = 'asc';
+
+    function sortMembers(col) {
+        if (sortCol === col) {
+            sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            sortCol = col;
+            sortDir = 'asc';
+        }
+        // Update header indicators
+        document.querySelectorAll('.member-table th').forEach(th => {
+            th.classList.remove('sort-asc', 'sort-desc');
+            if (th.dataset.col === col) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+        });
+        renderMembers();
+    }
+
+    function getSortKey(m, col) {
+        if (col === 'first_name') return (m.name || '').split(' ')[0].toLowerCase();
+        if (col === 'last_name')  return (m.name || '').split(' ').slice(1).join(' ').toLowerCase();
+        const v = m[col];
+        if (v == null) return '';
+        return typeof v === 'number' ? v : String(v).toLowerCase();
+    }
+
     function renderMembers() {
-        const filter  = document.getElementById('groupFilter').value;
-        const members = filter
-            ? allMembers.filter(m => String(m.luge_gruppe) === filter)
-            : allMembers;
+        const filter = document.getElementById('groupFilter').value;
+        let members  = filter ? allMembers.filter(m => String(m.luge_gruppe) === filter) : allMembers;
+
+        // Apply sort
+        members = [...members].sort((a, b) => {
+            const ka = getSortKey(a, sortCol), kb = getSortKey(b, sortCol);
+            const cmp = typeof ka === 'number' && typeof kb === 'number'
+                ? ka - kb
+                : String(ka).localeCompare(String(kb), 'da');
+            return sortDir === 'asc' ? cmp : -cmp;
+        });
 
         document.getElementById('memberCount').textContent =
             members.length + ' ' + (members.length === 1 ? 'medlem' : 'medlemmer');
@@ -570,37 +612,20 @@
         const tbody = document.getElementById('memberTableBody');
         tbody.innerHTML = '';
         members.forEach(m => {
+            const parts    = (m.name || '').split(' ');
+            const firstName = parts[0] || '';
+            const lastName  = parts.slice(1).join(' ');
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass(m.luge_gruppe)}">G${m.luge_gruppe}</span></td>
-                <td class="font-medium">${esc(m.name || '')}</td>
+                <td class="font-medium">${esc(firstName)}</td>
+                <td class="font-medium">${esc(lastName)}</td>
                 <td class="text-gray-600">${esc(m.address || '')}</td>
                 <td class="text-gray-600 whitespace-nowrap">${esc(m.phone || '')}</td>
                 <td class="text-gray-600">${esc(m.email || '')}</td>
                 <td class="text-center">${m.bg != null ? `<span class="text-xs font-semibold text-gray-700">${m.bg}</span>` : ''}</td>
             `;
             tbody.appendChild(tr);
-        });
-
-        // ---- Mobile cards ----
-        const cards = document.getElementById('memberCards');
-        cards.innerHTML = '';
-        members.forEach(m => {
-            const div = document.createElement('div');
-            div.className = 'bg-white rounded-xl shadow-sm p-4';
-            div.innerHTML = `
-                <div class="flex items-start justify-between mb-2">
-                    <span class="font-semibold text-gray-900">${esc(m.name || '')}</span>
-                    <span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass(m.luge_gruppe)}">G${m.luge_gruppe}</span>
-                </div>
-                ${m.address ? `<p class="text-sm text-gray-500 mb-1">${esc(m.address)}</p>` : ''}
-                <div class="flex flex-wrap gap-3 mt-2 text-sm">
-                    ${m.phone ? `<a href="tel:${esc(m.phone)}" class="text-green-700 font-medium">${esc(m.phone)}</a>` : ''}
-                    ${m.email ? `<a href="mailto:${esc(m.email)}" class="text-blue-600">${esc(m.email)}</a>` : ''}
-                    ${m.bg != null ? `<span class="text-gray-500">BG: ${m.bg}</span>` : ''}
-                </div>
-            `;
-            cards.appendChild(div);
         });
     }
 
