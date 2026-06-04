@@ -451,26 +451,34 @@
         btn.disabled = true;
         btn.textContent = 'Logger ind…';
 
-        const { data, error } = await sb.auth.signInWithPassword({
-            email: 'jxrgen@gmail.com',
-            password: input.value
-        });
+        try {
+            // Use direct fetch — SDK's signInWithPassword doesn't reliably return
+            // the session token with the sb_publishable_* key format.
+            const res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+                method: 'POST',
+                headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: 'jxrgen@gmail.com', password: input.value })
+            });
+            const body = await res.json();
 
-        if (error) {
+            if (!res.ok || !body.access_token) {
+                throw new Error(body.error_description || body.msg || 'Forkert kode');
+            }
+
+            sessionJwt = body.access_token;
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('adminPage').classList.remove('hidden');
+            loadAllData();
+        } catch (e) {
+            err.textContent = e.message === 'Forkert kode' ? 'Forkert kode' : 'Login fejlede';
             err.classList.remove('hidden');
             btn.disabled = false;
             btn.textContent = 'Log ind';
             input.select();
-        } else {
-            sessionJwt = data.session.access_token;
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('adminPage').classList.remove('hidden');
-            loadAllData();
         }
     }
 
     async function logout() {
-        await sb.auth.signOut();
         sessionJwt = null;
         window.location.href = './';
     }
@@ -483,11 +491,6 @@
         hide('sectionCrops');
         hide('sectionImport');
 
-        // Ensure we have a JWT (either stored or from SDK session)
-        if (!sessionJwt) {
-            const { data: { session } } = await sb.auth.getSession();
-            if (session) sessionJwt = session.access_token;
-        }
         if (!sessionJwt) {
             hide('loadingIndicator');
             document.getElementById('loadError').textContent = 'Sessionen er udløbet — log ind igen.';
@@ -865,16 +868,7 @@
     // ── Init: hide login error, hide admin ────────────────────────────────────
     hide('loginError');
     hide('adminPage');
-
-    // Check if already logged in (e.g. page refresh with valid session)
-    (async () => {
-        const { data: { session } } = await sb.auth.getSession();
-        if (session) {
-            hide('loginPage');
-            show('adminPage');
-            loadAllData();
-        }
-    })();
+    // Login required every time — sessionJwt is not persisted across page loads.
 </script>
 </body>
 </html>
