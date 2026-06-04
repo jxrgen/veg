@@ -123,7 +123,7 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 - Admin kan kun ændre `is_released` per afgrøde (alle bede af samme afgrøde frigives samlet)
 - Ingen mulighed for at redigere markplan eller medlemmer via admin — kræver ny CSV + genkøre setup_db.py
 - GitHub Pages tillader ikke server-side skrivning, så al data går via Supabase REST API
-- **UAFKLARET:** Members vises ikke i admin efter login. Supabase-testen bekræfter at authenticated fetch virker korrekt (RLS OK, data OK). Fejlen er sandsynligvis at `sb_publishable_*`-nøglen ikke virker med Supabase JS SDK v2's session-håndtering. Næste skridt: tjek den præcise fejlbesked der nu vises i admin, eller byt til den gamle `eyJ...` anon-nøgle fra Supabase Dashboard → Settings → API.
+- CSV-import kan kun opdatere crop_name og is_released pr. bed — lugegruppedata bevares ved import
 
 ## Supabase-funktioner (RPC)
 - `get_group_firstnames()` — SECURITY DEFINER funktion der returnerer `(luge_gruppe, first_name)` for alle medlemmer. Tilgængelig for `anon`-rollen uden at åbne `members`-tabellen. Bruges af index.html til at vise gruppemedlemmers fornavne på "Min side".
@@ -149,3 +149,6 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 | 2026-06-04 | ?-menu: installationsvejledning til iPhone (Safari) og Android (Chrome) tilføjet |
 | 2026-06-04 | Admin-fix: synlig fejlbesked + getSession()-tjek i loadAllData() (members-bug under undersøgelse) |
 | 2026-06-04 | Min side: fornavne på gruppemedlemmer vises ved gruppevalg |
+| 2026-06-04 | Admin members-tabel vist: bug var .hidden !important der slog md:block ihjel |
+| 2026-06-04 | Telefonnumre i databasen rettet (var trunkeret til 4 cifre pga. split()[0]-fejl i setup_db.py) |
+| 2026-06-04 | Admin: sorterbare kolonner i medlemstabellen (Gruppe, Fornavn, Efternavn, Adresse, Telefon, Email, BG) |
