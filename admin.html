@@ -297,127 +297,93 @@
                 <div class="bg-white rounded-xl shadow-sm p-6">
                     <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
                         <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         Filformat
                     </h2>
-                    <p class="text-sm text-gray-500 mb-4">Filen skal v&#230;re semikolon-separeret (.csv) med f&#248;lgende kolonner:</p>
+                    <p class="text-sm text-gray-500 mb-4">Semikolon-separeret .csv-fil med 7 kolonner pr. linje. Første linje er header og ignoreres.</p>
 
-                    <!-- Example table -->
-                    <div class="table-scroll border border-gray-200 rounded-lg overflow-hidden mb-4">
-                        <table class="w-full text-sm">
+                    <!-- Example table with grouped headers -->
+                    <div class="table-scroll border border-gray-200 rounded-lg overflow-hidden mb-5">
+                        <table class="w-full text-sm border-collapse">
                             <thead>
-                                <tr class="bg-gray-50 text-left">
-                                    <th class="px-3 py-2 font-semibold text-gray-700">Bed</th>
-                                    <th class="px-3 py-2 font-semibold text-gray-700">Top afgr&#248;de</th>
-                                    <th class="px-3 py-2 font-semibold text-gray-700 text-center">Top status</th>
-                                    <th class="px-3 py-2 font-semibold text-gray-700">Midt afgr&#248;de</th>
-                                    <th class="px-3 py-2 font-semibold text-gray-700 text-center">Midt status</th>
-                                    <th class="px-3 py-2 font-semibold text-gray-700">Bund afgr&#248;de</th>
-                                    <th class="px-3 py-2 font-semibold text-gray-700 text-center">Bund status</th>
+                                <tr class="bg-gray-100 text-center text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-left" rowspan="2">Bed</th>
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200" colspan="2">Top</th>
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200" colspan="2">Midt</th>
+                                    <th class="px-3 py-1.5 border-b border-gray-200" colspan="2">Bund</th>
+                                </tr>
+                                <tr class="bg-gray-50 text-xs font-semibold text-gray-600">
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-left font-medium">Afgrøde</th>
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-center font-medium">Status</th>
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-left font-medium">Afgrøde</th>
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-center font-medium">Status</th>
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-left font-medium">Afgrøde</th>
+                                    <th class="px-3 py-1.5 border-b border-gray-200 text-center font-medium">Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="text-sm">
                                 <tr class="border-t border-gray-100">
-                                    <td class="px-3 py-2 font-medium text-gray-800">38</td>
-                                    <td class="px-3 py-2 text-gray-600">Gr&#248;nk&#229;l</td>
-                                    <td class="px-3 py-2 text-center">
-                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
-                                        </span>
-                                    </td>
-                                    <td class="px-3 py-2 text-gray-400 italic text-xs">(tom)</td>
-                                    <td class="px-3 py-2 text-center">
-                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
-                                        </span>
-                                    </td>
-                                    <td class="px-3 py-2 text-gray-400 italic text-xs">(tom)</td>
-                                    <td class="px-3 py-2 text-center">
-                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
-                                        </span>
-                                    </td>
+                                    <td class="px-3 py-2 font-bold text-gray-800 border-r border-gray-100">38</td>
+                                    <td class="px-3 py-2 text-gray-700 border-r border-gray-100">Grønkål</td>
+                                    <td class="px-3 py-2 text-center border-r border-gray-100"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
+                                    <td class="px-3 py-2 text-gray-400 italic text-xs border-r border-gray-100"></td>
+                                    <td class="px-3 py-2 text-center border-r border-gray-100"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
+                                    <td class="px-3 py-2 text-gray-400 italic text-xs border-r border-gray-100"></td>
+                                    <td class="px-3 py-2 text-center"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
+                                </tr>
+                                <tr class="border-t border-gray-100 bg-green-50/40">
+                                    <td class="px-3 py-2 font-bold text-gray-800 border-r border-gray-100">15</td>
+                                    <td class="px-3 py-2 text-gray-700 border-r border-gray-100">Majs</td>
+                                    <td class="px-3 py-2 text-center border-r border-gray-100"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
+                                    <td class="px-3 py-2 text-gray-700 border-r border-gray-100">Løg</td>
+                                    <td class="px-3 py-2 text-center border-r border-gray-100"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
+                                    <td class="px-3 py-2 text-gray-700 border-r border-gray-100">Spidskål</td>
+                                    <td class="px-3 py-2 text-center"><span class="px-1.5 py-0.5 bg-green-100 text-green-700 rounded font-mono text-xs font-bold">-</span></td>
                                 </tr>
                                 <tr class="border-t border-gray-100">
-                                    <td class="px-3 py-2 font-medium text-gray-800">15</td>
-                                    <td class="px-3 py-2 text-gray-600">Majs</td>
-                                    <td class="px-3 py-2 text-center">
-                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
-                                        </span>
-                                    </td>
-                                    <td class="px-3 py-2 text-gray-600">L&#248;g</td>
-                                    <td class="px-3 py-2 text-center">
-                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
-                                        </span>
-                                    </td>
-                                    <td class="px-3 py-2 text-gray-600">Spidsk&#229;l</td>
-                                    <td class="px-3 py-2 text-center">
-                                        <span class="inline-flex items-center gap-1 text-xs text-green-600 font-medium">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>-
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr class="border-t border-gray-100">
-                                    <td class="px-3 py-2 font-medium text-gray-800">1</td>
-                                    <td class="px-3 py-2 text-gray-400 italic text-xs">(tom)</td>
-                                    <td class="px-3 py-2 text-center">
-                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
-                                        </span>
-                                    </td>
-                                    <td class="px-3 py-2 text-gray-400 italic text-xs">(tom)</td>
-                                    <td class="px-3 py-2 text-center">
-                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
-                                        </span>
-                                    </td>
-                                    <td class="px-3 py-2 text-gray-600">Esteb&#248;nner</td>
-                                    <td class="px-3 py-2 text-center">
-                                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>X
-                                        </span>
-                                    </td>
+                                    <td class="px-3 py-2 font-bold text-gray-800 border-r border-gray-100">1</td>
+                                    <td class="px-3 py-2 border-r border-gray-100"></td>
+                                    <td class="px-3 py-2 text-center border-r border-gray-100"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
+                                    <td class="px-3 py-2 border-r border-gray-100"></td>
+                                    <td class="px-3 py-2 text-center border-r border-gray-100"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
+                                    <td class="px-3 py-2 text-gray-700 border-r border-gray-100">Hestebønner</td>
+                                    <td class="px-3 py-2 text-center"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- CSV example -->
-                    <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Eksempel p&#229; CSV-indhold</p>
-                    <pre class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-xs text-gray-700 overflow-x-auto leading-relaxed">;Top;;Midt;;Bund;
-38;Gr&#248;nk&#229;l;X;;X;;X
-37;Gr&#248;nk&#229;l;X;;X;;X
-15;Majs;X;L&#248;g;X;Spidsk&#229;l;-
-1;;X;;X;Hesteb&#248;nner;X</pre>
+                    <!-- CSV example matching the table exactly -->
+                    <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Samme rækker som CSV-fil</p>
+                    <pre class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-xs text-gray-700 overflow-x-auto leading-relaxed font-mono">;Top;;Midt;;Bund;
+38;Grønkål;X;;X;;X
+15;Majs;X;Løg;X;Spidskål;-
+1;;X;;X;Hestebønner;X</pre>
 
                     <!-- Rules -->
-                    <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-4 mb-2">Regler</p>
-                    <ul class="text-sm text-gray-600 space-y-1.5">
-                        <li class="flex items-start gap-2">
-                            <span class="mt-0.5 text-green-700 font-bold">&#8226;</span>
-                            <span>Separator: <code class="bg-gray-100 px-1 rounded text-xs font-mono">;</code> (semikolon)</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="mt-0.5 text-green-700 font-bold">&#8226;</span>
-                            <span>Maks 40 r&#230;kker (bede)</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="mt-0.5 text-green-700 font-bold">&#8226;</span>
-                            <span>Status: <code class="bg-gray-100 px-1 rounded text-xs font-mono">X</code> = ikke frigivet (l&#229;st), <code class="bg-gray-100 px-1 rounded text-xs font-mono">-</code> = klar til h&#248;st (frigivet)</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="mt-0.5 text-green-700 font-bold">&#8226;</span>
-                            <span>F&#248;rste linje er header og ignoreres</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="mt-0.5 text-green-700 font-bold">&#8226;</span>
-                            <span>Tomme afgr&#248;defelter betyder tomt bed i den p&#229;g&#230;ldende sektion</span>
-                        </li>
-                    </ul>
+                    <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-700 font-bold mt-0.5">→</span>
+                            <span>Separator: <code class="bg-gray-100 px-1 rounded font-mono text-xs">;</code> (semikolon)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-700 font-bold mt-0.5">→</span>
+                            <span>Maks 40 rækker (bede)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-700 font-bold mt-0.5">→</span>
+                            <span><code class="bg-gray-100 px-1 rounded font-mono text-xs">X</code> = ikke frigivet &nbsp;·&nbsp; <code class="bg-green-100 text-green-700 px-1 rounded font-mono text-xs">-</code> = klar til høst</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-700 font-bold mt-0.5">→</span>
+                            <span>Tomt afgrødefelt = tomt bed i den sektion</span>
+                        </div>
+                        <div class="flex items-start gap-2 sm:col-span-2">
+                            <span class="text-green-700 font-bold mt-0.5">→</span>
+                            <span>Første linje er header og ignoreres. Lugegruppetilknytning bevares ved import.</span>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -518,18 +484,18 @@
         ]);
 
         if (membersRes.error) {
-            hide('loadingIndicator');
+            // Don't block the whole admin — note error in members section, still show everything
             document.getElementById('loadError').textContent =
-                'Fejl ved hentning af medlemmer: ' + membersRes.error.message;
+                'Medlemmer kunne ikke hentes: ' + membersRes.error.message
+                + ' — Afgrøder & Høst og Import fungerer stadig.';
             show('loadError');
-            return;
         }
 
         allMembers = membersRes.data || [];
         allCrops   = cropsRes.data  || [];
 
         hide('loadingIndicator');
-        switchTab(activeTab);
+        switchTab(allMembers.length ? activeTab : 'crops');
     }
 
     // ── Tab switching ─────────────────────────────────────────────────────────
