@@ -157,6 +157,9 @@
 
     <main class="max-w-5xl mx-auto px-4 py-6">
 
+        <!-- Error banner -->
+        <div id="loadError" class="hidden bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-4 text-sm font-medium"></div>
+
         <!-- Loading indicator -->
         <div id="loadingIndicator" class="text-center py-12 text-gray-500">
             <svg class="animate-spin h-8 w-8 text-green-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24">
@@ -288,14 +291,32 @@
 
     // ── Data loading ──────────────────────────────────────────────────────────
     async function loadAllData() {
+        hide('loadError');
         show('loadingIndicator');
         hide('sectionMembers');
         hide('sectionCrops');
+
+        // Ensure the auth session is active before querying protected tables
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) {
+            hide('loadingIndicator');
+            document.getElementById('loadError').textContent = 'Sessionen er udløbet — log ind igen.';
+            show('loadError');
+            return;
+        }
 
         const [membersRes, cropsRes] = await Promise.all([
             sb.from('members').select('*').order('luge_gruppe').order('name'),
             sb.from('crops').select('*').order('name')
         ]);
+
+        if (membersRes.error) {
+            hide('loadingIndicator');
+            document.getElementById('loadError').textContent =
+                'Fejl ved hentning af medlemmer: ' + membersRes.error.message;
+            show('loadError');
+            return;
+        }
 
         allMembers = membersRes.data || [];
         allCrops   = cropsRes.data  || [];
