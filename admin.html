@@ -1063,13 +1063,9 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                 }
             });
 
-            // 1. Clear existing bed entries and insert new ones
-            // First delete all beds for these bed numbers
-            const bedNumbers = beds.map(b => b.bed_number);
-            const orFilters = bedNumbers.map(n => `bed_number.eq.${n}`).join(',');
-            const deleteWhere = `or=(${orFilters})`;
-
-            await fetchProtected(`beds?${deleteWhere}`, {
+            // 1. Clear existing bed entries — delete all beds first, then insert new ones
+            // Delete all beds (entire table will be cleared and repopulated)
+            await fetchProtected('beds', {
                 method:  'DELETE',
                 headers: { 'Prefer': 'return=minimal' }
             });
