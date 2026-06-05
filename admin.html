@@ -665,8 +665,14 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
 
             allMembers = Array.isArray(members) ? members : [];
             allCrops   = Array.isArray(crops) ? crops : [];
+
+            console.log('[ADMIN DEBUG] loadAllData complete:');
+            console.log('  allMembers:', allMembers.length, 'rows');
+            console.log('  allCrops:', allCrops.length, 'rows');
+            console.log('  First 3 crops:', allCrops.slice(0, 3));
         } catch (e) {
             hide('loadingIndicator');
+            console.log('[ADMIN DEBUG] loadAllData error:', e.message);
             document.getElementById('loadError').textContent = 'Fejl: ' + e.message;
             show('loadError');
             // Still try to show what we have
