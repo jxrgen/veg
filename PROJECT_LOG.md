@@ -163,3 +163,4 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 | 2026-06-05 | Frontend: Låste bede markeret med rød overkant (ikke kun grøn for frigivne) |
 | 2026-06-05 | Debug-helper på "Min side": viser visuelt om gruppemedlemmer loadet (grøn/rød box) |
 | 2026-06-05 | Samlet_oversigt_2026.csv: forsøg på at kombinere markplan + lugegrupper i ét dokument — format ikke godkendt |
+| 2026-06-05 | Admin-vejledning.html: komplet standalone HTML-vejledning med alle funktioner + bilag A+B (markplan + lugegrupper) |
