@@ -186,17 +186,17 @@
                 >Lugegrupper &amp; Medlemmer</button>
                 <button
                     id="tabCrops"
-                    class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-50"
+                    class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                     onclick="switchTab('crops')"
                 >Afgrøder &amp; Høst</button>
                 <button
                     id="tabImport"
-                    class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-50"
+                    class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                     onclick="switchTab('import')"
                 >Importer</button>
                 <button
                     id="tabVejledning"
-                    class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-50"
+                    class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                     onclick="switchTab('vejledning')"
                 >Vejledning</button>
             </div>
@@ -802,6 +802,7 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
 
     // ── Crops ─────────────────────────────────────────────────────────────────
     function renderCrops() {
+        console.log('[LOGIN/DATA/TAB] renderCrops called with allCrops.length=' + allCrops.length);
         const released = allCrops.filter(c => c.is_released);
         const locked   = allCrops.filter(c => !c.is_released);
 
