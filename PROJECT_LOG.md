@@ -164,3 +164,7 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 | 2026-06-05 | Debug-helper på "Min side": viser visuelt om gruppemedlemmer loadet (grøn/rød box) |
 | 2026-06-05 | Samlet_oversigt_2026.csv: forsøg på at kombinere markplan + lugegrupper i ét dokument — format ikke godkendt |
 | 2026-06-05 | Admin-vejledning.html: komplet standalone HTML-vejledning med alle funktioner + bilag A+B (markplan + lugegrupper) |
+| 2026-06-05 | **Multi-crop support:** beds kan nu have flere afgrøder adskilt af "/" (f.eks. "Salat / Fennikel / Spinat") |
+| 2026-06-05 | Frontend: parseCropList() parser, display som "Salat · Fennikel · Spinat", søgning virker for individuelle afgrøder |
+| 2026-06-05 | Backend: CSV-import håndterer "/" separator, oppretter separate DB-entries per afgrøde, bakadkompatibel |
+| 2026-06-05 | Test: markplan_multitest.csv med alle edge cases (single-crop, multi-word, multi-crop, whitespace, empty beds) |
