@@ -532,7 +532,7 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                         Login
                     </h3>
                     <ul class="space-y-1.5 text-sm text-gray-600 pl-8">
-                        <li>Åbn <code class="bg-gray-100 px-1.5 py-0.5 rounded font-mono text-xs">admin.html</code> i en browser</li>
+                        <li>Tryk <strong class="text-gray-800">5 gange på overskriften</strong> i markplan-appen for at komme til admin-login</li>
                         <li>Skriv admin-koden og klik <strong class="text-gray-800">Log ind</strong></li>
                         <li>Klik <strong class="text-gray-800">Log ud</strong> øverst til højre for at vende tilbage til markplan-oversigten</li>
                         <li class="text-gray-400 text-xs">Sessionen bevares ikke ved genindlæsning — du skal logge ind igen</li>
@@ -546,9 +546,9 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                         Faneblad: Lugegrupper &amp; Medlemmer
                     </h3>
                     <ul class="space-y-1.5 text-sm text-gray-600 pl-8">
-                        <li>Viser alle 101 medlemmer fordelt på 10 lugegrupper</li>
+                        <li>Viser alle medlemmer fordelt på deres lugegrupper</li>
                         <li>Brug <strong class="text-gray-800">Filter</strong>-dropdownen øverst til at vise kun én gruppe</li>
-                        <li>Sorter ved at klikke på kolonneoverskrifter: <span class="font-medium text-gray-700">Gruppe, Fornavn, Efternavn, Adresse, Telefon, Email, BG</span></li>
+                        <li>Sorter ved at klikke på kolonneoverskrifter: <span class="font-medium text-gray-700">Gruppe, Fornavn, Efternavn, Adresse, Telefon, Email, BG</span> — klik igen for omvendt rækkefølge</li>
                     </ul>
                 </div>
 
@@ -561,7 +561,7 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                     <ul class="space-y-1.5 text-sm text-gray-600 pl-8">
                         <li>Viser alle afgrøder i to sektioner: <span class="text-green-700 font-semibold">Frigivet</span> og <span class="text-gray-500 font-semibold">Låst</span></li>
                         <li>Klik på en afgrøde (eller på toggle-kontakten) for at skifte status</li>
-                        <li><span class="text-green-700 font-medium">Frigivet</span> = grønt check i bruger-appen &nbsp;·&nbsp; <span class="text-gray-500 font-medium">Låst</span> = grå hængelås</li>
+                        <li><span class="text-green-700 font-medium">Frigivet</span> = grønt check i bruger-appen &nbsp;·&nbsp; <span style="color:#f87171" class="font-medium">Låst</span> = rød hængelås</li>
                         <li>Ændringen sker øjeblikkeligt og opdaterer alle bede med den pågældende afgrøde</li>
                     </ul>
                 </div>
@@ -1044,33 +1044,38 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                 updates.push({ bed_number: b.bed_number, section: 'B', crop_name: b.bund_crop || null, is_released: b.bund_status === '-' });
             });
 
-            // 1. Upsert beds (preserves luge_gruppe since we don't include it)
-            const { error: bedsErr } = await sb.from('beds')
-                .upsert(updates, { onConflict: 'bed_number,section' });
-            if (bedsErr) throw bedsErr;
+            // 1. Upsert beds via fetchProtected — preserves luge_gruppe
+            await fetchProtected('beds', {
+                method:  'POST',
+                body:    JSON.stringify(updates),
+                headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }
+            });
 
             setImportStatus('Genopbygger afgrødetabel…', true);
 
             // 2. Rebuild crops table
-            const { data: bedData, error: bedFetchErr } = await sb.from('beds')
-                .select('crop_name, is_released')
-                .not('crop_name', 'is', null);
-            if (bedFetchErr) throw bedFetchErr;
+            const bedData = await fetchProtected(
+                'beds?select=crop_name,is_released&crop_name=not.is.null'
+            );
 
-            // Group: crop is released if ANY bed section is released
             const cropMap = {};
             bedData.forEach(b => {
                 if (!cropMap[b.crop_name]) cropMap[b.crop_name] = false;
                 if (b.is_released) cropMap[b.crop_name] = true;
             });
 
-            const { error: delErr } = await sb.from('crops').delete().neq('id', 0);
-            if (delErr) throw delErr;
+            await fetchProtected('crops?id=gte.1', {
+                method:  'DELETE',
+                headers: { 'Prefer': 'return=minimal' }
+            });
 
             const cropRows = Object.entries(cropMap).map(([name, is_released]) => ({ name, is_released }));
             if (cropRows.length > 0) {
-                const { error: insErr } = await sb.from('crops').insert(cropRows);
-                if (insErr) throw insErr;
+                await fetchProtected('crops', {
+                    method:  'POST',
+                    body:    JSON.stringify(cropRows),
+                    headers: { 'Prefer': 'return=minimal' }
+                });
             }
 
             setImportStatus(
@@ -1209,8 +1214,9 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                 false, false, true
             );
 
-            // Reload member data so the members tab is up to date
+            // Reload and show updated members
             allMembers = await fetchProtected('members?select=*&order=luge_gruppe.asc,name.asc');
+            switchTab('members');
 
             btn.disabled = false;
             btn.classList.remove('opacity-40', 'cursor-not-allowed');
