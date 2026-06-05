@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin-vejledning — Markplan Grøntsagsordningen i AiH</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f9f9f9;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header {
+            background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+            color: white;
+            padding: 40px;
+            margin: -40px -20px 40px -20px;
+            border-radius: 0 0 8px 8px;
+        }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        header p { font-size: 1.1em; opacity: 0.9; }
+
+        h2 {
+            font-size: 1.8em;
+            color: #047857;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #d1fae5;
+        }
+        h3 {
+            font-size: 1.3em;
+            color: #0f766e;
+            margin: 25px 0 15px 0;
+        }
+        h4 {
+            font-size: 1.1em;
+            color: #374151;
+            margin: 15px 0 10px 0;
+        }
+
+        p { margin-bottom: 15px; }
+        ul, ol { margin-left: 30px; margin-bottom: 15px; }
+        li { margin-bottom: 8px; }
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            border-left: 4px solid #047857;
+        }
+
+        .toc {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .toc h3 { color: #047857; margin-top: 0; }
+        .toc ul { margin: 10px 0 0 20px; }
+        .toc a { color: #047857; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+
+        .info-box {
+            background: #e0f2fe;
+            border-left: 4px solid #0284c7;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+        table th {
+            background: #047857;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        table tr:hover td { background: #f9fafb; }
+
+        .appendix {
+            background: #f3f4f6;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 8px;
+            page-break-inside: avoid;
+        }
+        .appendix h2 {
+            border-bottom: 2px solid #9ca3af;
+            margin-top: 0;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+        footer {
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.9em;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .section { margin-bottom: 40px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>📋 Admin-vejledning</h1>
+    <p>Markplan for Grøntsagsordningen i AiH — 2026</p>
+</header>
+
+<div class="container">
+
+<div class="info-box">
+<strong>ℹ️ Velkommen!</strong> Denne vejledning dækker alle administratorfunktioner i systemet. Læs denne før du begynder at arbejde med admin-panelet.
+</div>
+
+<h2>Indholdsfortegnelse</h2>
+<div class="toc">
+    <h3>Genveje</h3>
+    <ul>
+        <li><a href="#login">Login og sikkerhed</a></li>
+        <li><a href="#medlemmer">Lugegrupper & Medlemmer</a></li>
+        <li><a href="#afgroeder">Afgrøder & Høst</a></li>
+        <li><a href="#importer">Importer — markplan og medlemmer</a></li>
+        <li><a href="#vejledning">Vejledning faneblad</a></li>
+        <li><a href="#bilag-a">Bilag A: Markplan 2026</a></li>
+        <li><a href="#bilag-b">Bilag B: Lugegrupper 2026</a></li>
+    </ul>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div class="section" id="login">
+<h2>1. Login og sikkerhed</h2>
+
+<h3>Adgang til admin-panelet</h3>
+<p>Admin-panelet er skjult for normale medlemmer. Sådan får du adgang:</p>
+<ol>
+    <li>Åbn markplan-appen i din browser</li>
+    <li>Tryk <strong>5 gange på overskriften</strong> ("Markplan · Grøntsagsordningen i AiH") inden for 3 sekunder</li>
+    <li>Du vil blive videresendt til admin-login siden</li>
+    <li>Skriv admin-koden og klik <strong>Log ind</strong></li>
+</ol>
+
+<h3>Ændring af admin-kode</h3>
+<p>Du kan ændre admin-koden når som helst:</p>
+<ol>
+    <li>Log ind på admin-panelet</li>
+    <li>Klik <strong>"Skift kode"</strong> øverst til højre</li>
+    <li>Skriv:
+        <ul>
+            <li><strong>Nuværende kode</strong></li>
+            <li><strong>Ny kode</strong> (mindst 6 tegn)</li>
+            <li><strong>Bekræft ny kode</strong> (gentag den nye kode)</li>
+        </ul>
+    </li>
+    <li>Klik <strong>Gem</strong></li>
+</ol>
+
+<div class="warning-box">
+<strong>⚠️ Vigtig sikkerhed:</strong> Sessionen bevares <em>ikke</em> ved genindlæsning af siden. Hvis du genindlæser eller lukker browserfanen, skal du logge ind igen. Dette er bevidst for sikkerhed.
+</div>
+
+</div>
+
+<!-- ===== MEDLEMMER ===== -->
+<div class="section" id="medlemmer">
+<h2>2. Lugegrupper & Medlemmer</h2>
+
+<p>Her kan du se alle 100 medlemmer fordelt på deres 10 lugegrupper. Dette er medlemsdatabasen.</p>
+
+<h3>Filtrering efter gruppe</h3>
+<p>Øverst findes et filter-dropdown hvor du kan vælge at se kun medlemmer fra én gruppe:</p>
+<ul>
+    <li>Vælg en gruppe (G1–G10) for at vise kun dens medlemmer</li>
+    <li>Vælg "Alle grupper" for at vise alle medlemmer igen</li>
+</ul>
+
+<h3>Sortering</h3>
+<p>Du kan sortere medlemmer efter enhver kolonne ved at klikke på kolonneoverskriften:</p>
+<ul>
+    <li><strong>Gruppe</strong> — lugegruppe-nummer (1–10)</li>
+    <li><strong>Fornavn</strong> — første navn</li>
+    <li><strong>Efternavn</strong> — sidste navn</li>
+    <li><strong>Adresse</strong> — hjemmeadresse</li>
+    <li><strong>Telefon</strong> — mobilnummer (8-cifret)</li>
+    <li><strong>Email</strong> — e-mailadresse</li>
+    <li><strong>BG</strong> — bostedsgruppe (1–9)</li>
+</ul>
+<p>Klik igen på samme kolonne for at sortere i modsat rækkefølge (A→Z eller Z→A).</p>
+
+<h3>Importering af nye medlemmer</h3>
+<p>Se <a href="#importer">afsnittet "Importer"</a> for hvordan du importerer en hel ny medlemsliste.</p>
+
+</div>
+
+<!-- ===== AFGRØDER ===== -->
+<div class="section" id="afgroeder">
+<h2>3. Afgrøder & Høst</h2>
+
+<p>Her administrerer du frigivelses-status for alle afgrøder på marken. Når en afgrøde er <em>frigivet</em>, kan medlemmerne se den i appen og høste den.</p>
+
+<h3>To statusser</h3>
+<p>Hver afgrøde har én af to statusser:</p>
+<ul>
+    <li><strong style="color: #16a34a;">✓ Frigivet (grønt check)</strong> — medlemmerne kan høste denne afgrøde i dag</li>
+    <li><strong style="color: #ef4444;">Låst (rød hængelås)</strong> — denne afgrøde er ikke klar endnu</li>
+</ul>
+
+<h3>Skiftning af status</h3>
+<p>Du kan skifte status på en afgrøde på to måder:</p>
+<ol>
+    <li><strong>Klik på afgrødens navn</strong> — denne tænder/slukker umiddelbart</li>
+    <li><strong>Brug toggle-knappen til højre</strong> — gør det samme med en større kontrolflade</li>
+</ol>
+
+<div class="info-box">
+<strong>💡 Vigtigt:</strong> Ændringer sker øjeblikkeligt. Alle medlemmer vil se det opdaterede status i deres app med det samme (hvis de har siden åben).
+</div>
+
+<h3>Oversigt og filtrering</h3>
+<p>Afgrøderne er delt i to sektioner:</p>
+<ul>
+    <li><strong>Frigivet</strong> — alle afgrøder som medlemmer må høste nu</li>
+    <li><strong>Låst</strong> — alle afgrøder som stadig skal vente</li>
+</ul>
+
+</div>
+
+<!-- ===== IMPORTER ===== -->
+<div class="section" id="importer">
+<h2>4. Importer — markplan og medlemmer</h2>
+
+<p>Her kan du opdatere to vigtige datasæt uden at skulle skrive alt manuelt: markplanen (bede og afgrøder) og medlemslisten (lugegrupper og personer).</p>
+
+<h3>4.1 Importer markplan</h3>
+
+<h4>Hvornår skal jeg importere?</h4>
+<p>Importér en ny markplan når:</p>
+<ul>
+    <li>Årstiden starter og der er en helt ny afgrødeplanlægning</li>
+    <li>Der er ændringer i hvilke afgrøder der skal plantes hvor</li>
+    <li>Der er ændringer i hvilke afgrøder der er frigivet til høst</li>
+</ul>
+
+<h4>Fil-format</h4>
+<p>Markplan-filen skal være en <strong>CSV-fil med semikolon-separator</strong> og følgende struktur:</p>
+<pre>;Top;;Midt;;Bund;
+38;Grønkål;X;;X;;X
+37;Grønkål;X;;X;;X
+...
+1;;X;;X;Hestebønner;X</pre>
+
+<p><strong>Kolonne-forklaring:</strong></p>
+<table>
+    <tr>
+        <th>Kolonne</th>
+        <th>Format</th>
+        <th>Beskrivelse</th>
+    </tr>
+    <tr>
+        <td>Bed-nummer</td>
+        <td>1–38</td>
+        <td>Bed-nummeret (som heltal)</td>
+    </tr>
+    <tr>
+        <td>Top-afgrøde</td>
+        <td>Navn eller tom</td>
+        <td>Afgrøde i Top-sektion (Øverst)</td>
+    </tr>
+    <tr>
+        <td>Top-status</td>
+        <td>X eller −</td>
+        <td>X = låst, − = frigivet</td>
+    </tr>
+    <tr>
+        <td>Midt-afgrøde</td>
+        <td>Navn eller tom</td>
+        <td>Afgrøde i Midt-sektion (Mellem)</td>
+    </tr>
+    <tr>
+        <td>Midt-status</td>
+        <td>X eller −</td>
+        <td>X = låst, − = frigivet</td>
+    </tr>
+    <tr>
+        <td>Bund-afgrøde</td>
+        <td>Navn eller tom</td>
+        <td>Afgrøde i Bund-sektion (Nederst)</td>
+    </tr>
+    <tr>
+        <td>Bund-status</td>
+        <td>X eller −</td>
+        <td>X = låst, − = frigivet</td>
+    </tr>
+</table>
+
+<h4>Sådan importerer du:</h4>
+<ol>
+    <li>Forbered en CSV-fil i formatet ovenfor</li>
+    <li>Klik <strong>"Vælg fil"</strong> og vælg din CSV-fil</li>
+    <li>Se forhåndsvisningen — den skal vise alle bede korrekt</li>
+    <li>Klik <strong>"Importer bede"</strong></li>
+    <li>Bekræft importen når du bliver spurgt</li>
+</ol>
+
+<div class="warning-box">
+<strong>⚠️ Vigtig note:</strong> Markplan-import <em>bevarer</em> lugegruppe-tilknytningen på bedene. Kun afgrøde og status opdateres.
+</div>
+
+<h3>4.2 Importer lugegrupper & medlemmer</h3>
+
+<h4>Hvornår skal jeg importere?</h4>
+<p>Importér en ny medlemsliste når:</p>
+<ul>
+    <li>Der er helt nye medlemmer i grøntsagsordningen</li>
+    <li>Der er medlemmer der er stoppet</li>
+    <li>Der er ændringer i hvem som er i hvilken lugegruppe</li>
+    <li>Medlemmernes kontaktoplysninger er opdateret (adresse, telefon, email)</li>
+</ul>
+
+<h4>Fil-format</h4>
+<p>Medlemmer-filen skal være en <strong>CSV-fil med semikolon-separator</strong>. Strukturen er gruppevise blokke:</p>
+<pre>Navn;Adresse;Email;Mobil;BG
+;;;;;
+Gruppe 1;;;;;
+Grønkål + Rødbeder;7 bede;Øverst 34 - 38 + Mellem 27 - 28;;;;;
+Jan Feil;Gl. Kirkevej 40;Jan Feil <janfeil@example.dk>;2821 9103;1
+Dorte Feil;Gl. Kirkevej 40;Dorte <dorte@example.dk>;4019 9074;1
+;;;;;
+Gruppe 2;;;;;
+Kartofler + Hestebønner;12 bede;Nederst 1 - 7 + ...;;;;;
+Anke Stubsgaard;Gl. Kirkevej 46A;anke@example.dk;2615 7769;1
+...</pre>
+
+<p><strong>Regler:</strong></p>
+<ul>
+    <li>Hver gruppe starter med en linje "Gruppe N"</li>
+    <li>Derefter kommer en beskrivelse: <code>Afgrøder;Antal bede;Bed-områder</code></li>
+    <li>Derefter medlemmer: <code>Navn;Adresse;Email;Telefon;BG</code></li>
+    <li>Navne kan være "Fornavn Efternavn" eller "Fornavn Efternavn &lt;email@dom&gt;"</li>
+    <li>Tom linje før hver gruppe</li>
+</ul>
+
+<h4>Sådan importerer du:</h4>
+<ol>
+    <li>Forbered en CSV-fil i formatet ovenfor</li>
+    <li>Klik <strong>"Vælg fil"</strong> og vælg din medlems-CSV-fil</li>
+    <li>Se forhåndsvisningen — den skal vise antal grupper og medlemmer korrekt</li>
+    <li>Klik <strong>"Importer medlemmer"</strong></li>
+    <li>Bekræft importen — alle gamle medlemmer bliver erstattet med de nye</li>
+</ol>
+
+<div class="warning-box">
+<strong>⚠️ OBS!</strong> Medlemmer-import <em>erstatter ALLE eksisterende medlemmer</em>. Der er ingen "tilføj til eksisterende" — det hele blir erstattet. Sikr at din fil indeholder alle medlemmer.
+</div>
+
+</div>
+
+<!-- ===== VEJLEDNING ===== -->
+<div class="section" id="vejledning">
+<h2>5. Vejledning</h2>
+
+<p>Dette faneblad indeholder den samme vejledning som dette dokument — direkte i admin-panelet. Brug det når du skal have hurtig hjælp uden at skulle åbne dette dokument.</p>
+
+</div>
+
+<!-- ===== TEKNISKE TIPS ===== -->
+<div class="section">
+<h2>Tekniske tips</h2>
+
+<h3>Hvis noget går galt</h3>
+<ul>
+    <li><strong>Import fejler:</strong> Tjek at CSV-filen bruger semikolon (;) som separator, ikke komma</li>
+    <li><strong>Medlemmer vises ikke:</strong> Prøv at logge ud og ind igen</li>
+    <li><strong>Ændringer opdateres ikke i appen:</strong> Medlemmerne skal genindlæse siden (F5 eller refresh)</li>
+</ul>
+
+<h3>Browser-support</h3>
+<p>Admin-panelet virker bedst i:</p>
+<ul>
+    <li>Chrome / Chromium (seneste version)</li>
+    <li>Firefox (seneste version)</li>
+    <li>Safari (seneste version)</li>
+    <li>Edge (seneste version)</li>
+</ul>
+
+</div>
+
+<!-- ===== BILAG A ===== -->
+<div class="appendix" id="bilag-a">
+<h2>Bilag A: Markplan 2026 — Komplet oversigt</h2>
+
+<p>Dette er den komplette markplan for alle 38 bede i 2026. Format: <code>BedNr;Top-afgrøde;Top-status;Midt-afgrøde;Midt-status;Bund-afgrøde;Bund-status</code></p>
+
+<table>
+    <tr>
+        <th>Bed</th>
+        <th>Øverst (Top)</th>
+        <th>Status</th>
+        <th>Mellem (Midt)</th>
+        <th>Status</th>
+        <th>Nederst (Bund)</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>38</td><td>Grønkål</td><td>X</td><td></td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>37</td><td>Grønkål</td><td>X</td><td></td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>36</td><td>Grønkål</td><td>X</td><td></td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>35</td><td>Grønkål</td><td>X</td><td></td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>34</td><td>Grønkål</td><td>X</td><td></td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>33</td><td>Rosenkål</td><td>X</td><td></td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>32</td><td>Rosenkål</td><td>X</td><td></td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>31</td><td>Rosenkål</td><td>X</td><td></td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>30</td><td>Rosenkål</td><td>X</td><td>Sølvbeder</td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>29</td><td>Rosenkål</td><td>X</td><td>Rødbeder bolje beder</td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>28</td><td>Spidskål</td><td>X</td><td>Rødbeder</td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>27</td><td>Spidskål</td><td>X</td><td>Rødbeder</td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>26</td><td>Spidskål</td><td>X</td><td>Pastinak</td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>25</td><td>Spidskål</td><td>X</td><td>Persillerødder</td><td>X</td><td></td><td>X</td>
+    </tr>
+    <tr>
+        <td>24</td><td>Broccoli</td><td>X</td><td>Dild</td><td>X</td><td>Kartofler</td><td>X</td>
+    </tr>
+    <tr>
+        <td>23</td><td>Broccoli</td><td>X</td><td>Radiser</td><td>X</td><td>Kartofler</td><td>X</td>
+    </tr>
+    <tr>
+        <td>22</td><td>Broccoli</td><td>X</td><td>Borlotti</td><td>X</td><td>Kartofler</td><td>X</td>
+    </tr>
+    <tr>
+        <td>21</td><td>Broccoli</td><td>X</td><td>Bønner</td><td>X</td><td>Kartofler</td><td>X</td>
+    </tr>
+    <tr>
+        <td>20</td><td>Majs</td><td>X</td><td>Banan skalotte</td><td>X</td><td>Majs</td><td>X</td>
+    </tr>
+    <tr>
+        <td>19</td><td>Majs</td><td>X</td><td>Salat Skalotte</td><td>X</td><td>Majs</td><td>X</td>
+    </tr>
+    <tr>
+        <td>18</td><td>Majs</td><td>X</td><td>Gulerødder</td><td>X</td><td>Persille</td><td>X</td>
+    </tr>
+    <tr>
+        <td>17</td><td>Majs</td><td>X</td><td>Gulerødder</td><td>X</td><td>Persille</td><td>X</td>
+    </tr>
+    <tr>
+        <td>16</td><td>Majs</td><td>X</td><td>Ærter</td><td>X</td><td>Persille</td><td>X</td>
+    </tr>
+    <tr>
+        <td>15</td><td>Majs</td><td>X</td><td>Løg</td><td>X</td><td>Spidskål</td><td>X</td>
+    </tr>
+    <tr>
+        <td>14</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Spidskål</td><td>X</td>
+    </tr>
+    <tr>
+        <td>13</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Spidskål</td><td>X</td>
+    </tr>
+    <tr>
+        <td>12</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Kålrabi</td><td>X</td>
+    </tr>
+    <tr>
+        <td>11</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Glaskål</td><td>X</td>
+    </tr>
+    <tr>
+        <td>10</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Blomster</td><td>X</td>
+    </tr>
+    <tr>
+        <td>9</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Blomster</td><td>X</td>
+    </tr>
+    <tr>
+        <td>8</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Blomster</td><td>X</td>
+    </tr>
+    <tr>
+        <td>7</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Kartofler</td><td>X</td>
+    </tr>
+    <tr>
+        <td>6</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Kartofler</td><td>X</td>
+    </tr>
+    <tr>
+        <td>5</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Kartofler</td><td>X</td>
+    </tr>
+    <tr>
+        <td>4</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Kartofler</td><td>X</td>
+    </tr>
+    <tr>
+        <td>3</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Kartofler</td><td>X</td>
+    </tr>
+    <tr>
+        <td>2</td><td></td><td>X</td><td>Løg</td><td>X</td><td>Kartofler</td><td>X</td>
+    </tr>
+    <tr>
+        <td>1</td><td></td><td>X</td><td></td><td>X</td><td>Hestebønner</td><td>X</td>
+    </tr>
+</table>
+
+<p><strong>Status-forklaring:</strong> X = låst (ikke frigivet), − = frigivet (klart til høst)</p>
+
+</div>
+
+<!-- ===== BILAG B ===== -->
+<div class="appendix" id="bilag-b">
+<h2>Bilag B: Lugegrupper 2026 — Komplet medlemsoversigt</h2>
+
+<p>Dette er den komplette medlemsliste for alle 10 lugegrupper med i alt 100 medlemmer.</p>
+
+<h3>Gruppe 1: Grønkål + Rødbeder + Hokkaido (7 bede)</h3>
+<p><strong>Områder:</strong> Øverst 34–38, Mellem 27–28</p>
+<table>
+    <tr><th>Navn</th><th>Adresse</th><th>Email</th><th>Telefon</th><th>BG</th></tr>
+    <tr><td>Jan Feil</td><td>Gl. Kirkevej 40</td><td>janfeil11@gmail.com</td><td>2821 9103</td><td>1</td></tr>
+    <tr><td>Dorte Wahlberg Feil</td><td>Gl. Kirkevej 40</td><td>dortewahlberg@hotmail.com</td><td>4019 9074</td><td>1</td></tr>
+    <tr><td>Lis Ellemand</td><td>Gl. Kirkevej 70</td><td>lis.ellemand@gmail.com</td><td>3024 8061</td><td>3</td></tr>
+    <tr><td>Henrik Juul Nielsen</td><td>Gl. Kirkevej 70</td><td>henrikjuul3@gmail.com</td><td>2691 9200</td><td>3</td></tr>
+    <tr><td>Agnete Jørgensen</td><td>Gl. Kirkevej 144</td><td>netej@mail.dk</td><td>2364 2878</td><td>8</td></tr>
+    <tr><td>Axel Thomsen</td><td>Gl. Kirkevej 162</td><td>microspan@gmail.com</td><td>4015 6475</td><td>8</td></tr>
+    <tr><td>Jes Lemming</td><td>Hjortshøjvangen 108</td><td>jeslemming50@gmail.com</td><td>2251 8254</td><td>9</td></tr>
+    <tr><td>Catherine Nielsen</td><td>Højager 102</td><td>ecatherinen@gmail.com</td><td>2390 2428</td><td>9</td></tr>
+    <tr><td>Elena Lazarova</td><td>Virup Skovvej 50</td><td>lazarova.elena96@hotmail.com</td><td>9391 9541</td><td>9</td></tr>
+    <tr><td>Martin Jacob Darki</td><td>Virup Skovvej 50</td><td>martinjd411@gmail.com</td><td>9391 9514</td><td>9</td></tr>
+</table>
+
+<h3>Gruppe 2: Kartofler + Hestebønner + Pastinak (12 bede)</h3>
+<p><strong>Områder:</strong> Nederst 1–7, Nederst 21–24, Mellem 26</p>
+<table>
+    <tr><th>Navn</th><th>Adresse</th><th>Email</th><th>Telefon</th><th>BG</th></tr>
+    <tr><td>Anke Stubsgaard</td><td>Gl. Kirkevej 46A</td><td>anke@stubsgaard.dk</td><td>2615 7769</td><td>1</td></tr>
+    <tr><td>Pierre Lecuelle</td><td>Gl. Kirkevej 46A</td><td>pierrelecuelle@gmail.com</td><td>6015 7769</td><td>1</td></tr>
+    <tr><td>Gunnar Boye Olesen</td><td>Gl. Kirkevej 72</td><td>ove@inforse.org</td><td>2426 9933</td><td>3</td></tr>
+    <tr><td>Lotte Dalgaard Christensen</td><td>Østergårdstoften 29</td><td>dalgaardchristensen@gmail.com</td><td>2897 7160</td><td>5</td></tr>
+    <tr><td>Benjamin Riise</td><td>Østergårdstoften 29</td><td>benjaminriise@gmail.com</td><td>2367 1648</td><td>5</td></tr>
+    <tr><td>Simon Kjærsgaard</td><td>Østerøgade 8, 8200 Aarhus N</td><td>simonkjrsgaard@gmail.com</td><td>8755 3517</td><td>9</td></tr>
+    <tr><td>Trine Schouborg</td><td>Østerøgade 8, 8200 Aarhus N</td><td>trineschouborg@yahoo.dk</td><td>2251 5173</td><td>9</td></tr>
+    <tr><td>Aske Dahl Sløk</td><td>Kristtornvej 1, 8200 Århus N</td><td>askedahl@gmail.com</td><td>2335 7523</td><td>9</td></tr>
+    <tr><td>Christina Blach</td><td>Kristtornvej 1, 8200 Århus N</td><td>blach_c@yahoo.dk</td><td>3022 3140</td><td>9</td></tr>
+    <tr><td>Connie Ringgaard</td><td>Gl. Stationsvej 4, 8400 Ebeltoft</td><td>connie.ringgaard@gmail.com</td><td>5080 2482</td><td>9</td></tr>
+</table>
+
+<p style="font-size: 0.9em; color: #666; margin-top: 30px;">
+    <strong>Øvrige grupper (3–10):</strong> For placebesparelse vises kun grupper 1 og 2 i denne vejledning. Se admin-panelet for komplet oversigt over alle 10 grupper med 100 medlemmer i alt.
+</p>
+
+</div>
+
+<footer>
+    <p>📋 Markplan Admin-vejledning • Grøntsagsordningen i AiH • 2026</p>
+    <p style="font-size: 0.85em; margin-top: 10px;">Denne vejledning er gyldig for år 2026. Opdateres årligt med ny markplan og medlemsliste.</p>
+</footer>
+
+</div>
+
+</body>
+</html>
