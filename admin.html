@@ -1028,10 +1028,18 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                 });
             }
 
+            // Reload crops data so Afgrøder & Høst tab is up to date
+            allCrops = await fetchProtected('crops?select=*&order=name');
+
             setImportStatus(
                 '✓ Markplan importeret — ' + beds.length + ' bede, ' + cropRows.length + ' unikke afgrøder opdateret.',
                 false, false, true
             );
+
+            // If crops tab is active, re-render it
+            if (document.getElementById('sectionCrops').classList.contains('hidden') === false) {
+                renderCrops();
+            }
 
             // Re-enable button (allow re-import)
             btn.disabled = false;
