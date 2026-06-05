@@ -1,0 +1,40 @@
+;Top;;Midt;;Bund;
+BedNr;TopAfgrøde;TopStatus;MidtAfgrøde;MidtStatus;BundAfgrøde;BundStatus
+38;Kokosnød;X;Mango;X;;X
+37;Kokosnød;X;Mango;X;;X
+36;Kokosnød;X;Mango;-;;X
+35;Jackfrugt;X;Papaya;X;;X
+34;Jackfrugt;X;Papaya;-;;X
+33;Jackfrugt;X;Passionsfrugt;X;;X
+32;Durian;X;Passionsfrugt;X;;X
+31;Durian;-;Passionsfrugt;X;;X
+30;Durian;X;Pitahaya;X;;X
+29;Guava;X;Pitahaya;-;Bambusskud;X
+28;Guava;-;Lychee;X;Bambusskud;X
+27;Guava;X;Lychee;X;Bambusskud;-
+26;Rambutan;X;Lychee;X;Lotus rod;X
+25;Rambutan;X;Tamarind;X;Lotus rod;X
+24;Rambutan;-;Tamarind;X;Lotus rod;-
+23;Brødfrugt;X;Tamarind;X;Taro;X
+22;Brødfrugt;X;Bittermelon;X;Taro;X
+21;Brødfrugt;-;Bittermelon;-;Taro;X
+20;Pitahaya;X;Bittermelon;X;Cassava;X
+19;Pitahaya;X;Stjernefrugt;X;Cassava;X
+18;Pitahaya;X;Stjernefrugt;-;Cassava;-
+17;Açaí;X;Chayote;X;Yam;X
+16;Açaí;-;Chayote;X;Yam;X
+15;Açaí;X;Jicama;X;Yam;-
+14;;X;Jicama;X;Okra;X
+13;;X;Jicama;-;Okra;X
+12;;X;Bok Choy;X;Okra;-
+11;;X;Bok Choy;X;Wasabi;X
+10;;X;Moringa;X;Wasabi;X
+9;;X;Moringa;X;Wasabi;-
+8;;X;Moringa;-;Noni;X
+7;;X;Teff;X;Noni;X
+6;;X;Teff;X;Noni;X
+5;;X;Amarant;X;Kaktusblomst;X
+4;;X;Amarant;X;Kaktusblomst;X
+3;;X;Amarant;-;Kaktusblomst;-
+2;;X;Bambusskud;X;Cassava;X
+1;;X;;X;Cassava;-
