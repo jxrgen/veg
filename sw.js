@@ -1,4 +1,4 @@
-const CACHE = 'markplan-aih-v8';
+const CACHE = 'markplan-aih-v9';
 const PRECACHE = [
     './',
     './index.html',
@@ -19,11 +19,11 @@ self.addEventListener('activate', e => {
     e.waitUntil(
         caches.keys().then(keys => {
             const oldCaches = keys.filter(k => k !== CACHE);
-            console.log('[SW v8] Activating. Current CACHE:', CACHE);
-            console.log('[SW v8] Deleting old caches:', oldCaches);
+            console.log('[SW v9] Activating. Current CACHE:', CACHE);
+            console.log('[SW v9] Deleting old caches:', oldCaches);
             return Promise.all(oldCaches.map(k => caches.delete(k)));
         }).then(() => {
-            console.log('[SW v8] Cache cleanup complete. Claiming clients.');
+            console.log('[SW v9] Cache cleanup complete. Claiming clients.');
             return self.clients.claim();
         })
     );
