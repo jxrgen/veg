@@ -438,9 +438,6 @@ Birthe Nielsen;Marksti 7;birthe@example.dk;30405060;5</pre>
             </div>
         </section>
 
-            </div>
-        </section>
-
         <!-- ---- SECTION: CROPS ---- -->
         <section id="sectionCrops" class="hidden">
             <div class="flex flex-wrap gap-3 items-center justify-between mb-2">
@@ -624,6 +621,8 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             }
 
             sessionJwt = body.access_token;
+            console.log('[LOGIN/DATA/TAB] Login successful, sessionJwt set to:', sessionJwt.substring(0, 20) + '...');
+            console.log('[LOGIN/DATA/TAB] loadAllData() is about to be called');
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('adminPage').classList.remove('hidden');
             loadAllData();
@@ -643,6 +642,10 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
 
     // ── Data loading ──────────────────────────────────────────────────────────
     async function loadAllData() {
+        console.log('[LOGIN/DATA/TAB] loadAllData() called');
+        console.log('[LOGIN/DATA/TAB] sessionJwt:', sessionJwt ? sessionJwt.substring(0, 20) + '...' : 'null');
+        console.log('[LOGIN/DATA/TAB] activeTab:', activeTab);
+
         hide('loadError');
         show('loadingIndicator');
         hide('sectionMembers');
@@ -663,6 +666,12 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                 sb.from('crops').select('*').order('name')
             ]);
 
+            console.log('[LOGIN/DATA/TAB] Data loaded: allMembers.length=' + (Array.isArray(members) ? members.length : 0) + ', allCrops.length=' + (cropsRes.data ? cropsRes.data.length : 0));
+            if (cropsRes.data && cropsRes.data.length > 0) {
+                const firstCrop = cropsRes.data[0];
+                console.log('[LOGIN/DATA/TAB] First crop:', JSON.stringify({ name: firstCrop.name, is_released: firstCrop.is_released }));
+            }
+
             if (cropsRes.error) throw new Error('Afgrøder: ' + cropsRes.error.message);
 
             allMembers = Array.isArray(members) ? members : [];
@@ -677,17 +686,20 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         }
 
         hide('loadingIndicator');
+        console.log('[LOGIN/DATA/TAB] About to call switchTab with activeTab=' + activeTab);
         switchTab(activeTab);
     }
 
     // ── Tab switching ─────────────────────────────────────────────────────────
     function switchTab(tab) {
+        console.log('[LOGIN/DATA/TAB] switchTab called with tab=' + tab);
         activeTab = tab;
 
         const tM  = document.getElementById('tabMembers');
         const tC  = document.getElementById('tabCrops');
         const tI  = document.getElementById('tabImport');
         const tV  = document.getElementById('tabVejledning');
+        console.log('[LOGIN/DATA/TAB] Tab button elements found: tM=' + (tM ? 'OK' : 'null') + ', tC=' + (tC ? 'OK' : 'null') + ', tI=' + (tI ? 'OK' : 'null') + ', tV=' + (tV ? 'OK' : 'null'));
 
         // Reset all tabs
         [tM, tC, tI, tV].forEach(t => {
@@ -707,7 +719,11 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         } else if (tab === 'crops') {
             tC.classList.add('active');
             tC.classList.remove('text-gray-600');
+            console.log('[LOGIN/DATA/TAB] Showing crops tab');
+            const cropSection = document.getElementById('sectionCrops');
+            console.log('[LOGIN/DATA/TAB] sectionCrops element exists?', cropSection ? 'OK' : 'null');
             show('sectionCrops');
+            console.log('[LOGIN/DATA/TAB] About to call renderCrops()');
             renderCrops();
         } else if (tab === 'import') {
             tI.classList.add('active');
