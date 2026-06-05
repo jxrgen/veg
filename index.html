@@ -705,6 +705,20 @@
 
         /* Group picker */
         let groupHtml = '<div class="mine-section"><h2>🌿 Min lugegruppe</h2>';
+
+        // Debug info: show what groupFirstnames contains
+        const groupCount = Object.keys(groupFirstnames).length;
+        const totalNames = Object.values(groupFirstnames).reduce((sum, names) => sum + (Array.isArray(names) ? names.length : 0), 0);
+        if (groupCount === 0) {
+            groupHtml += '<div style="background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:0.75rem;border-radius:0.5rem;font-size:0.875rem;margin-bottom:1rem;">' +
+                '⚠️ Ingen gruppemedlemmer loadet — tjek browser console for [DEBUG] logs' +
+                '</div>';
+        } else {
+            groupHtml += '<div style="background:#f0fdf4;border:1px solid #86efac;color:#166534;padding:0.75rem;border-radius:0.5rem;font-size:0.875rem;margin-bottom:1rem;">' +
+                '✓ ' + groupCount + ' grupper med ' + totalNames + ' medlemmer loadet' +
+                '</div>';
+        }
+
         groupHtml += '<div class="group-picker">';
         for (let i = 1; i <= 10; i++) {
             const cls = GROUP_COLORS[i] || '';
