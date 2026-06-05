@@ -123,7 +123,9 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 - Admin kan kun ændre `is_released` per afgrøde (alle bede af samme afgrøde frigives samlet)
 - Ingen mulighed for at redigere markplan eller medlemmer via admin — kræver ny CSV + genkøre setup_db.py
 - GitHub Pages tillader ikke server-side skrivning, så al data går via Supabase REST API
-- CSV-import kan kun opdatere crop_name og is_released pr. bed — lugegruppedata bevares ved import
+- CSV-import markplan kan kun opdatere crop_name og is_released pr. bed — lugegruppedata bevares
+- CSV-import lugegrupper erstatter ALLE eksisterende members (DELETE + INSERT)
+- fetchProtected() i admin.html håndterer nu alle HTTP-metoder (GET/POST/DELETE) med JWT-header
 
 ## Supabase-funktioner (RPC)
 - `get_group_firstnames()` — SECURITY DEFINER funktion der returnerer `(luge_gruppe, first_name)` for alle medlemmer. Tilgængelig for `anon`-rollen uden at åbne `members`-tabellen. Bruges af index.html til at vise gruppemedlemmers fornavne på "Min side".
@@ -152,3 +154,7 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 | 2026-06-04 | Admin members-tabel vist: bug var .hidden !important der slog md:block ihjel |
 | 2026-06-04 | Telefonnumre i databasen rettet (var trunkeret til 4 cifre pga. split()[0]-fejl i setup_db.py) |
 | 2026-06-04 | Admin: sorterbare kolonner i medlemstabellen (Gruppe, Fornavn, Efternavn, Adresse, Telefon, Email, BG) |
+| 2026-06-05 | Testfiler oprettet: markplan_test.csv (eksotiske afgrøder) og lugegrupper_test.csv (30 fiktive personer, 4 grupper) |
+| 2026-06-05 | Admin "Importer"-tab: lugegrupper-import tilføjet (DELETE alle + INSERT nye via fetchProtected) |
+| 2026-06-05 | Admin: nyt "Vejledning"-faneblad med komplet guide til alle admin-funktioner |
+| 2026-06-05 | Supabase: DELETE+INSERT RLS-politikker tilføjet for members-tabellen |
