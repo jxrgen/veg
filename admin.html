@@ -449,11 +449,6 @@ Birthe Nielsen;Marksti 7;birthe@example.dk;30405060;5</pre>
             </div>
             <p class="text-sm text-gray-500 mb-4">Klik på en afgrøde for at skifte dens status</p>
 
-            <!-- Debug status -->
-            <div id="cropsDebugStatus" style="background:#f0fdf4;border:1px solid #86efac;color:#166534;padding:0.75rem;border-radius:0.5rem;font-size:0.875rem;margin-bottom:1rem;">
-                ✓ Laster...
-            </div>
-
             <!-- Released crops -->
             <div id="releasedSection" class="mb-5">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-green-700 mb-2">Frigivet</h3>
@@ -663,18 +658,16 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         }
 
         try {
-            const [members, crops] = await Promise.all([
+            const [members, cropsRes] = await Promise.all([
                 fetchProtected('members?select=*&order=luge_gruppe.asc,name.asc'),
-                fetchProtected('crops?select=*&order=name')
+                sb.from('crops').select('*').order('name')
             ]);
 
-            allMembers = Array.isArray(members) ? members : [];
-            allCrops   = Array.isArray(crops) ? crops : [];
+            if (cropsRes.error) throw new Error('Afgrøder: ' + cropsRes.error.message);
 
-            console.log('[ADMIN DEBUG] loadAllData complete:');
-            console.log('  allMembers:', allMembers.length, 'rows');
-            console.log('  allCrops:', allCrops.length, 'rows');
-            console.log('  First 3 crops:', allCrops.slice(0, 3));
+            allMembers = Array.isArray(members) ? members : [];
+            allCrops   = cropsRes.data || [];
+
         } catch (e) {
             hide('loadingIndicator');
             console.log('[ADMIN DEBUG] loadAllData error:', e.message);
@@ -793,37 +786,19 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
 
     // ── Crops ─────────────────────────────────────────────────────────────────
     function renderCrops() {
-        console.log('[ADMIN DEBUG] renderCrops called with allCrops:', allCrops.length, 'items');
         const released = allCrops.filter(c => c.is_released);
         const locked   = allCrops.filter(c => !c.is_released);
 
-        console.log('[ADMIN DEBUG] Filtered: released=', released.length, 'locked=', locked.length);
-
-        const countEl = document.getElementById('cropsCount');
-        console.log('[ADMIN DEBUG] cropsCount element:', countEl);
-        if (countEl) {
-            countEl.textContent = allCrops.length + ' afgrøder · ' + released.length + ' frigivet';
-        }
-
-        // Update debug status
-        const debugEl = document.getElementById('cropsDebugStatus');
-        if (debugEl) {
-            debugEl.textContent = '✓ ' + allCrops.length + ' afgrøder: ' + released.length + ' frigivet, ' + locked.length + ' låst';
-        }
+        document.getElementById('cropsCount').textContent =
+            allCrops.length + ' afgrøder · ' + released.length + ' frigivet';
 
         renderCropList('releasedList', 'releasedEmpty', released);
         renderCropList('lockedList',   'lockedEmpty',   locked);
     }
 
     function renderCropList(listId, emptyId, crops) {
-        console.log('[ADMIN DEBUG] renderCropList:', listId, 'with', crops.length, 'crops');
         const list  = document.getElementById(listId);
         const empty = document.getElementById(emptyId);
-        console.log('[ADMIN DEBUG]   list element:', list, 'empty element:', empty);
-        if (!list || !empty) {
-            console.log('[ADMIN DEBUG] ERROR: Missing DOM elements!');
-            return;
-        }
         list.innerHTML = '';
 
         if (crops.length === 0) {
