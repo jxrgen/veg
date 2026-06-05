@@ -1064,19 +1064,28 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                 }
             });
 
-            // 1. Upsert bed entries (insert new, update existing using on_conflict)
-            // No DELETE needed — on_conflict handles duplicate keys by updating
+            // 1. Delete old beds for the bed numbers being imported, then insert new ones
+            const bedNumbers = [...new Set(beds.map(b => b.bed_number))];
+            if (bedNumbers.length > 0) {
+                const bedNumFilter = bedNumbers.map(n => `bed_number.eq.${n}`).join(',');
+                await fetchProtected(`beds?or=(${bedNumFilter})`, {
+                    method: 'DELETE',
+                    headers: { 'Prefer': 'return=minimal' }
+                });
+            }
+
+            // 2. Insert new bed entries
             if (updates.length > 0) {
-                await fetchProtected('beds?on_conflict=bed_number,section', {
-                    method:  'POST',
-                    body:    JSON.stringify(updates),
-                    headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }
+                await fetchProtected('beds', {
+                    method: 'POST',
+                    body: JSON.stringify(updates),
+                    headers: { 'Prefer': 'return=minimal' }
                 });
             }
 
             setImportStatus('Genopbygger afgrødetabel…', true);
 
-            // 2. Rebuild crops table
+            // 3. Rebuild crops table
             // Extract unique crop names (parse multi-crop strings) and use cropStatusMap for release status
             const cropNames = new Set();
             updates.forEach(u => {
