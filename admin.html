@@ -788,19 +788,31 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
 
     // ── Crops ─────────────────────────────────────────────────────────────────
     function renderCrops() {
+        console.log('[ADMIN DEBUG] renderCrops called with allCrops:', allCrops.length, 'items');
         const released = allCrops.filter(c => c.is_released);
         const locked   = allCrops.filter(c => !c.is_released);
 
-        document.getElementById('cropsCount').textContent =
-            allCrops.length + ' afgrøder · ' + released.length + ' frigivet';
+        console.log('[ADMIN DEBUG] Filtered: released=', released.length, 'locked=', locked.length);
+
+        const countEl = document.getElementById('cropsCount');
+        console.log('[ADMIN DEBUG] cropsCount element:', countEl);
+        if (countEl) {
+            countEl.textContent = allCrops.length + ' afgrøder · ' + released.length + ' frigivet';
+        }
 
         renderCropList('releasedList', 'releasedEmpty', released);
         renderCropList('lockedList',   'lockedEmpty',   locked);
     }
 
     function renderCropList(listId, emptyId, crops) {
+        console.log('[ADMIN DEBUG] renderCropList:', listId, 'with', crops.length, 'crops');
         const list  = document.getElementById(listId);
         const empty = document.getElementById(emptyId);
+        console.log('[ADMIN DEBUG]   list element:', list, 'empty element:', empty);
+        if (!list || !empty) {
+            console.log('[ADMIN DEBUG] ERROR: Missing DOM elements!');
+            return;
+        }
         list.innerHTML = '';
 
         if (crops.length === 0) {
