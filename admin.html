@@ -1032,34 +1032,35 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             const cropStatusMap = {}; // Track which crops are released
 
             beds.forEach(b => {
-                // Process Top section
-                const topCrops = b.top_crop ? parseCropField(b.top_crop) : [];
-                topCrops.forEach(cropName => {
-                    updates.push({ bed_number: b.bed_number, section: 'T', crop_name: cropName });
-                    if (b.top_status === '-') cropStatusMap[cropName] = true;
+                // One row per bed_number+section, crop_name is full string (may contain "/" for multi-crop)
+                // Top section
+                updates.push({
+                    bed_number: b.bed_number,
+                    section: 'T',
+                    crop_name: b.top_crop || null
                 });
-                if (!b.top_crop) {
-                    updates.push({ bed_number: b.bed_number, section: 'T', crop_name: null });
+                if (b.top_crop && b.top_status === '-') {
+                    parseCropField(b.top_crop).forEach(c => { cropStatusMap[c] = true; });
                 }
 
-                // Process Midt section
-                const midtCrops = b.midt_crop ? parseCropField(b.midt_crop) : [];
-                midtCrops.forEach(cropName => {
-                    updates.push({ bed_number: b.bed_number, section: 'M', crop_name: cropName });
-                    if (b.midt_status === '-') cropStatusMap[cropName] = true;
+                // Midt section
+                updates.push({
+                    bed_number: b.bed_number,
+                    section: 'M',
+                    crop_name: b.midt_crop || null
                 });
-                if (!b.midt_crop) {
-                    updates.push({ bed_number: b.bed_number, section: 'M', crop_name: null });
+                if (b.midt_crop && b.midt_status === '-') {
+                    parseCropField(b.midt_crop).forEach(c => { cropStatusMap[c] = true; });
                 }
 
-                // Process Bund section
-                const bundCrops = b.bund_crop ? parseCropField(b.bund_crop) : [];
-                bundCrops.forEach(cropName => {
-                    updates.push({ bed_number: b.bed_number, section: 'B', crop_name: cropName });
-                    if (b.bund_status === '-') cropStatusMap[cropName] = true;
+                // Bund section
+                updates.push({
+                    bed_number: b.bed_number,
+                    section: 'B',
+                    crop_name: b.bund_crop || null
                 });
-                if (!b.bund_crop) {
-                    updates.push({ bed_number: b.bed_number, section: 'B', crop_name: null });
+                if (b.bund_crop && b.bund_status === '-') {
+                    parseCropField(b.bund_crop).forEach(c => { cropStatusMap[c] = true; });
                 }
             });
 
@@ -1076,10 +1077,12 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             setImportStatus('Genopbygger afgrødetabel…', true);
 
             // 2. Rebuild crops table
-            // Extract unique crop names from the imported data and use cropStatusMap for release status
+            // Extract unique crop names (parse multi-crop strings) and use cropStatusMap for release status
             const cropNames = new Set();
             updates.forEach(u => {
-                if (u.crop_name) cropNames.add(u.crop_name);
+                if (u.crop_name) {
+                    parseCropField(u.crop_name).forEach(c => cropNames.add(c));
+                }
             });
 
             await fetchProtected('crops?id=gte.1', {
