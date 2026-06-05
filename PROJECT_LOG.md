@@ -158,3 +158,4 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 | 2026-06-05 | Admin "Importer"-tab: lugegrupper-import tilføjet (DELETE alle + INSERT nye via fetchProtected) |
 | 2026-06-05 | Admin: nyt "Vejledning"-faneblad med komplet guide til alle admin-funktioner |
 | 2026-06-05 | Supabase: DELETE+INSERT RLS-politikker tilføjet for members-tabellen |
+| 2026-06-05 | **BUG**: Kommit ec7c1cc ændrede loadAllData til fetchProtected for crops — brød tabs. Revert til SDK |
