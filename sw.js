@@ -1,4 +1,4 @@
-const CACHE = 'markplan-aih-v1';
+const CACHE = 'markplan-aih-v3';
 const PRECACHE = [
     './',
     './index.html',
