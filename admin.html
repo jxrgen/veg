@@ -117,6 +117,7 @@
             type="password"
             id="passwordInput"
             placeholder="Admin kode"
+            autofocus
             class="border border-gray-300 p-2.5 rounded-lg w-full mb-3 text-center text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
             onkeydown="if(event.key==='Enter') login()"
         >
@@ -269,84 +270,95 @@
         <section id="sectionImport" class="hidden">
             <div class="space-y-6">
 
-                <!-- Upload card -->
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                        </svg>
-                        Importer ny markplan
-                    </h2>
-                    <p class="text-sm text-gray-500 mb-4">Vælg en CSV-fil i det rigtige format for at opdatere markplanen.</p>
+                <!-- Import functions: top row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                    <label class="block mb-4">
-                        <span class="sr-only">Vælg CSV-fil</span>
-                        <input
-                            type="file"
-                            id="csvFileInput"
-                            accept=".csv"
-                            onchange="onCsvFileChosen(event)"
-                            class="block w-full text-sm text-gray-600
-                                   file:mr-4 file:py-2 file:px-4
-                                   file:rounded-lg file:border-0
-                                   file:text-sm file:font-semibold
-                                   file:bg-green-50 file:text-green-700
-                                   hover:file:bg-green-100 cursor-pointer"
-                        >
-                    </label>
-
-                    <!-- Preview table -->
-                    <div id="importPreviewWrap" class="hidden mb-4">
-                        <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Forhåndsvisning</p>
-                        <div class="table-scroll border border-gray-200 rounded-lg overflow-hidden">
-                            <table id="importPreviewTable" class="w-full text-sm">
-                                <thead>
-                                    <tr class="bg-gray-50 text-left">
-                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Bed</th>
-                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Top afgrøde</th>
-                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap text-center">Status</th>
-                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Midt afgrøde</th>
-                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap text-center">Status</th>
-                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Bund afgrøde</th>
-                                        <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap text-center">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="importPreviewBody"></tbody>
-                            </table>
+                    <!-- Markplan import -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            Importer markplan
+                        </h2>
+                        <p class="text-sm text-gray-500 mb-4">Vælg CSV-fil for at opdatere bede og afgrøder.</p>
+                        <label class="block mb-4">
+                            <span class="sr-only">Vælg markplan-CSV</span>
+                            <input type="file" id="csvFileInput" accept=".csv" onchange="onCsvFileChosen(event)"
+                                class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer">
+                        </label>
+                        <div id="importPreviewWrap" class="hidden mb-4">
+                            <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Forhåndsvisning</p>
+                            <div class="table-scroll border border-gray-200 rounded-lg overflow-hidden">
+                                <table id="importPreviewTable" class="w-full text-sm">
+                                    <thead>
+                                        <tr class="bg-gray-50 text-left">
+                                            <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Bed</th>
+                                            <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Top</th>
+                                            <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap text-center">S</th>
+                                            <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Midt</th>
+                                            <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap text-center">S</th>
+                                            <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Bund</th>
+                                            <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap text-center">S</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="importPreviewBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <button id="doImportBtn" onclick="confirmAndImport()" disabled
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-green-700 text-white opacity-40 cursor-not-allowed transition-all">Importer &rarr;</button>
+                        <div id="importStatus" class="hidden mt-4 flex items-center gap-2 text-sm">
+                            <svg id="importSpinner" class="hidden animate-spin h-4 w-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                            </svg>
+                            <span id="importStatusText" class="text-gray-600"></span>
                         </div>
                     </div>
 
-                    <button
-                        id="doImportBtn"
-                        onclick="confirmAndImport()"
-                        disabled
-                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold
-                               bg-green-700 text-white opacity-40 cursor-not-allowed
-                               transition-all"
-                    >Importer bede &rarr;</button>
-
-                    <!-- Status / progress -->
-                    <div id="importStatus" class="hidden mt-4 flex items-center gap-2 text-sm">
-                        <svg id="importSpinner" class="hidden animate-spin h-4 w-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                        </svg>
-                        <span id="importStatusText" class="text-gray-600"></span>
+                    <!-- Lugegrupper import -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            Importer medlemmer
+                        </h2>
+                        <p class="text-sm text-gray-500 mb-4">Vælg CSV-fil for at opdatere alle medlemmer.</p>
+                        <label class="block mb-4">
+                            <span class="sr-only">Vælg lugegruppe-CSV</span>
+                            <input type="file" id="lgCsvFileInput" accept=".csv" onchange="onLgCsvFileChosen(event)"
+                                class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer">
+                        </label>
+                        <div id="lgImportPreviewWrap" class="hidden mb-4">
+                            <p id="lgImportPreviewText" class="text-sm font-medium text-gray-700"></p>
+                        </div>
+                        <button id="doLgImportBtn" onclick="confirmAndRunLgImport()" disabled
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-green-700 text-white opacity-40 cursor-not-allowed transition-all">Importer &rarr;</button>
+                        <div id="lgImportStatus" class="hidden mt-4 flex items-center gap-2 text-sm">
+                            <svg id="lgImportSpinner" class="hidden animate-spin h-4 w-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                            </svg>
+                            <span id="lgImportStatusText" class="text-gray-600"></span>
+                        </div>
                     </div>
+
                 </div>
 
-                <!-- Format guide card -->
+                <!-- Format guides: below imports -->
+
+                <!-- Filformat - markplan -->
                 <div class="bg-white rounded-xl shadow-sm p-6">
                     <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
                         <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
-                        Filformat
+                        Filformat — markplan
                     </h2>
-                    <p class="text-sm text-gray-500 mb-4">Semikolon-separeret .csv-fil med 7 kolonner pr. linje. Første linje er header og ignoreres.</p>
-
-                    <!-- Example table with grouped headers -->
+                    <p class="text-sm text-gray-500 mb-4">Semikolon-separeret .csv-fil med 7 kolonner pr. linje.</p>
                     <div class="table-scroll border border-gray-200 rounded-lg overflow-hidden mb-5">
                         <table class="w-full text-sm border-collapse">
                             <thead>
@@ -384,52 +396,22 @@
                                     <td class="px-3 py-2 text-gray-700 border-r border-gray-100">Spidskål</td>
                                     <td class="px-3 py-2 text-center"><span class="px-1.5 py-0.5 bg-green-100 text-green-700 rounded font-mono text-xs font-bold">-</span></td>
                                 </tr>
-                                <tr class="border-t border-gray-100">
-                                    <td class="px-3 py-2 font-bold text-gray-800 border-r border-gray-100">1</td>
-                                    <td class="px-3 py-2 border-r border-gray-100"></td>
-                                    <td class="px-3 py-2 text-center border-r border-gray-100"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
-                                    <td class="px-3 py-2 border-r border-gray-100"></td>
-                                    <td class="px-3 py-2 text-center border-r border-gray-100"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
-                                    <td class="px-3 py-2 text-gray-700 border-r border-gray-100">Hestebønner</td>
-                                    <td class="px-3 py-2 text-center"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
-
-                    <!-- CSV example matching the table exactly -->
-                    <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Samme rækker som CSV-fil</p>
+                    <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">CSV-format</p>
                     <pre class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-xs text-gray-700 overflow-x-auto leading-relaxed font-mono">;Top;;Midt;;Bund;
 38;Grønkål;X;;X;;X
-15;Majs;X;Løg;X;Spidskål;-
-1;;X;;X;Hestebønner;X</pre>
-
-                    <!-- Rules -->
+15;Majs;X;Løg;X;Spidskål;-</pre>
                     <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
-                        <div class="flex items-start gap-2">
-                            <span class="text-green-700 font-bold mt-0.5">→</span>
-                            <span>Separator: <code class="bg-gray-100 px-1 rounded font-mono text-xs">;</code> (semikolon)</span>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <span class="text-green-700 font-bold mt-0.5">→</span>
-                            <span>Maks 40 rækker (bede)</span>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <span class="text-green-700 font-bold mt-0.5">→</span>
-                            <span><code class="bg-gray-100 px-1 rounded font-mono text-xs">X</code> = ikke frigivet &nbsp;·&nbsp; <code class="bg-green-100 text-green-700 px-1 rounded font-mono text-xs">-</code> = klar til høst</span>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <span class="text-green-700 font-bold mt-0.5">→</span>
-                            <span>Tomt afgrødefelt = tomt bed i den sektion</span>
-                        </div>
-                        <div class="flex items-start gap-2 sm:col-span-2">
-                            <span class="text-green-700 font-bold mt-0.5">→</span>
-                            <span>Første linje er header og ignoreres. Lugegruppetilknytning bevares ved import.</span>
-                        </div>
+                        <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Separator: <code class="bg-gray-100 px-1 rounded font-mono text-xs">;</code></span></div>
+                        <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span><code class="bg-gray-100 px-1 rounded font-mono text-xs">X</code> = låst, <code class="bg-green-100 text-green-700 px-1 rounded font-mono text-xs">-</code> = frigivet</span></div>
+                        <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Tomt afgrødefelt = tomt bed</span></div>
+                        <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Lugegruppetilknytning bevares</span></div>
                     </div>
                 </div>
 
-                <!-- Lugegrupper format guide -->
+                <!-- Filformat - lugegrupper -->
                 <div class="bg-white rounded-xl shadow-sm p-6">
                     <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
                         <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -438,84 +420,23 @@
                         Filformat — lugegrupper
                     </h2>
                     <p class="text-sm text-gray-500 mb-4">Semikolon-separeret .csv-fil med gruppeoverskrifter og medlemsrækker.</p>
-
+                    <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">CSV-format</p>
                     <pre class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-xs text-gray-700 overflow-x-auto leading-relaxed font-mono">Gruppe 1
 Navn;Adresse;Email;Mobil;BG
 Anders Jensen;Havevej 3;anders@example.dk;20304050;12
-Birthe Nielsen;Marksti 7;Birthe Nielsen &lt;birthe@example.dk&gt;;30405060;5
 Gruppe 2
 Navn;Adresse;Email;Mobil;BG
-Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
-
+Birthe Nielsen;Marksti 7;birthe@example.dk;30405060;5</pre>
                     <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
-                        <div class="flex items-start gap-2">
-                            <span class="text-green-700 font-bold mt-0.5">→</span>
-                            <span>Separator: <code class="bg-gray-100 px-1 rounded font-mono text-xs">;</code> (semikolon)</span>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <span class="text-green-700 font-bold mt-0.5">→</span>
-                            <span>Gruppelinjer starter med <code class="bg-gray-100 px-1 rounded font-mono text-xs">Gruppe N</code></span>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <span class="text-green-700 font-bold mt-0.5">→</span>
-                            <span>Kolonner: Navn · Adresse · Email · Mobil · BG</span>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <span class="text-green-700 font-bold mt-0.5">→</span>
-                            <span>Email kan stå som <code class="bg-gray-100 px-1 rounded font-mono text-xs">Navn &lt;email@…&gt;</code></span>
-                        </div>
+                        <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Separator: <code class="bg-gray-100 px-1 rounded font-mono text-xs">;</code></span></div>
+                        <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Gruppelinjer: <code class="bg-gray-100 px-1 rounded font-mono text-xs">Gruppe N</code></span></div>
+                        <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Email: <code class="bg-gray-100 px-1 rounded font-mono text-xs">addr@dom</code> eller <code class="bg-gray-100 px-1 rounded font-mono text-xs">Navn &lt;addr@dom&gt;</code></span></div>
+                        <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Erstatter ALLE medlemmer</span></div>
                     </div>
                 </div>
 
-                <!-- Lugegrupper import card -->
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        </svg>
-                        Importer lugegrupper &amp; medlemmer
-                    </h2>
-                    <p class="text-sm text-gray-500 mb-4">Uploader en ny lugegruppefil der erstatter alle eksisterende medlemmer.</p>
-
-                    <label class="block mb-4">
-                        <span class="sr-only">Vælg lugegruppe-CSV</span>
-                        <input
-                            type="file"
-                            id="lgCsvFileInput"
-                            accept=".csv"
-                            onchange="onLgCsvFileChosen(event)"
-                            class="block w-full text-sm text-gray-600
-                                   file:mr-4 file:py-2 file:px-4
-                                   file:rounded-lg file:border-0
-                                   file:text-sm file:font-semibold
-                                   file:bg-green-50 file:text-green-700
-                                   hover:file:bg-green-100 cursor-pointer"
-                        >
-                    </label>
-
-                    <!-- Preview -->
-                    <div id="lgImportPreviewWrap" class="hidden mb-4">
-                        <p id="lgImportPreviewText" class="text-sm font-medium text-gray-700"></p>
-                    </div>
-
-                    <button
-                        id="doLgImportBtn"
-                        onclick="confirmAndRunLgImport()"
-                        disabled
-                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold
-                               bg-green-700 text-white opacity-40 cursor-not-allowed
-                               transition-all"
-                    >Importer medlemmer &rarr;</button>
-
-                    <!-- Status -->
-                    <div id="lgImportStatus" class="hidden mt-4 flex items-center gap-2 text-sm">
-                        <svg id="lgImportSpinner" class="hidden animate-spin h-4 w-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                        </svg>
-                        <span id="lgImportStatusText" class="text-gray-600"></span>
-                    </div>
-                </div>
+            </div>
+        </section>
 
             </div>
         </section>
