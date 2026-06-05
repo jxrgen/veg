@@ -658,15 +658,13 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         }
 
         try {
-            const [members, cropsRes] = await Promise.all([
+            const [members, crops] = await Promise.all([
                 fetchProtected('members?select=*&order=luge_gruppe.asc,name.asc'),
-                sb.from('crops').select('*').order('name')
+                fetchProtected('crops?select=*&order=name')
             ]);
 
-            if (cropsRes.error) throw new Error('Afgrøder: ' + cropsRes.error.message);
-
             allMembers = Array.isArray(members) ? members : [];
-            allCrops   = cropsRes.data || [];
+            allCrops   = Array.isArray(crops) ? crops : [];
         } catch (e) {
             hide('loadingIndicator');
             document.getElementById('loadError').textContent = 'Fejl: ' + e.message;
