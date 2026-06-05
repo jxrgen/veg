@@ -158,4 +158,8 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 | 2026-06-05 | Admin "Importer"-tab: lugegrupper-import tilføjet (DELETE alle + INSERT nye via fetchProtected) |
 | 2026-06-05 | Admin: nyt "Vejledning"-faneblad med komplet guide til alle admin-funktioner |
 | 2026-06-05 | Supabase: DELETE+INSERT RLS-politikker tilføjet for members-tabellen |
-| 2026-06-05 | **BUG**: Kommit ec7c1cc ændrede loadAllData til fetchProtected for crops — brød tabs. Revert til SDK |
+| 2026-06-05 | **BUG FIX**: Kommit ec7c1cc brød Afgrøder & Høst tab — reverteret til SDK for crops |
+| 2026-06-05 | **KRITISK BUG FIX**: Orphaned closing tags (linjer 441-442) i admin.html ødelagde DOM-struktur |
+| 2026-06-05 | Frontend: Låste bede markeret med rød overkant (ikke kun grøn for frigivne) |
+| 2026-06-05 | Debug-helper på "Min side": viser visuelt om gruppemedlemmer loadet (grøn/rød box) |
+| 2026-06-05 | Samlet_oversigt_2026.csv: forsøg på at kombinere markplan + lugegrupper i ét dokument — format ikke godkendt |
