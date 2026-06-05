@@ -521,11 +521,15 @@
     /* ── Data loading ── */
     async function loadData() {
         const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const [bedsRes, cropsRes, groupsRes, namesRes] = await Promise.all([
+        const [bedsRes, cropsRes, groupsRes, namesArr] = await Promise.all([
             sb.from('beds').select('*').order('bed_number'),
             sb.from('crops').select('*').order('name'),
             sb.from('weeding_groups').select('*').order('group_number'),
-            sb.rpc('get_group_firstnames'),
+            // Direct fetch bypasses SDK session issues with the new key format
+            fetch(SUPABASE_URL + '/rest/v1/rpc/get_group_firstnames', {
+                method: 'POST',
+                headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Accept': 'application/json' }
+            }).then(r => r.ok ? r.json() : []).catch(() => []),
         ]);
         if (bedsRes.error || cropsRes.error || groupsRes.error)
             throw new Error((bedsRes.error || cropsRes.error || groupsRes.error).message);
@@ -535,7 +539,7 @@
         (groupsRes.data || []).forEach(g => { groupsMap[g.group_number] = g; });
 
         groupFirstnames = {};
-        (namesRes.data || []).forEach(({ luge_gruppe, first_name }) => {
+        (Array.isArray(namesArr) ? namesArr : []).forEach(({ luge_gruppe, first_name }) => {
             if (!groupFirstnames[luge_gruppe]) groupFirstnames[luge_gruppe] = [];
             groupFirstnames[luge_gruppe].push(first_name);
         });
