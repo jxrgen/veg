@@ -1064,8 +1064,8 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             });
 
             // 1. Clear existing bed entries — delete all beds first, then insert new ones
-            // Delete all beds (entire table will be cleared and repopulated)
-            await fetchProtected('beds', {
+            // Delete all beds with WHERE id >= 0 (deletes all rows but requires WHERE clause)
+            await fetchProtected('beds?id=gte.0', {
                 method:  'DELETE',
                 headers: { 'Prefer': 'return=minimal' }
             });
