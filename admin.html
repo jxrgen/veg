@@ -1029,39 +1029,44 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             // Build flat list of bed-section rows
             // Handle multi-crop beds (separated by "/") by creating separate entries
             const updates = [];
+            const cropStatusMap = {}; // Track which crops are released
+
             beds.forEach(b => {
                 // Process Top section
                 const topCrops = b.top_crop ? parseCropField(b.top_crop) : [];
                 topCrops.forEach(cropName => {
-                    updates.push({ bed_number: b.bed_number, section: 'T', crop_name: cropName, is_released: b.top_status === '-' });
+                    updates.push({ bed_number: b.bed_number, section: 'T', crop_name: cropName });
+                    if (b.top_status === '-') cropStatusMap[cropName] = true;
                 });
                 if (!b.top_crop) {
-                    updates.push({ bed_number: b.bed_number, section: 'T', crop_name: null, is_released: b.top_status === '-' });
+                    updates.push({ bed_number: b.bed_number, section: 'T', crop_name: null });
                 }
 
                 // Process Midt section
                 const midtCrops = b.midt_crop ? parseCropField(b.midt_crop) : [];
                 midtCrops.forEach(cropName => {
-                    updates.push({ bed_number: b.bed_number, section: 'M', crop_name: cropName, is_released: b.midt_status === '-' });
+                    updates.push({ bed_number: b.bed_number, section: 'M', crop_name: cropName });
+                    if (b.midt_status === '-') cropStatusMap[cropName] = true;
                 });
                 if (!b.midt_crop) {
-                    updates.push({ bed_number: b.bed_number, section: 'M', crop_name: null, is_released: b.midt_status === '-' });
+                    updates.push({ bed_number: b.bed_number, section: 'M', crop_name: null });
                 }
 
                 // Process Bund section
                 const bundCrops = b.bund_crop ? parseCropField(b.bund_crop) : [];
                 bundCrops.forEach(cropName => {
-                    updates.push({ bed_number: b.bed_number, section: 'B', crop_name: cropName, is_released: b.bund_status === '-' });
+                    updates.push({ bed_number: b.bed_number, section: 'B', crop_name: cropName });
+                    if (b.bund_status === '-') cropStatusMap[cropName] = true;
                 });
                 if (!b.bund_crop) {
-                    updates.push({ bed_number: b.bed_number, section: 'B', crop_name: null, is_released: b.bund_status === '-' });
+                    updates.push({ bed_number: b.bed_number, section: 'B', crop_name: null });
                 }
             });
 
             // 1. Clear existing bed entries and insert new ones
             // First delete all beds for these bed numbers
             const bedNumbers = beds.map(b => b.bed_number);
-            const deleteWhere = bedNumbers.map(num => `bed_number=eq.${num}`).join(',');
+            const deleteWhere = `bed_number=in.(${bedNumbers.join(',')})`;
 
             await fetchProtected(`beds?${deleteWhere}`, {
                 method:  'DELETE',
@@ -1080,14 +1085,10 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             setImportStatus('Genopbygger afgrødetabel…', true);
 
             // 2. Rebuild crops table
-            const bedData = await fetchProtected(
-                'beds?select=crop_name,is_released&crop_name=not.is.null'
-            );
-
-            const cropMap = {};
-            bedData.forEach(b => {
-                if (!cropMap[b.crop_name]) cropMap[b.crop_name] = false;
-                if (b.is_released) cropMap[b.crop_name] = true;
+            // Extract unique crop names from the imported data and use cropStatusMap for release status
+            const cropNames = new Set();
+            updates.forEach(u => {
+                if (u.crop_name) cropNames.add(u.crop_name);
             });
 
             await fetchProtected('crops?id=gte.1', {
@@ -1095,7 +1096,10 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                 headers: { 'Prefer': 'return=minimal' }
             });
 
-            const cropRows = Object.entries(cropMap).map(([name, is_released]) => ({ name, is_released }));
+            const cropRows = Array.from(cropNames).map(name => ({
+                name,
+                is_released: cropStatusMap[name] || false
+            }));
             if (cropRows.length > 0) {
                 await fetchProtected('crops', {
                     method:  'POST',
