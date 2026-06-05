@@ -913,7 +913,19 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             try {
                 parsedBeds = parseMarkplanCSV(e.target.result);
                 renderImportPreview(parsedBeds);
-                setImportStatus('', false);
+                setImportStatus('Henter grupper…', true);
+
+                // Try to auto-load lugegrupper_2026.csv for group data
+                fetch('./lugegrupper_2026.csv')
+                    .then(r => r.text())
+                    .then(text => {
+                        parseLugegrupperCSV(text); // This populates window.grupeGroupBedMap
+                        setImportStatus('', false);
+                    })
+                    .catch(err => {
+                        console.warn('Kunne ikke loade lugegrupper_2026.csv:', err);
+                        setImportStatus('', false);
+                    });
             } catch (err) {
                 parsedBeds = null;
                 hide('importPreviewWrap');
@@ -1064,15 +1076,32 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                 }
             });
 
-            // 1. Fetch existing luge_gruppe data to preserve it
+            // 1. Build luge_gruppe map from available sources:
+            //    a) Existing database data (to preserve)
+            //    b) window.grupeGroupBedMap (from parsed lugegrupper file, if available)
             const bedNumbers = [...new Set(beds.map(b => b.bed_number))];
-            const existingGroupMap = {}; // Map: "bed_number,section" → luge_gruppe
+            const existingGroupMap = {};
+
+            // Try to use parsed group data from lugegrupper file if available
+            if (window.grupeGroupBedMap) {
+                Object.assign(existingGroupMap, window.grupeGroupBedMap);
+            }
+
+            // Also fetch and preserve existing groups from database
             if (bedNumbers.length > 0) {
                 const bedNumFilter = bedNumbers.map(n => `bed_number.eq.${n}`).join(',');
-                const existing = await fetchProtected(`beds?or=(${bedNumFilter})&select=bed_number,section,luge_gruppe`);
-                existing.forEach(bed => {
-                    existingGroupMap[`${bed.bed_number},${bed.section}`] = bed.luge_gruppe;
-                });
+                try {
+                    const existing = await fetchProtected(`beds?or=(${bedNumFilter})&select=bed_number,section,luge_gruppe`);
+                    existing.forEach(bed => {
+                        // Only preserve if we don't already have it from the parsed file
+                        const key = `${bed.bed_number},${bed.section}`;
+                        if (!existingGroupMap[key]) {
+                            existingGroupMap[key] = bed.luge_gruppe;
+                        }
+                    });
+                } catch (e) {
+                    // If fetch fails, continue with what we have from the file
+                }
             }
 
             // 2. Add luge_gruppe back to updates from existing data
@@ -1199,10 +1228,38 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         reader.readAsText(file, 'UTF-8');
     }
 
+    // Parse bed ranges from group description string
+    // E.g. "Øverst 34 - 38 + Mellem 27 - 28" → { T: [34,35,36,37,38], M: [27,28] }
+    function parseBedRanges(bedStr) {
+        if (!bedStr) return {};
+        const sectionMap = { 'øverst': 'T', 'mellem': 'M', 'nederst': 'B' };
+        const result = {};
+
+        // Split by + to get individual ranges
+        const parts = bedStr.split('+').map(p => p.trim());
+
+        for (const part of parts) {
+            // Match "Section bednum - bednum" or "Section bednum"
+            const match = part.match(/^(øverst|mellem|niederst|nederst)\s+(\d+)\s*-?\s*(\d*)/i);
+            if (!match) continue;
+
+            const section = sectionMap[match[1].toLowerCase()] || 'T';
+            const start = parseInt(match[2]);
+            const end = match[3] ? parseInt(match[3]) : start;
+
+            if (!result[section]) result[section] = [];
+            for (let i = start; i <= end; i++) {
+                result[section].push(i);
+            }
+        }
+        return result;
+    }
+
     function parseLugegrupperCSV(text) {
         const lines = text.split('\n');
         let currentGruppe = null;
         const members = [];
+        window.grupeGroupBedMap = {}; // Global map for later use: (bed_number,section) → gruppe
 
         for (const line of lines) {
             const cols  = line.split(';');
@@ -1211,7 +1268,23 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
 
             // Group header: "Gruppe N"
             const gMatch = first.match(/^Gruppe\s+(\d+)$/i);
-            if (gMatch) { currentGruppe = parseInt(gMatch[1]); continue; }
+            if (gMatch) {
+                currentGruppe = parseInt(gMatch[1]);
+                // Next line has bed info in cols[2]
+                continue;
+            }
+
+            // Group description row (has bed ranges in cols[2])
+            if (currentGruppe && cols.length >= 3 && cols[2] && cols[2].includes('-')) {
+                const bedRanges = parseBedRanges(cols[2]);
+                Object.entries(bedRanges).forEach(([section, bedNums]) => {
+                    bedNums.forEach(bedNum => {
+                        window.grupeGroupBedMap[`${bedNum},${section}`] = currentGruppe;
+                    });
+                });
+                currentGruppe = null; // Reset for next group
+                continue;
+            }
 
             // Member row: col[4] is a digit (BG number)
             if (currentGruppe && cols.length >= 5 && /^\d+$/.test((cols[4] || '').trim())) {
