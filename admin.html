@@ -1064,8 +1064,24 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                 }
             });
 
-            // 1. Delete old beds for the bed numbers being imported, then insert new ones
+            // 1. Fetch existing luge_gruppe data to preserve it
             const bedNumbers = [...new Set(beds.map(b => b.bed_number))];
+            const existingGroupMap = {}; // Map: "bed_number,section" → luge_gruppe
+            if (bedNumbers.length > 0) {
+                const bedNumFilter = bedNumbers.map(n => `bed_number.eq.${n}`).join(',');
+                const existing = await fetchProtected(`beds?or=(${bedNumFilter})&select=bed_number,section,luge_gruppe`);
+                existing.forEach(bed => {
+                    existingGroupMap[`${bed.bed_number},${bed.section}`] = bed.luge_gruppe;
+                });
+            }
+
+            // 2. Add luge_gruppe back to updates from existing data
+            updates.forEach(u => {
+                const key = `${u.bed_number},${u.section}`;
+                u.luge_gruppe = existingGroupMap[key] || null;
+            });
+
+            // 3. Delete old beds for the bed numbers being imported
             if (bedNumbers.length > 0) {
                 const bedNumFilter = bedNumbers.map(n => `bed_number.eq.${n}`).join(',');
                 await fetchProtected(`beds?or=(${bedNumFilter})`, {
@@ -1074,7 +1090,7 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
                 });
             }
 
-            // 2. Insert new bed entries
+            // 4. Insert new bed entries with luge_gruppe preserved
             if (updates.length > 0) {
                 await fetchProtected('beds', {
                     method: 'POST',
