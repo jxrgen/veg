@@ -205,7 +205,14 @@
         @keyframes bedpulse { from { transform: scale(1); } to { transform: scale(1.06); } }
 
         .bed-num { position: absolute; top: 3px; left: 4px; font-size: 0.6rem; font-weight: 700; color: var(--text-secondary); line-height: 1; }
-        .bed-crop-name { font-size: 0.68rem; font-weight: 500; text-align: center; color: var(--text-primary); padding: 0 4px; line-height: 1.2; word-break: break-word; max-height: 36px; overflow: hidden; }
+        .bed-crop-name {
+            font-size: 0.68rem; font-weight: 500; text-align: center; color: var(--text-primary);
+            padding: 0 4px; line-height: 1.2; word-break: break-word; max-height: 36px; overflow: hidden;
+            /* Handle multiple crops: allow wrapping with ellipsis */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
         .bed-card.highlighted .bed-crop-name,
         .bed-card.highlighted .bed-num { color: #000 !important; }
 
@@ -518,6 +525,15 @@
         });
     });
 
+    /* ── Parse crops from string (e.g., "Salat / Fennikel / Spinat") ── */
+    function parseCropList(cropString) {
+        if (!cropString) return [];
+        return cropString
+            .split('/')
+            .map(c => c.trim())
+            .filter(c => c && c !== 'Brak');
+    }
+
     /* ── Data loading ── */
     async function loadData() {
         const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -573,8 +589,12 @@
         cropToBeds = {}; groupToBeds = {};
         bedsData.forEach(bed => {
             if (bed.crop_name) {
-                if (!cropToBeds[bed.crop_name]) cropToBeds[bed.crop_name] = [];
-                cropToBeds[bed.crop_name].push({ section: bed.section, bed_number: bed.bed_number });
+                // Parse multiple crops from single field (e.g., "Salat / Fennikel / Spinat")
+                const crops = parseCropList(bed.crop_name);
+                crops.forEach(cropName => {
+                    if (!cropToBeds[cropName]) cropToBeds[cropName] = [];
+                    cropToBeds[cropName].push({ section: bed.section, bed_number: bed.bed_number });
+                });
             }
             if (bed.luge_gruppe != null) {
                 const g = bed.luge_gruppe;
@@ -592,6 +612,16 @@
         return ['T','M','B'].filter(s => by[s]&&by[s].length)
             .map(s => s + ': ' + by[s].sort((a,b)=>a-b).join(','))
             .join(' · ');
+    }
+
+    /* ── Get release status for bed (if ANY crop is released) ── */
+    function getBedReleaseStatus(bed) {
+        if (!bed.crop_name) return false;
+        const crops = parseCropList(bed.crop_name);
+        return crops.some(cropName => {
+            const info = cropsMap[cropName];
+            return info && info.is_released;
+        });
     }
 
     /* ── Favourites ── */
@@ -659,6 +689,12 @@
         cropListEl.appendChild(frag);
     }
 
+    /* ── Format crops for display: ["Salat", "Fennikel"] → "Salat · Fennikel" ── */
+    function formatCropList(cropString) {
+        const crops = parseCropList(cropString);
+        return crops.join(' · ');
+    }
+
     /* ── Render: field overview ── */
     function renderFieldOverview() {
         ['T','M','B'].forEach(sec => {
@@ -671,8 +707,7 @@
     }
 
     function createBedCard(bed) {
-        const info     = bed.crop_name ? cropsMap[bed.crop_name] : null;
-        const released = info && info.is_released;
+        const released = getBedReleaseStatus(bed);
         const g        = bed.luge_gruppe;
         const isMyGroup= myGroup != null && g === myGroup;
 
@@ -685,7 +720,10 @@
         card.dataset.group = g != null ? g : '';
 
         let inner = '<span class="bed-num">' + bed.bed_number + '</span>';
-        if (bed.crop_name) inner += '<span class="bed-crop-name">' + escHtml(bed.crop_name) + '</span>';
+        if (bed.crop_name) {
+            const cropDisplay = formatCropList(bed.crop_name);
+            inner += '<span class="bed-crop-name">' + escHtml(cropDisplay) + '</span>';
+        }
         if (g != null) {
             inner += '<span class="group-badge ' + (GROUP_COLORS[g]||'g1') + '" data-group="' + g + '" title="Lugegruppe ' + g + '">G' + g + '</span>';
         }

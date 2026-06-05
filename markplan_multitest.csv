@@ -1,0 +1,16 @@
+Bed,Top,TopGruppe,TopFrigivet,Midt,MidtGruppe,MidtFrigivet,Bund,BundGruppe,BundFrigivet
+1,Grønkål,1,0,Salat,1,0,Kartofler,1,0
+2,Gulerødder Robila,2,1,Blomkål / Broccoli,2,1,Hvidkål / Rødkål / Savoykål,2,1
+3,Blomkål / Broccoli,3,0,Rødbeder / bolsje beder,3,0,Salat/ Fennikel /Spinat,3,0
+4,Hvidkål / Rødkål / Savoykål,4,1,Gulerødder Robila,4,1,Grønkål,4,1
+5,Rødbeder / bolsje beder,5,0,,5,0,Blomkål / Broccoli,5,0
+6,,6,1,Salat/ Fennikel /Spinat,6,1,,6,1
+7,Salat/ Fennikel /Spinat,7,0,Grønkål,7,0,Gulerødder Robila,7,0
+8,Grønkål,8,1,Blomkål / Broccoli,8,1,Rødbeder / bolsje beder,8,1
+9,Gulerødder Robila,9,0,Hvidkål / Rødkål / Savoykål,9,0,Salat/ Fennikel /Spinat,9,0
+10,Blomkål / Broccoli,10,1,,10,1,,10,1
+11,Hvidkål / Rødkål / Savoykål,1,0,Rødbeder / bolsje beder,1,0,Grønkål,1,0
+12,,2,1,Salat/ Fennikel /Spinat,2,1,Blomkål / Broccoli,2,1
+13,Salat/ Fennikel /Spinat,3,0,Gulerødder Robila,3,0,Hvidkål / Rødkål / Savoykål,3,0
+14,Grønkål,4,1,Blomkål / Broccoli,4,1,Rødbeder / bolsje beder,4,1
+15,Gulerødder Robila,5,0,,5,0,Salat/ Fennikel /Spinat,5,0

@@ -358,7 +358,7 @@
                         </svg>
                         Filformat — markplan
                     </h2>
-                    <p class="text-sm text-gray-500 mb-4">Semikolon-separeret .csv-fil med 7 kolonner pr. linje.</p>
+                    <p class="text-sm text-gray-500 mb-4">Semikolon-separeret .csv-fil med 7 kolonner pr. linje. Afgrøder kan være enkelt ("Grønkål") eller flere adskilt af "/" ("Blomkål / Broccoli").</p>
                     <div class="table-scroll border border-gray-200 rounded-lg overflow-hidden mb-5">
                         <table class="w-full text-sm border-collapse">
                             <thead>
@@ -369,11 +369,11 @@
                                     <th class="px-3 py-1.5 border-b border-gray-200" colspan="2">Bund</th>
                                 </tr>
                                 <tr class="bg-gray-50 text-xs font-semibold text-gray-600">
-                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-left font-medium">Afgrøde</th>
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-left font-medium">Afgrøde(r)</th>
                                     <th class="px-3 py-1.5 border-b border-r border-gray-200 text-center font-medium">Status</th>
-                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-left font-medium">Afgrøde</th>
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-left font-medium">Afgrøde(r)</th>
                                     <th class="px-3 py-1.5 border-b border-r border-gray-200 text-center font-medium">Status</th>
-                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-left font-medium">Afgrøde</th>
+                                    <th class="px-3 py-1.5 border-b border-r border-gray-200 text-left font-medium">Afgrøde(r)</th>
                                     <th class="px-3 py-1.5 border-b border-gray-200 text-center font-medium">Status</th>
                                 </tr>
                             </thead>
@@ -393,7 +393,7 @@
                                     <td class="px-3 py-2 text-center border-r border-gray-100"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
                                     <td class="px-3 py-2 text-gray-700 border-r border-gray-100">Løg</td>
                                     <td class="px-3 py-2 text-center border-r border-gray-100"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-mono text-xs font-bold">X</span></td>
-                                    <td class="px-3 py-2 text-gray-700 border-r border-gray-100">Spidskål</td>
+                                    <td class="px-3 py-2 text-gray-700 border-r border-gray-100">Salat / Fennikel</td>
                                     <td class="px-3 py-2 text-center"><span class="px-1.5 py-0.5 bg-green-100 text-green-700 rounded font-mono text-xs font-bold">-</span></td>
                                 </tr>
                             </tbody>
@@ -402,11 +402,12 @@
                     <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">CSV-format</p>
                     <pre class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-xs text-gray-700 overflow-x-auto leading-relaxed font-mono">;Top;;Midt;;Bund;
 38;Grønkål;X;;X;;X
-15;Majs;X;Løg;X;Spidskål;-</pre>
+15;Majs;X;Løg;X;Salat / Fennikel;-</pre>
                     <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
                         <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Separator: <code class="bg-gray-100 px-1 rounded font-mono text-xs">;</code></span></div>
                         <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span><code class="bg-gray-100 px-1 rounded font-mono text-xs">X</code> = låst, <code class="bg-green-100 text-green-700 px-1 rounded font-mono text-xs">-</code> = frigivet</span></div>
                         <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Tomt afgrødefelt = tomt bed</span></div>
+                        <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Multi-afgrøder: adskilt af <code class="bg-gray-100 px-1 rounded font-mono text-xs">/</code> (f.eks. "Salat / Fennikel")</span></div>
                         <div class="flex items-start gap-2"><span class="text-green-700 font-bold mt-0.5">→</span><span>Lugegruppetilknytning bevares</span></div>
                     </div>
                 </div>
@@ -529,12 +530,13 @@ Birthe Nielsen;Marksti 7;birthe@example.dk;30405060;5</pre>
                             <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">CSV-format — markplan</p>
                             <pre class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-xs text-gray-700 overflow-x-auto leading-relaxed font-mono">;Top;;Midt;;Bund;          ← header (ignoreres)
 38;Grønkål;X;;X;;X
-15;Majs;X;Løg;X;Spidskål;-
+15;Majs;X;Løg;X;Salat / Fennikel;-
 1;;X;;X;Hestebønner;X</pre>
                             <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-gray-600">
                                 <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>Separator: <code class="bg-gray-100 px-1 rounded font-mono">;</code></span></div>
                                 <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>7 kolonner: Bed;TopAfgrøde;TopStatus;MidtAfgrøde;MidtStatus;BundAfgrøde;BundStatus</span></div>
                                 <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span><code class="bg-gray-100 px-1 rounded font-mono">X</code> = ikke klar &nbsp;·&nbsp; <code class="bg-green-100 text-green-700 px-1 rounded font-mono">-</code> = klar til høst</span></div>
+                                <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>Multi-afgrøder: adskilt af <code class="bg-gray-100 px-1 rounded font-mono">/</code> (f.eks. "Salat / Fennikel")</span></div>
                                 <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>Maks 40 rækker, første linje er header og ignoreres</span></div>
                             </div>
                         </div>
@@ -943,6 +945,26 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         return beds;
     }
 
+    // Parse crop field to handle multiple crops separated by "/"
+    // Examples:
+    //   "Grønkål" → "Grønkål" (single crop, no slash)
+    //   "Blomkål / Broccoli" → "Blomkål / Broccoli" (stored as-is, frontend parses it)
+    //   "Gulerødder Robila" → "Gulerødder Robila" (multi-word name, no slashes)
+    function parseCropField(cropField) {
+        if (!cropField) return [];
+        // Split by "/" and trim each crop name
+        return cropField.split('/').map(c => c.trim()).filter(c => c.length > 0);
+    }
+
+    // Format multi-crop display for preview
+    function formatCropDisplay(cropField) {
+        if (!cropField) return '';
+        const crops = parseCropField(cropField);
+        if (crops.length === 1) return esc(crops[0]);
+        // Multi-crop: show as comma-separated list
+        return '<span class="text-blue-600 font-semibold">' + crops.map(c => esc(c)).join(' / ') + '</span>';
+    }
+
     // ── Import: render preview ────────────────────────────────────────────────
     function renderImportPreview(beds) {
         const tbody = document.getElementById('importPreviewBody');
@@ -952,11 +974,11 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             tr.className = 'border-t border-gray-100';
             tr.innerHTML = `
                 <td class="px-3 py-2 font-medium text-gray-800">${b.bed_number}</td>
-                <td class="px-3 py-2 text-gray-600">${b.top_crop  ? esc(b.top_crop)  : '<span class="text-gray-400 italic text-xs">(tom)</span>'}</td>
+                <td class="px-3 py-2 text-gray-600">${b.top_crop  ? formatCropDisplay(b.top_crop)  : '<span class="text-gray-400 italic text-xs">(tom)</span>'}</td>
                 <td class="px-3 py-2 text-center">${previewStatusIcon(b.top_status)}</td>
-                <td class="px-3 py-2 text-gray-600">${b.midt_crop ? esc(b.midt_crop) : '<span class="text-gray-400 italic text-xs">(tom)</span>'}</td>
+                <td class="px-3 py-2 text-gray-600">${b.midt_crop ? formatCropDisplay(b.midt_crop) : '<span class="text-gray-400 italic text-xs">(tom)</span>'}</td>
                 <td class="px-3 py-2 text-center">${previewStatusIcon(b.midt_status)}</td>
-                <td class="px-3 py-2 text-gray-600">${b.bund_crop ? esc(b.bund_crop) : '<span class="text-gray-400 italic text-xs">(tom)</span>'}</td>
+                <td class="px-3 py-2 text-gray-600">${b.bund_crop ? formatCropDisplay(b.bund_crop) : '<span class="text-gray-400 italic text-xs">(tom)</span>'}</td>
                 <td class="px-3 py-2 text-center">${previewStatusIcon(b.bund_status)}</td>
             `;
             tbody.appendChild(tr);
@@ -1005,20 +1027,55 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
 
         try {
             // Build flat list of bed-section rows
+            // Handle multi-crop beds (separated by "/") by creating separate entries
             const updates = [];
             beds.forEach(b => {
-                updates.push({ bed_number: b.bed_number, section: 'T', crop_name: b.top_crop  || null, is_released: b.top_status  === '-' });
-                updates.push({ bed_number: b.bed_number, section: 'M', crop_name: b.midt_crop || null, is_released: b.midt_status === '-' });
-                updates.push({ bed_number: b.bed_number, section: 'B', crop_name: b.bund_crop || null, is_released: b.bund_status === '-' });
+                // Process Top section
+                const topCrops = b.top_crop ? parseCropField(b.top_crop) : [];
+                topCrops.forEach(cropName => {
+                    updates.push({ bed_number: b.bed_number, section: 'T', crop_name: cropName, is_released: b.top_status === '-' });
+                });
+                if (!b.top_crop) {
+                    updates.push({ bed_number: b.bed_number, section: 'T', crop_name: null, is_released: b.top_status === '-' });
+                }
+
+                // Process Midt section
+                const midtCrops = b.midt_crop ? parseCropField(b.midt_crop) : [];
+                midtCrops.forEach(cropName => {
+                    updates.push({ bed_number: b.bed_number, section: 'M', crop_name: cropName, is_released: b.midt_status === '-' });
+                });
+                if (!b.midt_crop) {
+                    updates.push({ bed_number: b.bed_number, section: 'M', crop_name: null, is_released: b.midt_status === '-' });
+                }
+
+                // Process Bund section
+                const bundCrops = b.bund_crop ? parseCropField(b.bund_crop) : [];
+                bundCrops.forEach(cropName => {
+                    updates.push({ bed_number: b.bed_number, section: 'B', crop_name: cropName, is_released: b.bund_status === '-' });
+                });
+                if (!b.bund_crop) {
+                    updates.push({ bed_number: b.bed_number, section: 'B', crop_name: null, is_released: b.bund_status === '-' });
+                }
             });
 
-            // 1. Upsert beds via fetchProtected — preserves luge_gruppe
-            // on_conflict param tells PostgREST which unique key to use
-            await fetchProtected('beds?on_conflict=bed_number,section', {
-                method:  'POST',
-                body:    JSON.stringify(updates),
-                headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }
+            // 1. Clear existing bed entries and insert new ones
+            // First delete all beds for these bed numbers
+            const bedNumbers = beds.map(b => b.bed_number);
+            const deleteWhere = bedNumbers.map(num => `bed_number=eq.${num}`).join(',');
+
+            await fetchProtected(`beds?${deleteWhere}`, {
+                method:  'DELETE',
+                headers: { 'Prefer': 'return=minimal' }
             });
+
+            // Insert new bed-section rows
+            if (updates.length > 0) {
+                await fetchProtected('beds', {
+                    method:  'POST',
+                    body:    JSON.stringify(updates),
+                    headers: { 'Prefer': 'return=minimal' }
+                });
+            }
 
             setImportStatus('Genopbygger afgrødetabel…', true);
 
@@ -1051,7 +1108,7 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             allCrops = await fetchProtected('crops?select=*&order=name');
 
             setImportStatus(
-                '✓ Markplan importeret — ' + beds.length + ' bede, ' + cropRows.length + ' unikke afgrøder opdateret.',
+                '✓ Markplan importeret — ' + beds.length + ' bede, ' + updates.length + ' bed-sektioner, ' + cropRows.length + ' unikke afgrøder.',
                 false, false, true
             );
 
