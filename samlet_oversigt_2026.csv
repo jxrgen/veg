@@ -1,0 +1,180 @@
+BedNr;Section;Afgrøde;Status;LugeGruppe
+38;T;Grønkål;X;1
+37;T;Grønkål;X;1
+36;T;Grønkål;X;1
+35;T;Grønkål;X;1
+34;T;Grønkål;X;1
+33;T;Rosenkål;X;3
+32;T;Rosenkål;X;3
+31;T;Rosenkål;X;3
+30;T;Rosenkål;X;3
+30;M;Sølvbeder;X;3
+29;T;Rosenkål;X;3
+29;M;Rødbeder bolje beder;X;3
+28;T;Spidskål;X;8
+28;M;Rødbeder;X;1
+27;T;Spidskål;X;8
+27;M;Rødbeder;X;1
+26;T;Spidskål;X;8
+26;M;Pastinak;X;
+25;T;Spidskål;X;8
+25;M;Persillerødder;X;6
+24;T;Broccoli;X;8
+24;M;Dild;X;6
+24;B;Kartofler;X;2
+23;T;Broccoli;X;8
+23;M;Radiser;X;6
+23;B;Kartofler;X;2
+22;T;Broccoli;X;8
+22;M;Borlotti;X;4
+22;B;Kartofler;X;2
+21;T;Broccoli;X;8
+21;M;Bønner;X;4
+21;B;Kartofler;X;2
+20;T;Majs;X;4
+20;M;Banan skalotte;X;4
+20;B;Majs;X;4
+19;T;Majs;X;4
+19;M;Salat Skalotte;X;4
+19;B;Majs;X;4
+18;T;Majs;X;4
+18;M;Gulerødder;X;7
+18;B;Persille;X;9
+17;T;Majs;X;4
+17;M;Gulerødder;X;7
+17;B;Persille;X;9
+16;T;Majs;X;4
+16;M;Ærter;X;
+16;B;Persille;X;9
+15;T;Majs;X;4
+15;M;Løg;X;5
+15;B;Spidskål;X;9
+14;M;Løg;X;5
+14;B;Spidskål;X;9
+13;M;Løg;X;5
+13;B;Spidskål;X;9
+12;M;Løg;X;5
+12;B;Kålrabi;X;9
+11;M;Løg;X;5
+11;B;Glaskål;X;9
+10;M;Løg;X;5
+10;B;Blomster;X;9
+9;M;Løg;X;5
+9;B;Blomster;X;9
+8;M;Løg;X;10
+8;B;Blomster;X;9
+7;M;Løg;X;10
+7;B;Kartofler;X;2
+6;M;Løg;X;10
+6;B;Kartofler;X;2
+5;M;Løg;X;10
+5;B;Kartofler;X;2
+4;M;Løg;X;10
+4;B;Kartofler;X;2
+3;M;Løg;X;10
+3;B;Kartofler;X;2
+2;M;Løg;X;10
+2;B;Kartofler;X;2
+1;B;Hestebønner;X;2
+
+LugeGruppe;Fornavn;Efternavn;Adresse;Email;Mobil;BG;GruppeBeskrivelse
+1;Jan;Feil;Gl. Kirkevej 40;Jan Feil <janfeil11@gmail.com>;2821 9103;1;Grønkål + Rødbeder + Hokkaido
+1;Dorte;Wahlberg Feil;Gl. Kirkevej 40;Dorte Wahlberg Feil <dortewahlberg@hotmail.com>;4019 9074;1;Grønkål + Rødbeder + Hokkaido
+1;Lis;Ellemand;Gl. Kirkevej 70;Lis Ellemand <lis.ellemand@gmail.com>;3024 8061;3;Grønkål + Rødbeder + Hokkaido
+1;Henrik;Juul Nielsen;Gl. Kirkevej 70;Henrik Juul Nielsen <henrikjuul3@gmail.com>;2691 9200;3;Grønkål + Rødbeder + Hokkaido
+1;Agnete;Jørgensen;Gl. Kirkevej 144;Agnete Jørgensen <netej@mail.dk>;2364 2878;8;Grønkål + Rødbeder + Hokkaido
+1;Axel;Thomsen;Gl. Kirkevej 162;Axel Thomsen <microspan@gmail.com>;4015 6475;8;Grønkål + Rødbeder + Hokkaido
+1;Jes;Lemming;Hjortshøjvangen 108;Jes Lemming <jeslemming50@gmail.com>;2251 8254;9;Grønkål + Rødbeder + Hokkaido
+1;Catherine;Nielsen;Højager 102;Catherine Nielsen <ecatherinen@gmail.com>;2390 2428;9;Grønkål + Rødbeder + Hokkaido
+1;Elena;Lazarova;Virup Skovvej 50;Elena Lazarova <lazarova.elena96@hotmail.com>;9391 9541;9;Grønkål + Rødbeder + Hokkaido
+1;Martin;Jacob Darki;Virup Skovvej 50;Martin Jacob Darki <martinjd411@gmail.com>;9391 9514;9;Grønkål + Rødbeder + Hokkaido
+2;Anke;Stubsgaard;Gl. Kirkevej 46A;Anke Stubsgaard <anke@stubsgaard.dk>;2615 7769;1;Kartofler + Hestebønner + Pastinak
+2;Pierre;Lecuelle;Gl. Kirkevej 46A;Pierre Lecuelle <pierrelecuelle@gmail.com>;6015 7769;1;Kartofler + Hestebønner + Pastinak
+2;Gunnar;Boye Olesen;Gl. Kirkevej 72;Gunnar Boye Olesen <ove@inforse.org>;2426 9933;3;Kartofler + Hestebønner + Pastinak
+2;Lotte;Dalgaard Christensen;Østergårdstoften 29;Lotte Dalgaard Christensen <dalgaardchristensen@gmail.com>;2897 7160;5;Kartofler + Hestebønner + Pastinak
+2;Benjamin;Riise;Østergårdstoften 29;Benjamin Riise <benjaminriise@gmail.com>;2367 1648;5;Kartofler + Hestebønner + Pastinak
+2;Simon;Kjærsgaard;Østerøgade 8, 8200 Aarhus N;Simon Kjærsgaard <simonkjrsgaard@gmail.com>;8755 3517;9;Kartofler + Hestebønner + Pastinak
+2;Trine;Schouborg;Østerøgade 8, 8200 Aarhus N;Trine Schouborg <trineschouborg@yahoo.dk>;2251 5173;9;Kartofler + Hestebønner + Pastinak
+2;Aske;Dahl Sløk;Kristtornvej 1, 8200 Århus N;Aske Dahl Sløk <askedahl@gmail.com>;2335 7523;9;Kartofler + Hestebønner + Pastinak
+2;Christina;Blach;Kristtornvej 1, 8200 Århus N;Christina Blach <blach_c@yahoo.dk>;3022 3140;9;Kartofler + Hestebønner + Pastinak
+2;Connie;Ringgaard;Gl. Stationsvej 4, 8400 Ebeltoft;Connie Ringgaard <connie.ringgaard@gmail.com>;5080 2482;9;Kartofler + Hestebønner + Pastinak
+3;Jonathan;Carl;Gl. Kirkevej 52;Jonathan Carl <joca@niras.dk>;2761 8563;1;Rosenkål + Rødbeder + Sølvbeder + Squash
+3;Ulla;Carl;Gl. Kirkevej 52;Ulla Carl <ullacarl8@gmail.com>;6027 3366;1;Rosenkål + Rødbeder + Sølvbeder + Squash
+3;Ann-Charlotte;Knudsen;Hjortshøj Møllevej 98;Ann-Charlotte Knudsen <anncharlotteknudsen@yahoo.dk>;4140 4383;4;Rosenkål + Rødbeder + Sølvbeder + Squash
+3;Lærke;Broge Henriksen;Østergårdstoften 7;Lærke Broge Henriksen <laerkebroge@gmail.com>;6171 7573;5;Rosenkål + Rødbeder + Sølvbeder + Squash
+3;Søren;Helbo Skaarup;Østergårdstoften 7;Søren Helbo Skaarup <soeska@gmail.com>;2891 1869;5;Rosenkål + Rødbeder + Sølvbeder + Squash
+3;Rikke;Kamstrup;Asmusvænget 9;Rikke Kamstrup <rkamstrup@gmail.com>;6160 7368;9;Rosenkål + Rødbeder + Sølvbeder + Squash
+3;Miguel;Mikkelsen;Asmusvænget 9;Miguel Mikkelsen <romeros@hotmail.com>;2396 3530;9;Rosenkål + Rødbeder + Sølvbeder + Squash
+3;Susanne;Lymann Hansen;Højager 82;Susanne Lymann Hansen <susannelymann@outlook.dk>;2349 5262;9;Rosenkål + Rødbeder + Sølvbeder + Squash
+3;Simon;Bo Larsen;Gl. Kirkevej 45;Simon Bo Larsen <simonbolarsen@gmail.com>;2160 1862;9;Rosenkål + Rødbeder + Sølvbeder + Squash
+3;Nanna;Schneidermann;Virupvej 57;Nanna Schneidermann <schneidermanns@gmail.com>;2678 7561;9;Rosenkål + Rødbeder + Sølvbeder + Squash
+4;Anne;Zachariasen;Hjortshøj Møllevej 150;Anne Zachariasen <annzac@live.dk>;3011 7072;2;Majs + Salat + Skalotteløg + Bønner
+4;Mikael;Hermansson;Hjortshøj Møllevej 150;Mikael Hermansson <mikael@vfcomputing.dk>;3011 2456;2;Majs + Salat + Skalotteløg + Bønner
+4;Birthe;Moksha;Østergårdstoften 9;Birthe Moksha <birthe.moksha@soevejen.dk>;2129 4570;5;Majs + Salat + Skalotteløg + Bønner
+4;Ole;Bak Jakobsen;Østergårdstoften 9;Ole Bak Jakobsen <olebakjakobsen@gmail.com>;2628 1105;5;Majs + Salat + Skalotteløg + Bønner
+4;Birgit;Breüner;Max Müllersgade 8, 2. sal;Birgit Breüner <bbreuner@gmail.com>;3022 9887;9;Majs + Salat + Skalotteløg + Bønner
+4;Johannes;Overgaard Ingvardsen;P.P. Ørums Gade 38 3 tv;Johannes Overgaard Ingvardsen <johannes.ingvardsen@gmail.com>;6115 3015;9;Majs + Salat + Skalotteløg + Bønner
+4;Sinne;Rosborg;Sølykken 15;Sinne Rosborg <sinnerosborg@icloud.com>;2971 6553;9;Majs + Salat + Skalotteløg + Bønner
+4;Carlos;Ramírez;Sølykken 15;Carlos Ramírez <c.a.ramirez@outlook.com>;2894 0479;9;Majs + Salat + Skalotteløg + Bønner
+4;Ester;Kjærsgaard Kristensen;Virup Skovvej 144;Ester Kjærsgaard Kristensen <esterkk4@gmail.com>;4096 3137;9;Majs + Salat + Skalotteløg + Bønner
+4;Henning;Buskær Andersen;Virup Skovvej 144;Henning Buskær Andersen <henningsknive@hotmail.com>;2098 7358;9;Majs + Salat + Skalotteløg + Bønner
+5;Susanne;Jacobsen;Hjortshøj Møllevej 152;Susanne Jacobsen <susanne.j184@gmail.com>;5047 1409;2;Løg + Bønner
+5;Lone;Klausen;Hjortshøj Møllevej 154;Lone Klausen <lonehjortshoj@gmail.com>;9330 8530;2;Løg + Bønner
+5;Katharina;Jespersen;Hjortshøj Møllevej 100;Katharina Jespersen <kjespersen892@gmail.com>;6046 5168;4;Løg + Bønner
+5;Elise;Markersen;Hjortshøj Møllevej 120;Elise Markersen <e.markersen@gmail.com>;2992 2666;4;Løg + Bønner
+5;Pernille;Helberg Stentoft;Gl. Kirkevej 142;Pernille Helberg Stentoft <pernille@prebenstentoft.dk>;2612 1402;8;Løg + Bønner
+5;Tine;Hejbøl Vinter;Mølleager 8;Tine Hejbøl Vinter <vinter.tine@gmail.com>;2927 4627;9;Løg + Bønner
+5;Henrik;Frode Hejbøl Vinter;Mølleager 8;Henrik Frode Hejbøl Vinter <frodevinter@protonmail.com>;5131 9237;9;Løg + Bønner
+5;Ingrid;Folkmann Jensen;Gammel Kirkevej 41;Ingrid Folkmann Jensen <prinsessen_bbp@yahoo.com>;6010 6893;9;Løg + Bønner
+5;Nicolai;Eske Klemme Knudsen;Gammel Kirkevej 41;Nicolai Eske Klemme Knudsen <nekk8200@gmail.com>;6022 3225;9;Løg + Bønner
+5;Birgitte;Andrea Skov;Høiriisgårdsvej 123, 2.tv. 8220 Brabrand;Birgitte Andrea Skov <skovbirgitte@yahoo.dk>;2137 1819;9;Løg + Bønner
+6;Søren;Egge;Hjortshøj Møllevej 162;Søren Egge <s.egge@fiber.dk>;6162 4543;2;Porrer + Persillerødder + Dild + Radiser
+6;Ina;Graneberg;Hjortshøj Møllevej 164;Ina Marie Graneberg <inagraneberg@gmail.com>;3029 7633;2;Porrer + Persillerødder + Dild + Radiser
+6;Jytte;Tybirk;Hjortshøj Møllevej 108;Jytte Tybirk <jtybirk@live.dk>;2164 4366;4;Porrer + Persillerødder + Dild + Radiser
+6;Jon;Lehner;Gl. Kirkevej 124;Jon Lehner <jonlehner@outlook.com>;2874 7364;7;Porrer + Persillerødder + Dild + Radiser
+6;Kasper;Storgaard Friis;Gl. Kirkevej 146;Kasper Storgaard Friis <kasperfriis@gmail.com>;2966 1178;8;Porrer + Persillerødder + Dild + Radiser
+6;Ann-Katrine;Storgaard Friis;Gl. Kirkevej 146;Ann-Katrine Storgaard Friis <akprivat@gmail.com>;2078 5936;8;Porrer + Persillerødder + Dild + Radiser
+6;Kirstine;Stensig Sørensen;Østergårdstoften 160;Kirstine Stensig Sørensen <kstensig@gmail.com>;2621 2922;9;Porrer + Persillerødder + Dild + Radiser
+6;Morten;Stensig Sørensen;Østergårdstoften 160;Morten Stensig Sørensen <morten.hsorensen@gmail.com>;2144 4180;9;Porrer + Persillerødder + Dild + Radiser
+6;Eva;Rygaard;Hjortshøj Møllevej 186;Eva Rygaard <evarygaard61@gmail.com>;4245 2703;9;Porrer + Persillerødder + Dild + Radiser
+6;Fie;Kruse;Skovfyrvej 1, 8250 Egå;Fie Kruse <fiekruse@hotmail.com>;2860 0930;9;Porrer + Persillerødder + Dild + Radiser
+7;Janne;Danielsen;Hjortshøj Møllevej 176;Janne Danielsen <jadan@aarhus.dk>;2065 1266;2;Kål + Selleri + Fennikel + Bladselleri + Gulerødder
+7;Ebbe;Dons Pihl;Hjortshøj Møllevej 176;Ebbe Dons Pihl <ebbedonspihl@gmail.com>;6162 7960;2;Kål + Selleri + Fennikel + Bladselleri + Gulerødder
+7;Thomas;Hallager Lolholm;Hjortshøj Møllevej 126;Thomas Hallager Lolholm <thomaslolholm@gmail.com>;2342 5278;4;Kål + Selleri + Fennikel + Bladselleri + Gulerødder
+7;André;Hallager Lolholm;Hjortshøj Møllevej 126;André Hallager Lolholm <andrehallager@gmail.com>;6130 6807;4;Kål + Selleri + Fennikel + Bladselleri + Gulerødder
+7;Jacob;Steiner;Gl. Kirkevej 154;Jacob Steiner <stuk62@hotmail.com>;2228 5648;8;Kål + Selleri + Fennikel + Bladselleri + Gulerødder
+7;Helle;Rask Steiner;Gl. Kirkevej 154;Helle Rask Steiner <hellerask@hotmail.com>;5239 5200;8;Kål + Selleri + Fennikel + Bladselleri + Gulerødder
+7;Amin;Chemlali;Vosnæsparken 28, 8541 Skødstrup;Amin Chemlali <amin93@hotmail.com>;2566 2525;9;Kål + Selleri + Fennikel + Bladselleri + Gulerødder
+7;Gitte;Batz;Østergårdstoften 90;Gitte Batz <gitte.batz@gmail.com>;5230 3737;9;Kål + Selleri + Fennikel + Bladselleri + Gulerødder
+7;Ebbe;Thorsen;Søndre Ringgade 9, st tv, 8000 Århus;Ebbe Thorsen <ebbe.thorsen@gmail.com>;5117 7643;9;Kål + Selleri + Fennikel + Bladselleri + Gulerødder
+7;Louise;Kold;Skødstrupbakken 33, 8541 Skødstrup;Louise Kold <louisekold77@gmail.com>;2778 2885;9;Kål + Selleri + Fennikel + Bladselleri + Gulerødder
+8;Trine;Henningsen;Hjortshøj Møllevej 178;Trine Henningsen <trineh.mail@gmail.com>;2910 8101;2;Spidskål + Brocolli + Ærter
+8;Steen;Obel;Hjortshøj Møllevej 106;Steen Obel <steenobel@mail.dk>;5752 5754;4;Spidskål + Brocolli + Ærter
+8;Katrine;Faber;Hjortshøj Møllevej 138;Katrine Faber <teaterviva@gmail.com>;5054 7024;4;Spidskål + Brocolli + Ærter
+8;Aksel;Striim;Hjortshøj Møllevej 138;Aksel Striim <akselstriim@gmail.com>;5244 4333;4;Spidskål + Brocolli + Ærter
+8;Preben;Laursen;Østergårdstoften 33;Preben Laursen <prelau@hotmail.dk>;6160 8842;5;Spidskål + Brocolli + Ærter
+8;Else;Mikel Jensen;Gl. Kirkevej 150;Else Mikel Jensen <elsemikel@gmail.com>;6168 8486;8;Spidskål + Brocolli + Ærter
+8;Bettina;Gammelgaard Hvingel;Højager 143;Bettina Gammelgaard Hvingel <bettinagh@hotmail.com>;6167 4345;9;Spidskål + Brocolli + Ærter
+8;Jørgen;Larsen;Løvagervej 17;Jørgen Larsen <jrgn.larsen@gmail.com>;2869 2960;9;Spidskål + Brocolli + Ærter
+8;Helen;Mathiesen;Østergårdstoften 96;Helen Mathiesen <helenmathiesen59@gmail.com>;2331 2775;9;Spidskål + Brocolli + Ærter
+8;Emilie;Svanholm Pejstrup;Ahornvej 12;Emilie Svanholm Pejstrup <emilie.svanholm@gmail.com>;6170 7947;9;Spidskål + Brocolli + Ærter
+9;Simon;Jeppesen;Hjortshøj Møllevej 180;Simon Jeppesen <simon@jeppezen.dk>;2628 4474;2;Blomster + Glaskål + Kålrabi + Spidskål + Persille
+9;Randi;Romvig Pisani;Gl. Kirkevej 62;Randi Romvig Pisani <randi@stellanostra.dk>;4062 6926;3;Blomster + Glaskål + Kålrabi + Spidskål + Persille
+9;Jørgen;Holm;Gl. Kirkevej 62;Jørgen Holm <jxrgen@gmail.com>;4252 0000;3;Blomster + Glaskål + Kålrabi + Spidskål + Persille
+9;Anne;Berg;Østergårdstoften 23;Anne Berg <anneberg61@gmail.com>;9125 8718;5;Blomster + Glaskål + Kålrabi + Spidskål + Persille
+9;Holger;Jensen;Østergårdstoften 23;Holger Jensen <holger21jensen@gmail.com>;2248 5510;5;Blomster + Glaskål + Kålrabi + Spidskål + Persille
+9;Søren;Brarup;Hjortshøjparken 161;Søren Brarup <s_k_brarup@hotmail.com>;6175 6407;9;Blomster + Glaskål + Kålrabi + Spidskål + Persille
+9;Nanna;Berg Jensen;Hjortshøjparken 161;Nanna Berg Jensen <jensennannaberg@gmail.com>;2560 2928;9;Blomster + Glaskål + Kålrabi + Spidskål + Persille
+9;Lars;Bertelsen;Østergårdstoften 156;Lars Bertelsen <larsgb67@gmail.com>;2098 7080;9;Blomster + Glaskål + Kålrabi + Spidskål + Persille
+9;Stine;Højgaard Vilstrup;Hjortshøj Møllevej 47;Stine Højgaard Vilstrup <hoejgaard.stine@gmail.com>;4127 2479;9;Blomster + Glaskål + Kålrabi + Spidskål + Persille
+9;Jonas;Højgaard Vilstrup;Hjortshøj Møllevej 47;Jonas Højgaard Vilstrup <jonas.vilstrup@gmail.com>;3048 4249;9;Blomster + Glaskål + Kålrabi + Spidskål + Persille
+10;Jakob;Bønløkke;Gl. Kirkevej 64;Jakob Bønløkke <j.bonlokke@dadlnet.dk>;9396 3064;3;Løg + Salat
+10;Karsten;Thomsen;Gl. Kirkevej 68;Karsten Thomsen <karsten.thomsen7@gmail.com>;2648 7865;3;Løg + Salat
+10;Grete;Hvam;Hjortshøj Møllevej 116;Grete Hvam <gr.hvam@gmail.com>;2445 8808;4;Løg + Salat
+10;Simon;Gnaur;Hjortshøj Møllevej 116;Simon Gnaur <simon.ag@hotmail.com>;5191 9813;4;Løg + Salat
+10;Clea;Thastum;Gl. Kirkevej 120;Clea Thastum <cleasen@hotmail.com>;2448 9579;7;Løg + Salat
+10;Janus;Martin Thastum;Gl. Kirkevej 120;Janus Martin Thastum <janusmartin@gmail.com>;2890 5969;7;Løg + Salat
+10;Stefan;Groot;Virupvej 64;Stefan Groot <stefan2groot@gmail.com>;2325 8004;9;Løg + Salat
+10;Elisabeth;Groot;Virupvej 64;Elisabeth Groot <elisabeth@nordenfra.dk>;2620 3119;9;Løg + Salat
+10;Marie;Ambrosius;Gammel Kirkevej 26;Marie Ambrosius <marie@ambrosius.dk>;4062 4506;9;Løg + Salat
+10;Jens;Larsen;Gammel Kirkevej 26;Jens Larsen <mail@jens-larsen.dk>;5170 0266;9;Løg + Salat

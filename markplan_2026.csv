@@ -1,39 +1,39 @@
-;Top;Midt;Bund;;;
-38;Grønkål 15/1;;;;;
-37;Grønkål 15/2;;;;;
-36;Grønkål 15/3;;;;;
-35;Grønkål 15/4;;;;;
-34;Grønkål 15/5;;;;;
-33;Rosenkål 15/5;;;;;
-32;Rosenkål 15/6;;;;;
-31;Rosenkål 15/7;;;;;
-30;Rosenkål 15/8;Sølvbeder 12/5 ;;;;
-29;Rosenkål 15/9;Rødbeder bolje beder 12/3;;;;
-28;Spidskål 15/9;Rødbeder 12/4;;;;
-27;Spidskål 15/10;Rødbeder 12/5;;;;
-26;Spidskål 15/11;Pastinak 12/5;;;;
-25;Spidskål 15/12;Persillerødder 12/5;;;;
-24;Broccoli 17/5;Dild 11/5;Kartofler ;;;
-23;Broccoli 17/5;Radiser 11/5;Kartofler ;;;
-22;Broccoli 17/5;Borlotti 11/5;Kartofler ;;;
-21;Broccoli 17/5;Bønner 11/5;Kartofler ;;;
-20;Majs ;Banan skalotte ;Majs;;;
-19;Majs ;Salat Skalotte ;Majs;;;
-18;Majs ;Gulerødder 30/4;Persille;;;
-17;Majs ;Gulerødder  30/4 ;Persille;;;
-16;Majs ;Ærter 30/4;Persille;;;
-15;Majs ;Løg ;Spidskål 17/3;;;
-14;;Løg ;Spidskål 17/4;;;
-13;;Løg ;Spidskål 17/5;;;
-12;;Løg ;Kålrabi 11/5;;;
-11;;Løg ;Glaskål;;;
-10;;Løg ;Blomster ;;; 
-9;;Løg ;Blomster ;;;
-8;;Løg ;Blomster ;;;
-7;;Løg ;Kartofler ;;;
-6;;Løg ;Kartofler ;;;
-5;;Løg ;Kartofler ;;;
-4;;Løg ;Kartofler ;;;
-3;;Løg ;Kartofler ;;;
-2;;Løg ;Kartofler ;;;
-1;;;Hestebønner ;;;
+;Top;;Midt;;Bund;
+38;Grønkål;X;;X;;X
+37;Grønkål;X;;X;;X
+36;Grønkål;X;;X;;X
+35;Grønkål;X;;X;;X
+34;Grønkål;X;;X;;X
+33;Rosenkål;X;;X;;X
+32;Rosenkål;X;;X;;X
+31;Rosenkål;X;;X;;X
+30;Rosenkål;X;Sølvbeder;X;;X
+29;Rosenkål;X;Rødbeder bolje beder;X;;X
+28;Spidskål;X;Rødbeder;X;;X
+27;Spidskål;X;Rødbeder;X;;X
+26;Spidskål;X;Pastinak;X;;X
+25;Spidskål;X;Persillerødder;X;;X
+24;Broccoli;X;Dild;X;Kartofler ;X
+23;Broccoli;X;Radiser;X;Kartofler ;X
+22;Broccoli;X;Borlotti;X;Kartofler ;X
+21;Broccoli;X;Bønner;X;Kartofler ;X
+20;Majs ;X;Banan skalotte ;X;Majs;X
+19;Majs ;X;Salat Skalotte ;X;Majs;X
+18;Majs ;X;Gulerødder;X;Persille;X
+17;Majs ;X;Gulerødder;X;Persille;X
+16;Majs ;X;Ærter;X;Persille;X
+15;Majs ;X;Løg ;X;Spidskål;X
+14;;X;Løg ;X;Spidskål;X
+13;;X;Løg ;X;Spidskål;X
+12;;X;Løg ;X;Kålrabi;X
+11;;X;Løg ;X;Glaskål;X
+10;;X;Løg ;X;Blomster ;X
+9;;X;Løg ;X;Blomster ;X
+8;;X;Løg ;X;Blomster ;X
+7;;X;Løg ;X;Kartofler ;X
+6;;X;Løg ;X;Kartofler ;X
+5;;X;Løg ;X;Kartofler ;X
+4;;X;Løg ;X;Kartofler ;X
+3;;X;Løg ;X;Kartofler ;X
+2;;X;Løg ;X;Kartofler ;X
+1;;X;;X;Hestebønner ;X
