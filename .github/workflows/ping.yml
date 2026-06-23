@@ -11,9 +11,9 @@ jobs:
     steps:
       - name: Ping Supabase to keep DB active
         run: |
-          curl -X POST \
-            'https://ujxmftvftcbjrdmzhlrw.supabase.co/rest/v1/rpc/ping_keep_alive' \
+          curl -s \
+            'https://ujxmftvftcbjrdmzhlrw.supabase.co/rest/v1/crops?limit=1' \
             -H 'apikey: sb_publishable_EeimAI1x6_X1KxT-Clw5Bg_zIveRDYb' \
-            -H 'Content-Type: application/json' \
-            --data '{}' \
-            -w '\nStatus: %{http_code}\n'
+            --fail \
+            -o /dev/null \
+            && echo "Ping OK"
