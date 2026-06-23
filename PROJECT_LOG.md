@@ -119,6 +119,24 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 
 ---
 
+## GitHub Actions Workflows
+
+### Daily Supabase Ping (`.github/workflows/ping.yml`)
+- Kører dagligt kl. 6 AM UTC
+- Kalder `crops`-tabellen via REST API med anon key
+- Formål: Holder Supabase Free Tier-databasen aktiv (undgår inaktivitets-timeout)
+- Kan også køres manuelt fra GitHub Actions UI
+
+### Database Migration (`.github/workflows/migrate.yml`)
+- Køres manuelt via GitHub Actions UI
+- Bruger `SUPABASE_DB_PASSWORD` secret (sat i GitHub repo-settings)
+- Kræver direkte PostgreSQL-adgang — virker kun hvis GitHub Actions' IP er tilladt i Supabase
+- OBS: Supabase Free Tier tillader pt. ikke ekstern direkte DB-forbindelse fra GitHub Actions
+
+**Opdateret:** 23. juni 2026
+
+---
+
 ## Kendte begrænsninger / åbne problemer
 - Admin kan kun ændre `is_released` per afgrøde (alle bede af samme afgrøde frigives samlet)
 - Ingen mulighed for at redigere markplan eller medlemmer via admin — kræver ny CSV + genkøre setup_db.py
