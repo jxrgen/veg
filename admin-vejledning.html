@@ -153,8 +153,7 @@
         <li><a href="#login">Login og sikkerhed</a></li>
         <li><a href="#medlemmer">Lugegrupper & Medlemmer</a></li>
         <li><a href="#afgroeder">Afgrøder & Høst</a></li>
-        <li><a href="#importer">Importer — markplan og medlemmer</a></li>
-        <li><a href="#manuel">Manuel redigering</a></li>
+        <li><a href="#redigering">Redigering — eksport, rediger og import</a></li>
         <li><a href="#vejledning">Vejledning faneblad</a></li>
         <li><a href="#bilag-a">Bilag A: Markplan 2026</a></li>
         <li><a href="#bilag-b">Bilag B: Lugegrupper 2026</a></li>
@@ -259,180 +258,97 @@
 
 </div>
 
-<!-- ===== IMPORTER ===== -->
-<div class="section" id="importer">
-<h2>4. Importer — markplan og medlemmer</h2>
+<!-- ===== REDIGERING ===== -->
+<div class="section" id="redigering">
+<h2>4. Redigering</h2>
 
-<p>Her kan du opdatere to vigtige datasæt uden at skulle skrive alt manuelt: markplanen (bede og afgrøder) og medlemslisten (lugegrupper og personer).</p>
+<p>Fanebladet <strong>Redigering</strong> samler alle funktioner til at vedligeholde markplanen og medlemslisten. Det indeholder fire handlinger:</p>
 
-<h3>4.1 Importer markplan</h3>
+<h3>4.1 Eksporter markplan</h3>
+<p>Klik <strong>Download CSV</strong> for at hente den aktuelle markplan som en CSV-fil. Filen er i det samme format som bruges ved import, så du kan åbne den i Excel, redigere og importere den igen.</p>
+
+<div class="info-box">
+<strong>💡 Tip:</strong> Eksporter → rediger i Excel → importer er den hurtigste måde at lave mange ændringer på én gang.
+</div>
+
+<h3>4.2 Rediger markplan</h3>
+<p>Klik <strong>Åbn redigering</strong> for at se en tabel med alle bede direkte i browseren — nyttigt til enkeltrettelser uden at bruge en CSV-fil.</p>
+<ol>
+    <li>Klik i tekstfeltet ud for det bed du vil ændre</li>
+    <li>Skriv det nye afgrødenavn (eller slet teksten for at tømme bedet)</li>
+    <li>Ret så mange bede du vil inden du gemmer</li>
+    <li>Klik <strong>Gem alle ændringer</strong> — kun ændrede bede sendes til databasen</li>
+</ol>
+<p>Multi-afgrøder adskilles med <code>/</code>, f.eks. <code>Salat / Fennikel</code>. Bruger-appen viser dem som <em>Salat · Fennikel</em>.</p>
+
+<div class="warning-box">
+<strong>⚠️ Husk at gemme:</strong> Ændringer gemmes <em>ikke</em> automatisk — klik <strong>Gem alle ændringer</strong>.
+</div>
+
+<h3>4.3 Importer markplan</h3>
 
 <h4>Hvornår skal jeg importere?</h4>
-<p>Importér en ny markplan når:</p>
-<ul>
-    <li>Årstiden starter og der er en helt ny afgrødeplanlægning</li>
-    <li>Der er ændringer i hvilke afgrøder der skal plantes hvor</li>
-    <li>Der er ændringer i hvilke afgrøder der er frigivet til høst</li>
-</ul>
+<p>Importér en ny markplan når der er mange ændringer på én gang — f.eks. ved sæsonstart.</p>
 
 <h4>Fil-format</h4>
-<p>Markplan-filen skal være en <strong>CSV-fil med semikolon-separator</strong> og følgende struktur:</p>
+<p>Semikolon-separeret CSV med 7 kolonner pr. bed:</p>
 <pre>;Top;;Midt;;Bund;
 38;Grønkål;X;;X;;X
-37;Grønkål;X;;X;;X
-...
+15;Majs;X;Løg;X;Salat / Fennikel;-
 1;;X;;X;Hestebønner;X</pre>
 
-<p><strong>Kolonne-forklaring:</strong></p>
 <table>
-    <tr>
-        <th>Kolonne</th>
-        <th>Format</th>
-        <th>Beskrivelse</th>
-    </tr>
-    <tr>
-        <td>Bed-nummer</td>
-        <td>1–38</td>
-        <td>Bed-nummeret (som heltal)</td>
-    </tr>
-    <tr>
-        <td>Top-afgrøde</td>
-        <td>Navn eller tom</td>
-        <td>Afgrøde i Top-sektion (Øverst)</td>
-    </tr>
-    <tr>
-        <td>Top-status</td>
-        <td>X eller −</td>
-        <td>X = låst, − = frigivet</td>
-    </tr>
-    <tr>
-        <td>Midt-afgrøde</td>
-        <td>Navn eller tom</td>
-        <td>Afgrøde i Midt-sektion (Mellem)</td>
-    </tr>
-    <tr>
-        <td>Midt-status</td>
-        <td>X eller −</td>
-        <td>X = låst, − = frigivet</td>
-    </tr>
-    <tr>
-        <td>Bund-afgrøde</td>
-        <td>Navn eller tom</td>
-        <td>Afgrøde i Bund-sektion (Nederst)</td>
-    </tr>
-    <tr>
-        <td>Bund-status</td>
-        <td>X eller −</td>
-        <td>X = låst, − = frigivet</td>
-    </tr>
+    <tr><th>Kolonne</th><th>Format</th><th>Beskrivelse</th></tr>
+    <tr><td>Bed-nummer</td><td>1–38</td><td>Bed-nummeret</td></tr>
+    <tr><td>Top-afgrøde</td><td>Navn eller tom</td><td>Afgrøde i Top-sektion</td></tr>
+    <tr><td>Top-status</td><td>X eller −</td><td>X = låst, − = frigivet</td></tr>
+    <tr><td>Midt-afgrøde</td><td>Navn eller tom</td><td>Afgrøde i Midt-sektion</td></tr>
+    <tr><td>Midt-status</td><td>X eller −</td><td>X = låst, − = frigivet</td></tr>
+    <tr><td>Bund-afgrøde</td><td>Navn eller tom</td><td>Afgrøde i Bund-sektion</td></tr>
+    <tr><td>Bund-status</td><td>X eller −</td><td>X = låst, − = frigivet</td></tr>
 </table>
 
 <h4>Sådan importerer du:</h4>
 <ol>
-    <li>Forbered en CSV-fil i formatet ovenfor</li>
-    <li>Klik <strong>"Vælg fil"</strong> og vælg din CSV-fil</li>
-    <li>Se forhåndsvisningen — den skal vise alle bede korrekt</li>
-    <li>Klik <strong>"Importer bede"</strong></li>
-    <li>Bekræft importen når du bliver spurgt</li>
+    <li>Klik <strong>Vælg fil</strong> og vælg din CSV-fil</li>
+    <li>Tjek forhåndsvisningen</li>
+    <li>Klik <strong>Importer</strong> og bekræft</li>
 </ol>
 
 <div class="warning-box">
-<strong>⚠️ Vigtig note:</strong> Markplan-import <em>bevarer</em> lugegruppe-tilknytningen på bedene. Kun afgrøde og status opdateres.
+<strong>⚠️ Note:</strong> Import bevarer lugegruppe-tilknytningen — kun afgrøde og status opdateres.
 </div>
 
-<h3>4.2 Importer lugegrupper & medlemmer</h3>
+<h3>4.4 Importer lugegrupper & medlemmer</h3>
 
 <h4>Hvornår skal jeg importere?</h4>
-<p>Importér en ny medlemsliste når:</p>
-<ul>
-    <li>Der er helt nye medlemmer i grøntsagsordningen</li>
-    <li>Der er medlemmer der er stoppet</li>
-    <li>Der er ændringer i hvem som er i hvilken lugegruppe</li>
-    <li>Medlemmernes kontaktoplysninger er opdateret (adresse, telefon, email)</li>
-</ul>
+<p>Importér en ny medlemsliste når der er ændringer i hvem der er med, hvilken gruppe de er i, eller deres kontaktoplysninger.</p>
 
 <h4>Fil-format</h4>
-<p>Medlemmer-filen skal være en <strong>CSV-fil med semikolon-separator</strong>. Strukturen er gruppevise blokke:</p>
-<pre>Navn;Adresse;Email;Mobil;BG
-;;;;;
-Gruppe 1;;;;;
-Grønkål + Rødbeder;7 bede;Øverst 34 - 38 + Mellem 27 - 28;;;;;
-Jan Feil;Gl. Kirkevej 40;Jan Feil <janfeil@example.dk>;2821 9103;1
-Dorte Feil;Gl. Kirkevej 40;Dorte <dorte@example.dk>;4019 9074;1
-;;;;;
-Gruppe 2;;;;;
-Kartofler + Hestebønner;12 bede;Nederst 1 - 7 + ...;;;;;
-Anke Stubsgaard;Gl. Kirkevej 46A;anke@example.dk;2615 7769;1
-...</pre>
-
-<p><strong>Regler:</strong></p>
-<ul>
-    <li>Hver gruppe starter med en linje "Gruppe N"</li>
-    <li>Derefter kommer en beskrivelse: <code>Afgrøder;Antal bede;Bed-områder</code></li>
-    <li>Derefter medlemmer: <code>Navn;Adresse;Email;Telefon;BG</code></li>
-    <li>Navne kan være "Fornavn Efternavn" eller "Fornavn Efternavn &lt;email@dom&gt;"</li>
-    <li>Tom linje før hver gruppe</li>
-</ul>
+<p>Semikolon-separeret CSV med gruppevise blokke:</p>
+<pre>Gruppe 1
+Navn;Adresse;Email;Mobil;BG
+Anders Jensen;Havevej 3;anders@example.dk;20304050;12
+Gruppe 2
+Navn;Adresse;Email;Mobil;BG
+Birthe Nielsen;Marksti 7;birthe@example.dk;30405060;5</pre>
 
 <h4>Sådan importerer du:</h4>
 <ol>
-    <li>Forbered en CSV-fil i formatet ovenfor</li>
-    <li>Klik <strong>"Vælg fil"</strong> og vælg din medlems-CSV-fil</li>
-    <li>Se forhåndsvisningen — den skal vise antal grupper og medlemmer korrekt</li>
-    <li>Klik <strong>"Importer medlemmer"</strong></li>
-    <li>Bekræft importen — alle gamle medlemmer bliver erstattet med de nye</li>
+    <li>Klik <strong>Vælg fil</strong> og vælg din CSV-fil</li>
+    <li>Tjek forhåndsvisningen (antal grupper og medlemmer)</li>
+    <li>Klik <strong>Importer</strong> og bekræft</li>
 </ol>
 
 <div class="warning-box">
-<strong>⚠️ OBS!</strong> Medlemmer-import <em>erstatter ALLE eksisterende medlemmer</em>. Der er ingen "tilføj til eksisterende" — det hele blir erstattet. Sikr at din fil indeholder alle medlemmer.
-</div>
-
-</div>
-
-<!-- ===== MANUEL REDIGERING ===== -->
-<div class="section" id="manuel">
-<h2>5. Manuel redigering</h2>
-
-<p>Her kan du redigere afgrødenavnet direkte i individuelle bede — nyttigt når du vil lave mindre rettelser uden at importere en hel ny markplan-CSV.</p>
-
-<h3>Hvornår skal jeg bruge dette?</h3>
-<ul>
-    <li>Et enkelt bed skal have en anden afgrøde end planlagt</li>
-    <li>Du vil rette en stavefejl i et afgrødenavn</li>
-    <li>Et bed er blevet tømt (Brak) og skal markeres som tomt</li>
-</ul>
-
-<h3>Sådan redigerer du</h3>
-<ol>
-    <li>Gå til fanebladet <strong>Manuel redigering</strong></li>
-    <li>Find det bed du vil ændre — tabellen er opdelt i <strong>Top, Midt</strong> og <strong>Bund</strong>, sorteret efter bed-nummer</li>
-    <li>Klik i tekstfeltet ud for bedet og skriv det nye afgrødenavn</li>
-    <li>Retter du flere bede, kan du sagtens ændre dem alle inden du gemmer</li>
-    <li>Klik <strong>Gem alle ændringer</strong> øverst på siden</li>
-    <li>Statusbeskeden viser hvor mange bede der blev gemt</li>
-</ol>
-
-<h3>Multi-afgrøder</h3>
-<p>Et bed kan have flere afgrøder. Adskil dem med <code>/</code>:</p>
-<pre>Salat / Fennikel / Spinat</pre>
-<p>Bruger-appen viser dem med en prik imellem: <em>Salat · Fennikel · Spinat</em></p>
-
-<h3>Tømme et bed</h3>
-<p>Slet al tekst i feltet og gem — bedet bliver markeret som tomt (Brak) i markoversigten.</p>
-
-<div class="info-box">
-<strong>💡 Nye afgrøder:</strong> Hvis du skriver et afgrødenavn der ikke fandtes i forvejen, oprettes det automatisk i afgrødetabellen som <em>låst</em>. Du kan derefter frigive det under <strong>Afgrøder &amp; Høst</strong>.
-</div>
-
-<div class="warning-box">
-<strong>⚠️ Husk at gemme:</strong> Ændringer i tekstfelterne gemmes <em>ikke</em> automatisk. Du skal klikke <strong>Gem alle ændringer</strong> for at ændringerne virker i appen.
+<strong>⚠️ OBS!</strong> Import <em>erstatter ALLE eksisterende medlemmer</em> — sørg for at filen indeholder alle.
 </div>
 
 </div>
 
 <!-- ===== VEJLEDNING ===== -->
 <div class="section" id="vejledning">
-<h2>6. Vejledning</h2>
+<h2>5. Vejledning</h2>
 
 <p>Dette faneblad indeholder den samme vejledning som dette dokument — direkte i admin-panelet. Brug det når du skal have hurtig hjælp uden at skulle åbne dette dokument.</p>
 

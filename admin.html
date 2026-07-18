@@ -580,67 +580,19 @@ Birthe Nielsen;Marksti 7;birthe@example.dk;30405060;5</pre>
                     </ul>
                 </div>
 
-                <!-- Manuel redigering -->
+                <!-- Redigering -->
                 <div class="bg-white rounded-xl shadow-sm p-6">
                     <h3 class="text-base font-bold text-gray-800 mb-3 flex items-center gap-2">
                         <span class="w-6 h-6 rounded-full bg-green-100 text-green-700 text-xs font-bold flex items-center justify-center flex-shrink-0">4</span>
-                        Faneblad: Manuel redigering
+                        Faneblad: Redigering
                     </h3>
-                    <ul class="space-y-1.5 text-sm text-gray-600 pl-8">
-                        <li>Viser alle bede på marken i en tabel opdelt i <strong class="text-gray-800">Top, Midt</strong> og <strong class="text-gray-800">Bund</strong></li>
-                        <li>Klik i afgrøde-feltet ud for et bed og skriv det nye afgrødenavn</li>
-                        <li>Multi-afgrøder adskilles med <code class="bg-gray-100 px-1 rounded font-mono text-xs">/</code> — f.eks. <span class="font-mono text-xs bg-gray-100 px-1 rounded">Salat / Fennikel</span></li>
-                        <li>Slet teksten i feltet for at tømme et bed (markere det som tomt)</li>
-                        <li>Klik <strong class="text-gray-800">Gem alle ændringer</strong> øverst når du er færdig — kun ændrede bede gemmes</li>
-                        <li class="text-gray-400 text-xs">Nye afgrødenavne oprettes automatisk i afgrødetabellen som <em>låste</em></li>
+                    <p class="text-sm text-gray-500 mb-3 pl-8">Samlet faneblad til eksport, manuel redigering og import af markplan og lugegrupper.</p>
+                    <ul class="space-y-3 text-sm text-gray-600 pl-8">
+                        <li><strong class="text-gray-800">Eksporter markplan</strong> — henter den aktuelle markplan fra databasen og downloader den som CSV, klar til redigering i Excel og genbrug ved import</li>
+                        <li><strong class="text-gray-800">Rediger markplan</strong> — åbner en tabel med alle bede (Top/Midt/Bund). Klik i et felt, skriv nyt afgrødenavn, og tryk <em>Gem alle ændringer</em> når du er færdig. Tomme felter = tomt bed. Multi-afgrøder adskilles med <code class="bg-gray-100 px-1 rounded font-mono text-xs">/</code></li>
+                        <li><strong class="text-gray-800">Importer markplan</strong> — erstatter afgrødeplan og høststatus fra en CSV-fil (lugegruppetilknytning bevares)</li>
+                        <li><strong class="text-gray-800">Importer lugegrupper</strong> — erstatter alle eksisterende medlemmer med data fra en CSV-fil</li>
                     </ul>
-                </div>
-
-                <!-- Importer -->
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h3 class="text-base font-bold text-gray-800 mb-3 flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-green-100 text-green-700 text-xs font-bold flex items-center justify-center flex-shrink-0">5</span>
-                        Faneblad: Importer
-                    </h3>
-                    <ul class="space-y-1.5 text-sm text-gray-600 pl-8 mb-4">
-                        <li><strong class="text-gray-800">Importer ny markplan</strong> — erstatter afgrødeplan og høststatus (lugegruppetilknytning bevares)</li>
-                        <li><strong class="text-gray-800">Importer lugegrupper</strong> — erstatter alle eksisterende medlemmer med data fra filen</li>
-                        <li>Begge funktioner viser en forhåndsvisning og beder om bekræftelse inden import</li>
-                    </ul>
-
-                    <div class="border-t border-gray-100 pt-4 space-y-4">
-                        <div>
-                            <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">CSV-format — markplan</p>
-                            <pre class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-xs text-gray-700 overflow-x-auto leading-relaxed font-mono">;Top;;Midt;;Bund;          ← header (ignoreres)
-38;Grønkål;X;;X;;X
-15;Majs;X;Løg;X;Salat / Fennikel;-
-1;;X;;X;Hestebønner;X</pre>
-                            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-gray-600">
-                                <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>Separator: <code class="bg-gray-100 px-1 rounded font-mono">;</code></span></div>
-                                <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>7 kolonner: Bed;TopAfgrøde;TopStatus;MidtAfgrøde;MidtStatus;BundAfgrøde;BundStatus</span></div>
-                                <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span><code class="bg-gray-100 px-1 rounded font-mono">X</code> = ikke klar &nbsp;·&nbsp; <code class="bg-green-100 text-green-700 px-1 rounded font-mono">-</code> = klar til høst</span></div>
-                                <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>Multi-afgrøder: adskilt af <code class="bg-gray-100 px-1 rounded font-mono">/</code> (f.eks. "Salat / Fennikel")</span></div>
-                                <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>Maks 40 rækker, første linje er header og ignoreres</span></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">CSV-format — lugegrupper</p>
-                            <pre class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-xs text-gray-700 overflow-x-auto leading-relaxed font-mono">Gruppe 1
-Navn;Adresse;Email;Mobil;BG
-Anders Jensen;Havevej 3;anders@example.dk;20304050;12
-Birthe Nielsen;Marksti 7;Birthe Nielsen &lt;birthe@example.dk&gt;;30405060;5
-Gruppe 2
-Navn;Adresse;Email;Mobil;BG
-Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
-                            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-gray-600">
-                                <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>Separator: <code class="bg-gray-100 px-1 rounded font-mono">;</code></span></div>
-                                <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>Gruppelinjer: <code class="bg-gray-100 px-1 rounded font-mono">Gruppe N</code></span></div>
-                                <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>Kolonner: Navn · Adresse · Email · Mobil · BG</span></div>
-                                <div class="flex items-start gap-1.5"><span class="text-green-700 font-bold">→</span><span>Email kan stå som <code class="bg-gray-100 px-1 rounded font-mono">Navn &lt;email@…&gt;</code></span></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
             </div>
