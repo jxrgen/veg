@@ -186,3 +186,8 @@ Nogle afgrøder i CSV har et tal bagved (f.eks. "Grønkål 15/1"). Disse ignorer
 | 2026-06-05 | Frontend: parseCropList() parser, display som "Salat · Fennikel · Spinat", søgning virker for individuelle afgrøder |
 | 2026-06-05 | Backend: CSV-import håndterer "/" separator, oppretter separate DB-entries per afgrøde, bakadkompatibel |
 | 2026-06-05 | Test: markplan_multitest.csv med alle edge cases (single-crop, multi-word, multi-crop, whitespace, empty beds) |
+| 2026-07-18 | Admin-password nulstillet via Supabase Admin API (PUT /auth/v1/admin/users/{id}) tilbage til `aihmarkadmin` |
+| 2026-07-18 | Admin: nyt "Redigering"-faneblad erstatter separate "Importer" og "Manuel redigering" faneblade |
+| 2026-07-18 | Admin Redigering: "Eksporter markplan" — downloader aktuel markplan fra DB som CSV (UTF-8 BOM, klar til Excel og reimport) |
+| 2026-07-18 | Admin Redigering: "Rediger markplan" — toggle-sektion med tabel over alle bede, fri tekst-redigering, gem kun ændrede bede |
+| 2026-07-18 | Vejledning opdateret i admin.html og admin-vejledning.html — afspejler nyt Redigering-faneblad med alle 4 funktioner |
