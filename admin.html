@@ -193,12 +193,7 @@
                     id="tabImport"
                     class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                     onclick="switchTab('import')"
-                >Importer</button>
-                <button
-                    id="tabEdit"
-                    class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
-                    onclick="switchTab('edit')"
-                >Manuel redigering</button>
+                >Redigering</button>
                 <button
                     id="tabVejledning"
                     class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
@@ -275,7 +270,74 @@
         <section id="sectionImport" class="hidden">
             <div class="space-y-6">
 
-                <!-- Import functions: top row -->
+                <!-- Eksporter + Rediger: top row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Eksporter markplan -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Eksporter markplan
+                        </h2>
+                        <p class="text-sm text-gray-500 mb-4">Download den aktuelle markplan som CSV-fil — klar til redigering i Excel og genbrug ved import.</p>
+                        <button onclick="exportMarkplan()"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-green-700 hover:bg-green-800 text-white transition-colors cursor-pointer">
+                            Download CSV &rarr;
+                        </button>
+                    </div>
+
+                    <!-- Rediger markplan -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Rediger markplan
+                        </h2>
+                        <p class="text-sm text-gray-500 mb-4">Ret afgrødenavnet direkte i individuelle bede uden at importere en hel ny CSV.</p>
+                        <button id="toggleEditBtn" onclick="toggleEditSection()"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-green-700 hover:bg-green-800 text-white transition-colors cursor-pointer">
+                            Åbn redigering &darr;
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Edit table (hidden until toggled) -->
+                <div id="editTableSection" class="hidden bg-white rounded-xl shadow-sm p-6">
+                    <div class="flex flex-wrap gap-3 items-center justify-between mb-3">
+                        <h3 class="text-base font-bold text-gray-800">Rediger markplan</h3>
+                        <button onclick="saveAllEdits()" id="saveEditBtn"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-green-700 hover:bg-green-800 text-white transition-colors">
+                            Gem alle ændringer
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4">Klik i et felt, skriv det nye afgrødenavn, og tryk <strong class="text-gray-700">Gem</strong> når du er færdig. Tomme felter markerer bedet som tomt.</p>
+                    <div id="editStatus" class="hidden mb-4 flex items-center gap-2 text-sm">
+                        <svg id="editSpinner" class="hidden animate-spin h-4 w-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                        <span id="editStatusText"></span>
+                    </div>
+                    <div class="overflow-hidden border border-gray-200 rounded-lg">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-200 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                                    <th class="px-4 py-3 w-24">Bed</th>
+                                    <th class="px-4 py-3">Afgrøde</th>
+                                </tr>
+                            </thead>
+                            <tbody id="editTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Import functions -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                     <!-- Markplan import -->
@@ -464,38 +526,6 @@ Birthe Nielsen;Marksti 7;birthe@example.dk;30405060;5</pre>
                 <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Låst</h3>
                 <div id="lockedList" class="bg-white rounded-xl shadow-sm divide-y divide-gray-100"></div>
                 <p id="lockedEmpty" class="hidden text-sm text-gray-400 italic px-4 py-3">Ingen låste afgrøder</p>
-            </div>
-        </section>
-
-        <!-- ---- SECTION: EDIT ---- -->
-        <section id="sectionEdit" class="hidden">
-            <div class="flex flex-wrap gap-3 items-center justify-between mb-4">
-                <div>
-                    <h2 class="text-lg font-bold text-gray-800">Manuel redigering</h2>
-                    <p class="text-sm text-gray-500 mt-0.5">Rediger afgrødenavnet i individuelle bede. Tryk <strong class="text-gray-700">Gem alle ændringer</strong> når du er færdig.</p>
-                </div>
-                <button onclick="saveAllEdits()" id="saveEditBtn"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-green-700 hover:bg-green-800 text-white transition-colors">
-                    Gem alle ændringer
-                </button>
-            </div>
-            <div id="editStatus" class="hidden mb-4 flex items-center gap-2 text-sm">
-                <svg id="editSpinner" class="hidden animate-spin h-4 w-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                </svg>
-                <span id="editStatusText"></span>
-            </div>
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                <table class="w-full">
-                    <thead>
-                        <tr class="bg-gray-50 border-b border-gray-200 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
-                            <th class="px-4 py-3 w-24">Bed</th>
-                            <th class="px-4 py-3">Afgrøde</th>
-                        </tr>
-                    </thead>
-                    <tbody id="editTableBody"></tbody>
-                </table>
             </div>
         </section>
 
@@ -708,7 +738,6 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         hide('sectionMembers');
         hide('sectionCrops');
         hide('sectionImport');
-        hide('sectionEdit');
         hide('sectionVejledning');
 
         if (!sessionJwt) {
@@ -758,19 +787,17 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         const tM  = document.getElementById('tabMembers');
         const tC  = document.getElementById('tabCrops');
         const tI  = document.getElementById('tabImport');
-        const tE  = document.getElementById('tabEdit');
         const tV  = document.getElementById('tabVejledning');
         console.log('[LOGIN/DATA/TAB] Tab button elements found: tM=' + (tM ? 'OK' : 'null') + ', tC=' + (tC ? 'OK' : 'null') + ', tI=' + (tI ? 'OK' : 'null') + ', tV=' + (tV ? 'OK' : 'null'));
 
         // Reset all tabs
-        [tM, tC, tI, tE, tV].forEach(t => {
+        [tM, tC, tI, tV].forEach(t => {
             t.classList.remove('active');
             t.classList.add('text-gray-600');
         });
         hide('sectionMembers');
         hide('sectionCrops');
         hide('sectionImport');
-        hide('sectionEdit');
         hide('sectionVejledning');
 
         if (tab === 'members') {
@@ -791,12 +818,10 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             tI.classList.add('active');
             tI.classList.remove('text-gray-600');
             show('sectionImport');
-        } else if (tab === 'edit') {
-            tE.classList.add('active');
-            tE.classList.remove('text-gray-600');
-            show('sectionEdit');
+            hide('editTableSection');
             hide('editStatus');
-            renderEditTab();
+            const toggleBtn = document.getElementById('toggleEditBtn');
+            if (toggleBtn) toggleBtn.textContent = 'Åbn redigering ↓';
         } else if (tab === 'vejledning') {
             tV.classList.add('active');
             tV.classList.remove('text-gray-600');
@@ -1511,6 +1536,49 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             }, 3000);
         } catch (e) {
             setPwMsg(e.message, true);
+        }
+    }
+
+    // ── Export ───────────────────────────────────────────────────────────────
+    function exportMarkplan() {
+        const bedNumbers = [...new Set(allBeds.map(b => b.bed_number))].sort((a, b) => a - b);
+        const lines = [';Top;;Midt;;Bund;'];
+
+        bedNumbers.forEach(num => {
+            const T = allBeds.find(b => b.bed_number === num && b.section === 'T');
+            const M = allBeds.find(b => b.bed_number === num && b.section === 'M');
+            const B = allBeds.find(b => b.bed_number === num && b.section === 'B');
+            lines.push(
+                num + ';'
+                + (T?.crop_name || '') + ';' + (T?.is_released ? '-' : 'X') + ';'
+                + (M?.crop_name || '') + ';' + (M?.is_released ? '-' : 'X') + ';'
+                + (B?.crop_name || '') + ';' + (B?.is_released ? '-' : 'X')
+            );
+        });
+
+        const csv  = lines.join('\n');
+        const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href     = url;
+        a.download = 'markplan_export.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // ── Edit tab toggle ───────────────────────────────────────────────────────
+    function toggleEditSection() {
+        const section = document.getElementById('editTableSection');
+        const btn     = document.getElementById('toggleEditBtn');
+        const isHidden = section.classList.contains('hidden');
+        section.classList.toggle('hidden', !isHidden);
+        btn.textContent = isHidden ? 'Luk redigering ↑' : 'Åbn redigering ↓';
+        if (isHidden) {
+            renderEditTab();
+            hide('editStatus');
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
 
