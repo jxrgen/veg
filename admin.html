@@ -195,6 +195,11 @@
                     onclick="switchTab('import')"
                 >Importer</button>
                 <button
+                    id="tabEdit"
+                    class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+                    onclick="switchTab('edit')"
+                >Manuel redigering</button>
+                <button
                     id="tabVejledning"
                     class="nav-tab px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                     onclick="switchTab('vejledning')"
@@ -462,6 +467,38 @@ Birthe Nielsen;Marksti 7;birthe@example.dk;30405060;5</pre>
             </div>
         </section>
 
+        <!-- ---- SECTION: EDIT ---- -->
+        <section id="sectionEdit" class="hidden">
+            <div class="flex flex-wrap gap-3 items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">Manuel redigering</h2>
+                    <p class="text-sm text-gray-500 mt-0.5">Rediger afgrødenavnet i individuelle bede. Tryk <strong class="text-gray-700">Gem alle ændringer</strong> når du er færdig.</p>
+                </div>
+                <button onclick="saveAllEdits()" id="saveEditBtn"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-green-700 hover:bg-green-800 text-white transition-colors">
+                    Gem alle ændringer
+                </button>
+            </div>
+            <div id="editStatus" class="hidden mb-4 flex items-center gap-2 text-sm">
+                <svg id="editSpinner" class="hidden animate-spin h-4 w-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+                <span id="editStatusText"></span>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-200 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                            <th class="px-4 py-3 w-24">Bed</th>
+                            <th class="px-4 py-3">Afgrøde</th>
+                        </tr>
+                    </thead>
+                    <tbody id="editTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
         <!-- ---- SECTION: VEJLEDNING ---- -->
         <section id="sectionVejledning" class="hidden">
             <div class="space-y-6">
@@ -575,8 +612,10 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
     // ── State ─────────────────────────────────────────────────────────────────
     let allMembers = [];
     let allCrops   = [];
+    let allBeds    = [];
     let activeTab  = 'members';
     let sessionJwt = null; // set after login; used to bypass SDK session issues
+    let originalBedCrops = {};
 
     // Direct fetch for RLS-protected tables — bypasses SDK session issues with sb_publishable_* keys.
     async function fetchProtected(path, opts = {}) {
@@ -653,6 +692,7 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         hide('sectionMembers');
         hide('sectionCrops');
         hide('sectionImport');
+        hide('sectionEdit');
         hide('sectionVejledning');
 
         if (!sessionJwt) {
@@ -663,9 +703,10 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         }
 
         try {
-            const [members, cropsRes] = await Promise.all([
+            const [members, cropsRes, bedsRes] = await Promise.all([
                 fetchProtected('members?select=*&order=luge_gruppe.asc,name.asc'),
-                sb.from('crops').select('*').order('name')
+                sb.from('crops').select('*').order('name'),
+                sb.from('beds').select('*').order('bed_number')
             ]);
 
             console.log('[LOGIN/DATA/TAB] Data loaded: allMembers.length=' + (Array.isArray(members) ? members.length : 0) + ', allCrops.length=' + (cropsRes.data ? cropsRes.data.length : 0));
@@ -678,6 +719,7 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
 
             allMembers = Array.isArray(members) ? members : [];
             allCrops   = cropsRes.data || [];
+            allBeds    = bedsRes.data  || [];
 
         } catch (e) {
             hide('loadingIndicator');
@@ -700,17 +742,19 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         const tM  = document.getElementById('tabMembers');
         const tC  = document.getElementById('tabCrops');
         const tI  = document.getElementById('tabImport');
+        const tE  = document.getElementById('tabEdit');
         const tV  = document.getElementById('tabVejledning');
         console.log('[LOGIN/DATA/TAB] Tab button elements found: tM=' + (tM ? 'OK' : 'null') + ', tC=' + (tC ? 'OK' : 'null') + ', tI=' + (tI ? 'OK' : 'null') + ', tV=' + (tV ? 'OK' : 'null'));
 
         // Reset all tabs
-        [tM, tC, tI, tV].forEach(t => {
+        [tM, tC, tI, tE, tV].forEach(t => {
             t.classList.remove('active');
             t.classList.add('text-gray-600');
         });
         hide('sectionMembers');
         hide('sectionCrops');
         hide('sectionImport');
+        hide('sectionEdit');
         hide('sectionVejledning');
 
         if (tab === 'members') {
@@ -731,6 +775,12 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
             tI.classList.add('active');
             tI.classList.remove('text-gray-600');
             show('sectionImport');
+        } else if (tab === 'edit') {
+            tE.classList.add('active');
+            tE.classList.remove('text-gray-600');
+            show('sectionEdit');
+            hide('editStatus');
+            renderEditTab();
         } else if (tab === 'vejledning') {
             tV.classList.add('active');
             tV.classList.remove('text-gray-600');
@@ -1446,6 +1496,125 @@ Carl Holm;Engvej 2;carl@example.dk;40506070;8</pre>
         } catch (e) {
             setPwMsg(e.message, true);
         }
+    }
+
+    // ── Edit tab ──────────────────────────────────────────────────────────────
+    function renderEditTab() {
+        const tbody = document.getElementById('editTableBody');
+        tbody.innerHTML = '';
+        originalBedCrops = {};
+
+        const sOrder = { T: 0, M: 1, B: 2 };
+        const sorted = [...allBeds].sort((a, b) => {
+            const sDiff = (sOrder[a.section] || 0) - (sOrder[b.section] || 0);
+            return sDiff !== 0 ? sDiff : a.bed_number - b.bed_number;
+        });
+
+        const sectionNames = { T: 'Top', M: 'Midt', B: 'Bund' };
+        let lastSection = null;
+
+        sorted.forEach(b => {
+            const key = b.bed_number + ',' + b.section;
+            originalBedCrops[key] = b.crop_name || '';
+
+            if (b.section !== lastSection) {
+                const headerRow = document.createElement('tr');
+                headerRow.className = 'bg-green-50 border-y border-green-100';
+                headerRow.innerHTML = '<td colspan="2" class="px-4 py-2 text-xs font-bold uppercase tracking-wider text-green-700">'
+                    + (sectionNames[b.section] || b.section) + '</td>';
+                tbody.appendChild(headerRow);
+                lastSection = b.section;
+            }
+
+            const tr = document.createElement('tr');
+            tr.className = 'border-b border-gray-100 hover:bg-gray-50';
+            tr.innerHTML = '<td class="px-4 py-2 text-sm font-medium text-gray-500 w-24">Bed ' + b.bed_number + '</td>'
+                + '<td class="px-4 py-2">'
+                + '<input type="text" id="edit-' + key + '" value="' + esc(b.crop_name || '') + '"'
+                + ' placeholder="(tomt bed)"'
+                + ' class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-800'
+                + ' focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">'
+                + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    async function saveAllEdits() {
+        const btn = document.getElementById('saveEditBtn');
+        btn.disabled = true;
+
+        const changes = [];
+        Object.entries(originalBedCrops).forEach(([key, orig]) => {
+            const input = document.getElementById('edit-' + key);
+            if (!input) return;
+            const newVal = input.value.trim() || null;
+            const origVal = orig || null;
+            if (newVal !== origVal) {
+                const parts = key.split(',');
+                changes.push({ bed_number: parseInt(parts[0]), section: parts[1], crop_name: newVal });
+            }
+        });
+
+        if (changes.length === 0) {
+            setEditStatus('Ingen ændringer at gemme.', false, false, false);
+            btn.disabled = false;
+            return;
+        }
+
+        setEditStatus('Gemmer ' + changes.length + ' ændring' + (changes.length === 1 ? '' : 'er') + '…', true);
+
+        try {
+            for (const c of changes) {
+                await fetchProtected('beds?bed_number=eq.' + c.bed_number + '&section=eq.' + c.section, {
+                    method: 'PATCH',
+                    headers: { 'Prefer': 'return=minimal' },
+                    body: JSON.stringify({ crop_name: c.crop_name })
+                });
+            }
+
+            // Add any genuinely new crop names to the crops table
+            const newCropNames = new Set();
+            changes.filter(c => c.crop_name).forEach(c => {
+                c.crop_name.split('/').map(s => s.trim()).filter(s => s).forEach(s => newCropNames.add(s));
+            });
+            const existingNames = new Set(allCrops.map(c => c.name));
+            const toAdd = [...newCropNames].filter(n => !existingNames.has(n));
+            if (toAdd.length > 0) {
+                await fetchProtected('crops', {
+                    method: 'POST',
+                    body: JSON.stringify(toAdd.map(name => ({ name, is_released: false }))),
+                    headers: { 'Prefer': 'return=minimal' }
+                });
+                const fresh = await sb.from('crops').select('*').order('name');
+                if (!fresh.error) allCrops = fresh.data;
+            }
+
+            // Update local state so re-opening the tab shows current values
+            changes.forEach(c => {
+                const bed = allBeds.find(b => b.bed_number === c.bed_number && b.section === c.section);
+                if (bed) bed.crop_name = c.crop_name;
+                originalBedCrops[c.bed_number + ',' + c.section] = c.crop_name || '';
+            });
+
+            setEditStatus('✓ ' + changes.length + (changes.length === 1 ? ' bed gemt.' : ' bede gemt.'), false, false, true);
+        } catch (err) {
+            setEditStatus('Fejl: ' + err.message, false, true);
+        }
+
+        btn.disabled = false;
+    }
+
+    function setEditStatus(msg, spinning, isError, isSuccess) {
+        if (!msg) { hide('editStatus'); return; }
+        show('editStatus');
+        const text = document.getElementById('editStatusText');
+        text.textContent = msg;
+        text.className = isError   ? 'text-red-600 font-medium'
+                       : isSuccess ? 'text-green-700 font-semibold'
+                       : 'text-gray-600';
+        const spinner = document.getElementById('editSpinner');
+        if (spinning) spinner.classList.remove('hidden');
+        else          spinner.classList.add('hidden');
     }
 
     // ── Init: hide login error, hide admin ────────────────────────────────────
