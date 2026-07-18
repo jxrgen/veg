@@ -902,17 +902,25 @@ Birthe Nielsen;Marksti 7;birthe@example.dk;30405060;5</pre>
         crop.is_released = newValue;
         renderCrops();
 
-        // Persist to crops table and sync all matching beds
-        const [cropsRes, bedsRes] = await Promise.all([
-            sb.from('crops').update({ is_released: newValue }).eq('name', crop.name),
-            sb.from('beds').update({ is_released: newValue }).eq('crop_name', crop.name),
-        ]);
-
-        if (cropsRes.error || bedsRes.error) {
-            // Revert
+        try {
+            const encodedName = encodeURIComponent(crop.name);
+            await Promise.all([
+                fetchProtected('crops?name=eq.' + encodedName, {
+                    method: 'PATCH',
+                    headers: { 'Prefer': 'return=minimal' },
+                    body: JSON.stringify({ is_released: newValue })
+                }),
+                fetchProtected('beds?crop_name=eq.' + encodedName, {
+                    method: 'PATCH',
+                    headers: { 'Prefer': 'return=minimal' },
+                    body: JSON.stringify({ is_released: newValue })
+                })
+            ]);
+        } catch (err) {
+            // Revert on error
             crop.is_released = !newValue;
             renderCrops();
-            alert('Fejl ved gemning: ' + (cropsRes.error || bedsRes.error).message);
+            alert('Fejl ved gemning: ' + err.message);
             return;
         }
 
