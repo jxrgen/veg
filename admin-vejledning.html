@@ -221,7 +221,7 @@
 <p>Klik igen på samme kolonne for at sortere i modsat rækkefølge (A→Z eller Z→A).</p>
 
 <h3>Importering af nye medlemmer</h3>
-<p>Se <a href="#importer">afsnittet "Importer"</a> for hvordan du importerer en hel ny medlemsliste.</p>
+<p>Se <a href="#redigering">afsnittet "Redigering"</a> for hvordan du importerer en hel ny medlemsliste.</p>
 
 </div>
 
@@ -362,8 +362,13 @@ Birthe Nielsen;Marksti 7;birthe@example.dk;30405060;5</pre>
 <ul>
     <li><strong>Import fejler:</strong> Tjek at CSV-filen bruger semikolon (;) som separator, ikke komma</li>
     <li><strong>Medlemmer vises ikke:</strong> Prøv at logge ud og ind igen</li>
-    <li><strong>Ændringer opdateres ikke i appen:</strong> Medlemmerne skal genindlæse siden (F5 eller refresh)</li>
+    <li><strong>Ændringer opdateres ikke i appen:</strong> Medlemmerne skal genindlæse siden (F5 eller pull-to-refresh på mobil)</li>
+    <li><strong>Rediger markplan gemmer ikke:</strong> Husk at klikke <strong>Gem alle ændringer</strong> — ændringer i tekstfelterne er ikke automatisk gemt</li>
+    <li><strong>Kan ikke logge ind:</strong> Kontakt den tekniske ansvarlige for at få nulstillet admin-koden</li>
 </ul>
+
+<h3>Nulstilling af admin-kode</h3>
+<p>Hvis du har glemt admin-koden og ikke kan komme ind, kan den nulstilles via Supabase Admin API. Kontakt den tekniske ansvarlige (setup_db.py indeholder de nødvendige credentials).</p>
 
 <h3>Browser-support</h3>
 <p>Admin-panelet virker bedst i:</p>
