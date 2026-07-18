@@ -154,6 +154,7 @@
         <li><a href="#medlemmer">Lugegrupper & Medlemmer</a></li>
         <li><a href="#afgroeder">Afgrøder & Høst</a></li>
         <li><a href="#importer">Importer — markplan og medlemmer</a></li>
+        <li><a href="#manuel">Manuel redigering</a></li>
         <li><a href="#vejledning">Vejledning faneblad</a></li>
         <li><a href="#bilag-a">Bilag A: Markplan 2026</a></li>
         <li><a href="#bilag-b">Bilag B: Lugegrupper 2026</a></li>
@@ -388,9 +389,50 @@ Anke Stubsgaard;Gl. Kirkevej 46A;anke@example.dk;2615 7769;1
 
 </div>
 
+<!-- ===== MANUEL REDIGERING ===== -->
+<div class="section" id="manuel">
+<h2>5. Manuel redigering</h2>
+
+<p>Her kan du redigere afgrødenavnet direkte i individuelle bede — nyttigt når du vil lave mindre rettelser uden at importere en hel ny markplan-CSV.</p>
+
+<h3>Hvornår skal jeg bruge dette?</h3>
+<ul>
+    <li>Et enkelt bed skal have en anden afgrøde end planlagt</li>
+    <li>Du vil rette en stavefejl i et afgrødenavn</li>
+    <li>Et bed er blevet tømt (Brak) og skal markeres som tomt</li>
+</ul>
+
+<h3>Sådan redigerer du</h3>
+<ol>
+    <li>Gå til fanebladet <strong>Manuel redigering</strong></li>
+    <li>Find det bed du vil ændre — tabellen er opdelt i <strong>Top, Midt</strong> og <strong>Bund</strong>, sorteret efter bed-nummer</li>
+    <li>Klik i tekstfeltet ud for bedet og skriv det nye afgrødenavn</li>
+    <li>Retter du flere bede, kan du sagtens ændre dem alle inden du gemmer</li>
+    <li>Klik <strong>Gem alle ændringer</strong> øverst på siden</li>
+    <li>Statusbeskeden viser hvor mange bede der blev gemt</li>
+</ol>
+
+<h3>Multi-afgrøder</h3>
+<p>Et bed kan have flere afgrøder. Adskil dem med <code>/</code>:</p>
+<pre>Salat / Fennikel / Spinat</pre>
+<p>Bruger-appen viser dem med en prik imellem: <em>Salat · Fennikel · Spinat</em></p>
+
+<h3>Tømme et bed</h3>
+<p>Slet al tekst i feltet og gem — bedet bliver markeret som tomt (Brak) i markoversigten.</p>
+
+<div class="info-box">
+<strong>💡 Nye afgrøder:</strong> Hvis du skriver et afgrødenavn der ikke fandtes i forvejen, oprettes det automatisk i afgrødetabellen som <em>låst</em>. Du kan derefter frigive det under <strong>Afgrøder &amp; Høst</strong>.
+</div>
+
+<div class="warning-box">
+<strong>⚠️ Husk at gemme:</strong> Ændringer i tekstfelterne gemmes <em>ikke</em> automatisk. Du skal klikke <strong>Gem alle ændringer</strong> for at ændringerne virker i appen.
+</div>
+
+</div>
+
 <!-- ===== VEJLEDNING ===== -->
 <div class="section" id="vejledning">
-<h2>5. Vejledning</h2>
+<h2>6. Vejledning</h2>
 
 <p>Dette faneblad indeholder den samme vejledning som dette dokument — direkte i admin-panelet. Brug det når du skal have hurtig hjælp uden at skulle åbne dette dokument.</p>
 
